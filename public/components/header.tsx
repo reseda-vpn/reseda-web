@@ -1,13 +1,12 @@
-import styles from '../../styles/Home.module.css'
 import Button from './un-ui/button';
 
 export const Header = () => {
     return (
-        <div className={styles.header}>
-            <div>
-                <div className={styles.resedaLogo}>RESEDA</div>   
+        <div className="flex flex-row bg-white py-2 px-4 justify-around">
+            <div className="flex flex-row items-center gap-4">
+                <div className="font-bold">RESEDA</div>   
 
-                <div>
+                <div className="flex flex-row items-center gap-4">
                     <Button icon={false} onClick={() => {
                         window.location.href = "./vpn"
                     }}>VPN</Button>
@@ -16,7 +15,7 @@ export const Header = () => {
                 </div> 
             </div>
 
-            <div>
+            <div className="flex flex-row items-center gap-4">
                 <Button icon={false}>Login</Button>
                 <Button icon={false} style={{ background: "linear-gradient(-45deg, rgba(99,85,164,0.6) 0%, rgba(232,154,62,.6) 100%)", color: 'rgb(255,255,255)', fontWeight: '600' }}>Get Reseda</Button>
             </div>
