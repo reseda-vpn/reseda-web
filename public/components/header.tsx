@@ -4,7 +4,7 @@ export const Header = () => {
     return (
         <div className="flex flex-row bg-white py-2 px-4 justify-around">
             <div className="flex flex-row items-center gap-4">
-                <div className="font-bold">RESEDA</div>   
+                <div className="font-bold font-altSans text-lg text-slate-800">RESEDA</div>   
 
                 <div className="flex flex-row items-center gap-4">
                     <Button icon={false} onClick={() => {

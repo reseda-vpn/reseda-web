@@ -8,20 +8,6 @@
 }
 
 .banner {
-  width: 100%;
-  background-color: black;
-  color: #fff;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 1rem;
-  z-index: 999;
-
-  position: relative;
-
   transition: .55s ease all;
 }
 
@@ -116,46 +102,15 @@
   border: 2px solid rgba(255, 255, 255, 0.158);
   background: linear-gradient(45deg, #6355a423 0%, #e89a3e23 33%, #6355a423 66%, #e89a3e23 100%);
 
-  height: 250px;
-  width: 250px;
+  backdrop-filter: blur(5px);
+
+  height: 350px;
+  width: 350px;
   border-radius: 50%;
 
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@keyframes pulse2 {
-  0% {
-    height: 250px;
-    width: 250px;
-  }
-  50% {
-    height: 270px;
-    width: 270px;
-  }
-  100% {
-    height: 250px;
-    width: 250px;
-  }
-}
-
-@keyframes connected_pulse2 {
-  0% {
-    border-color: rgba(255, 255, 255, 0);
-    height: 250px; width: 250px;
-    background-color: rgba(255, 255, 255, 0);
-  }
-  25% {
-    border-color: rgba(255, 255, 255, 0.158);
-    height: 250px; width: 250px;
-    background-color: rgba(255, 255, 255, 0.025); 
-  }
-  100% {
-    border-color: rgba(255, 255, 255, 0);
-    height: 290px; width: 290px;
-    background-color: rgba(255, 255, 255, 0);
-  }
 }
 
 .resedaFancyConnection button {
@@ -166,8 +121,8 @@
   border: 2px solid rgba(255, 255, 255, 0.336);
   background: linear-gradient(45deg, #6355a42a 0%, #e89a3e2a 33%, #6355a42a 66%, #e89a3e2a 100%);
 
-  height: 200px;
-  width: 200px;
+  height: 250px;
+  width: 250px;
   border-radius: 50%;
 
   display: flex;

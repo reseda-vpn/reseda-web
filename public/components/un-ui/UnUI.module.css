@@ -86,9 +86,18 @@
 
     background-color: rgb(255, 255, 255);
     outline: none;
+
+    display: flex;
+    flex-direction: row;
 }
 
-.input:focus {
+.input input {
+    background-color: rgb(255, 255, 255);
+    outline: none;
+    flex: 1;
+}
+
+.input:focus-within {
     outline: none;
     box-shadow: rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(58 151 212 / 36%) 0px 0px 0px 4px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 16%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px;
 }
@@ -135,4 +144,22 @@
 
 .tabActive {
     border-color: var(--primary-bright) !important;
+}
+
+.input p {
+    flex: 1;
+    opacity: .8;
+}
+
+.spinning {
+    animation: 2s spin linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
