@@ -4,6 +4,28 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+#gradient-canvas {
+  width:  120%;
+  height: 50%;
+
+  top: -0%;
+  left: -0%;
+
+  z-index: 10;
+  image-rendering: pixelated;
+
+  position: absolute;
+  transform: rotateZ(5deg) scale(1.2);
+
+  --gradient-color-1: #9f92d6; 
+  --gradient-color-2: #eec697; 
+  --gradient-color-3: #EAE2FF;  
+  --gradient-color-4: #FDD5AF;
 }
 
 @import url(../public/fonts/walsh/stylesheet.css);

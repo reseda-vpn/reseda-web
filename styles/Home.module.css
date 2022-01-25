@@ -200,3 +200,7 @@
   clip-path: circle(77px at center);
   border-radius: 50%;
 }
+
+.dtsvg {
+  stroke: #121829;
+}
