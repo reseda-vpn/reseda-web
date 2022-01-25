@@ -8,6 +8,7 @@ import { Gradient } from '@components/gradient'
 
 import { IoSpeedometer } from 'react-icons/io5'
 import Image from 'next/image';
+import Footer from '@components/footer';
 
 export default function Home() {
 	const [ email, setEmail ] = useState("");
@@ -37,7 +38,7 @@ export default function Home() {
 			<canvas id="gradient-canvas" data-transition-in>
         	</canvas>
 
-			<div className="flex flex-row justify-between items-center gap-64 h-full max-w-screen-lg w-full my-0 mx-auto py-2 px-4" style={{ height: '100vh' }}>
+			<div className="flex flex-row items-center h-fill pt-72 pb-40 max-w-screen-lg w-full my-0 mx-auto px-4">
 				<div className="h-fit flex flex-col gap-8 items-start">
 					<div>
 						<h1 className="text-8xl font-bold m-0 relative text-slate-800 text-left z-50">Fast & <br /> Affordable</h1>
@@ -83,24 +84,37 @@ export default function Home() {
 			<div className="flex flex-col gap-8 max-w-screen-lg w-full my-0 mx-auto py-2 px-4">
 				<div className="flex flex-col">
 					<h2 className="text-violet-500">VPN</h2>
-					<h1 className="m-0 text-semibold text-2xl">Blazing Fast</h1>
+					<h1 className="m-0 text-semibold text-2xl">Reseda is Blazing Fast, and Incredibly Secure</h1>
 				</div>
 				
-				<div className="grid grid-cols-4">
+				<div className="grid grid-cols-4 gap-8">
 					<div>
-						<Image src={"/assets/duotone/rocket.svg"} alt={"1GB/s Speeds"} height={50} width={50} className={styles.dtsvg}/>
+						<Image src={"/assets/duotone/rocket_purple.svg"} alt={"1GB/s Speeds"} height={45} width={45} className={styles.dtsvg}/>
 						<h1 className="font-semibold text-slate-600">Blazing 1GB/s Speeds</h1>
-						<p className="text-sm text-slate-700">With real world speeds up to 1GB/s, reseda can handle any task from gaming to streaming</p>
+						<p className="text-sm text-slate-900 text-justify">With real world speeds up to <strong className="bg-violet-100 text-violet-500 rounded-sm py-0 px-1" >1GB/s</strong>, Reseda can handle any task from gaming to streaming</p>
 					</div>
 
 					<div>
-						<Image src={"/assets/duotone/time.svg"} alt={"<2s Connection"} height={50} width={50} className={styles.dtsvg}/>
+						<Image src={"/assets/duotone/time_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
 						<h1 className="font-semibold text-slate-600">Incredibly Low wait times</h1>
-						<p className="text-sm text-slate-900">Connect to a reseda-server in under `2s` thanks to the WireGuard&#8482; protocol.</p>
+						<p className="text-sm text-slate-900">Connect to in under <strong className="bg-violet-100 text-violet-500 rounded-sm py-0 px-1" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
 					</div>
-					<div></div>
+					
+					<div>
+						<Image src={"/assets/duotone/no_location_purple.svg"} alt={"<2s Connection"} quality={100}  height={45} width={45} className={styles.dtsvg}/>
+						<h1 className="font-semibold text-slate-600">Keep your location private</h1>
+						<p className="text-sm text-slate-900 text-justify">Reseda is secure, keeping your location <strong className="bg-violet-100 text-violet-500 rounded-sm py-0 px-1" >hidden</strong>. </p>
+					</div>
+
+					<div>
+						<Image src={"/assets/duotone/component_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
+						<h1 className="font-semibold text-slate-600">Incredibly Low wait times</h1>
+						<p className="text-sm text-slate-900 text-justify">Connect to a reseda-server in under <strong className="mono" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
+					</div>
 				</div>
 			</div>
+
+			<Footer />
 		</div>
 	)
 }
