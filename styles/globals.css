@@ -18,28 +18,41 @@ body {
   background-color: white;
 }
 
+@media screen and (max-width: 640px) {
+  #gradient-canvas {
+    height: 450px !important;
+  }
+}
+
 #gradient-canvas {
-  width:  120%;
-  height: 350px;
+  width:  100%;
+  height: 800px;
 
   /* top: -25%; */
   left: -0%;
 
   z-index: 10;
-  image-rendering: pixelated;
+  /* image-rendering: pixelated; */
 
   position: absolute;
-  transform: rotateZ(5deg) scale(1.2);
+  /* transform: rotateZ(5deg) scale(1.2); */
 
-  /* --gradient-color-1: #a960ee; 
+  /* Default 
+  --gradient-color-1: #a960ee; 
   --gradient-color-2: #ff333d; 
   --gradient-color-3: #90e0ff;  
   --gradient-color-4: #ffcb57; */
-
+  
+  /* Light
   --gradient-color-1: #9f92d6; 
   --gradient-color-2: #eec697; 
   --gradient-color-3: #EAE2FF;  
-  --gradient-color-4: #FDD5AF;
+  --gradient-color-4: #FDD5AF; */
+
+  --gradient-color-1: #907ceb; 
+  --gradient-color-2: #cfa370; 
+  --gradient-color-3: #bba7f0;  
+  --gradient-color-4: #ebbc90;
 }
 
 @import url(../public/fonts/walsh/stylesheet.css);
