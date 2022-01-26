@@ -35,7 +35,38 @@ export default function Home() {
 				type: "spring",
 				bounce: 0.2,
 				duration: 0.5,
+				delay: 0.5
+			}
+		}
+	}
+
+	const titleControl: Variants = {
+		offscreen: { opacity: 0, y: 20, },
+		onscreen: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				staggerChildren: 0.6,
+				type: "tween",
+				ease: "easeOut",
+				duration: 0.4,
 				delay: 0.2
+			}
+		}
+	}
+
+	const titleVariants: Variants = {
+		offscreen: {
+			opacity: 0,
+			y: 20
+		},
+		onscreen: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				type: "tween",
+				ease: "easeOut",
+				duration: 0.4,
 			}
 		}
 	}
@@ -47,7 +78,12 @@ export default function Home() {
 		},
 		onscreen: {
 		 	opacity: 1,
-			y: 0
+			y: 0,
+			transition: {
+				type: "tween",
+				ease: "easeOut",
+				duration: 0.4,
+			}
 		}
 	};
 	
@@ -63,7 +99,11 @@ export default function Home() {
 				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : '800px' }}>
 					<div className="h-fit flex flex-col gap-16 md:gap-8 items-start">
 						<div className="z-50 relative flex flex-col gap-2">
-							<motion.div className="text-4xl md:text-5xl font-extrabold m-0 text-slate-100 text-left z-50">Fast. Affordable. Secure.</motion.div> {/* absolute top-0 left-0 mix-blend-color-burn */}
+							<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={titleControl} className="text-4xl md:text-5xl font-extrabold m-0 text-slate-100 text-left z-50 flex flex-row flex-wrap gap-4 gap-y-0">
+								<motion.div variants={titleVariants}>Fast. </motion.div>
+								<motion.div variants={titleVariants}>Affordable. </motion.div>
+								<motion.div variants={titleVariants}>Secure.</motion.div>
+							</motion.div>
 							<p className="text-slate-100 text-left z-50 text-lg sm:text-lg" >A VPN that charges you for what you use, so you never worry about paying too much.</p>
 						</div>
 						
@@ -228,8 +268,9 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				
 
+				<div className="pt-16 pb-16"></div>
+				
 				<Footer />
 			</div>
 			
