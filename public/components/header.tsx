@@ -8,11 +8,9 @@ export const Header = () => {
                     <div className="font-bold font-altSans text-lg text-slate-800">RESEDA</div>   
 
                     <div className="flex flex-row items-center gap-4">
-                        <Button icon={false} onClick={() => {
-                            window.location.href = "./vpn"
-                        }}>VPN</Button>
-                        <Button icon={false}>Pricing</Button>
-                        <Button icon={false}>Why Reseda?</Button>
+                        <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">VPN</Button>
+                        <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Pricing</Button>
+                        <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Why Reseda?</Button>
                     </div> 
                 </div>
 

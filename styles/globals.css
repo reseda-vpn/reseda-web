@@ -7,13 +7,22 @@ body {
 
   max-width: 100vw;
   overflow-x: hidden;
+  background-color: white;
+}
+
+html {
+  background-color: white;
+}
+
+body {
+  background-color: white;
 }
 
 #gradient-canvas {
   width:  120%;
-  height: 50%;
+  height: 350px;
 
-  top: -0%;
+  /* top: -25%; */
   left: -0%;
 
   z-index: 10;
@@ -21,6 +30,11 @@ body {
 
   position: absolute;
   transform: rotateZ(5deg) scale(1.2);
+
+  /* --gradient-color-1: #a960ee; 
+  --gradient-color-2: #ff333d; 
+  --gradient-color-3: #90e0ff;  
+  --gradient-color-4: #ffcb57; */
 
   --gradient-color-1: #9f92d6; 
   --gradient-color-2: #eec697; 
@@ -39,6 +53,23 @@ a {
   box-sizing: border-box;
 }
 
+h1::before {
+  width: 1px;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Public Sans";
+  src: url('../public/fonts/public_sans/PublicSans-VariableFont_wght.ttf');
+  font-weight: 1 999;
+}
+
+@font-face {
+  font-family: "Public Sans";
+  src: url('../public/fonts/public_sans/PublicSans-Italic-VariableFont_wght.ttf');
+  font-weight: 1 999;
+  font-style: italic;
+}

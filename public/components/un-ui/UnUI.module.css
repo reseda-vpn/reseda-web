@@ -91,6 +91,12 @@
     flex-direction: row;
 }
 
+@media screen and (min-width: 640px) {
+    .input {
+        width: 100%;
+    }
+}
+
 .input input {
     background-color: rgb(255, 255, 255);
     outline: none;
