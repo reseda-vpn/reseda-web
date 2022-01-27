@@ -100,59 +100,6 @@ export default function Home() {
 		}
 	};
 
-	const closeReveal: Variants = {
-		firstPageOn: {
-			position: 'fixed',
-			transform: 'translate(-50%, -50%)',
-			top: '50%',
-			left: '50%',
-			width: '100%',
-			transition: {
-				type: "tween",
-				duration: 0
-			}
-		},
-		firstPageOff: {
-			position: 'static',
-			transform: 'translate(0px, 0px)',
-			transition: {
-				type: "tween",
-				duration: 0
-			}
-		},
-		firstPageEnd: {
-			position: 'fixed',
-			transform: 'translate(-50%, -50%)',
-			top: '50%',
-			left: '50%',
-			width: '100%',
-			transition: {
-				type: "tween",
-				duration: 0
-			}
-		}
-	}
-
-	const scroll_position = useViewportScroll();
-	const controls = useAnimation();
-	const firstPageRef = useRef<HTMLDivElement>();
-
-	// useEffect(() => {
-	// 	const update = () => {
-	// 		if(firstPageRef?.current.getBoundingClientRect().top < 328 && firstPageRef?.current.getBoundingClientRect().bottom > 328) {
-	// 			controls.start('firstPageOn');
-	// 		}else if(firstPageRef?.current.getBoundingClientRect().bottom < 328){
-	// 			controls.start('firstPageEnd');
-	// 		}else {
-	// 			controls.start('firstPageOff');
-	// 		}
-	
-	// 		console.log(firstPageRef?.current.offsetTop);
-	// 	}
-	
-	// 	scroll_position.scrollY.onChange(update)
-	// }, [controls, scroll_position.scrollY]);
-	
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<Banner title={"💪 Support"} text={"Reseda is releasing support for MacOS and Linux"} url={""} />
@@ -208,8 +155,8 @@ export default function Home() {
 				</div>
 				
 				<div className="flex flex-col gap-52 pt-32 h-full relative">
-					<div style={{ height: 'auto', position: 'relative' }} ref={firstPageRef}>
-						<motion.div  initial="firstPageOff" animate={controls} variants={closeReveal} className="flex flex-col md:gap-16 gap-8 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative"> {/* border-l-2 border-violet-500 sm:border-0 */}
+					<div style={{ height: 'auto', position: 'relative' }}>
+						<motion.div className="flex flex-col md:gap-16 gap-8 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative"> {/* border-l-2 border-violet-500 sm:border-0 */}
 							<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col z-20">
 								<h2 className="text-violet-500">VPN</h2>
 								<motion.h1 className="m-0 font-bold text-2xl md:text-3xl" variants={cardVariants}>Reseda is Blazing Fast, and Incredibly Secure</motion.h1>
