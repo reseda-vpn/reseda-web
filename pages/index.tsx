@@ -1,5 +1,5 @@
 import styles from '@styles/Home.module.css'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '@components/header';
 import Banner from '@components/banner';
 import Button from '@components/un-ui/button';
@@ -9,7 +9,7 @@ import { Gradient } from '@components/gradient'
 import Image from 'next/image';
 import Footer from '@components/footer';
 import { Check } from 'react-feather';
-import { motion, Variants } from "framer-motion"
+import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
 import useMediaQuery from '@components/media_query';
 
 export default function Home() {
@@ -86,6 +86,59 @@ export default function Home() {
 			}
 		}
 	};
+
+	const closeReveal: Variants = {
+		firstPageOn: {
+			position: 'fixed',
+			transform: 'translate(-50%, -50%)',
+			top: '50%',
+			left: '50%',
+			width: '100%',
+			transition: {
+				type: "tween",
+				duration: 0
+			}
+		},
+		firstPageOff: {
+			position: 'static',
+			transform: 'translate(0px, 0px)',
+			transition: {
+				type: "tween",
+				duration: 0
+			}
+		},
+		firstPageEnd: {
+			position: 'fixed',
+			transform: 'translate(-50%, -50%)',
+			top: '50%',
+			left: '50%',
+			width: '100%',
+			transition: {
+				type: "tween",
+				duration: 0
+			}
+		}
+	}
+
+	const scroll_position = useViewportScroll();
+	const controls = useAnimation();
+	const firstPageRef = useRef<HTMLDivElement>();
+
+	// useEffect(() => {
+	// 	const update = () => {
+	// 		if(firstPageRef?.current.getBoundingClientRect().top < 328 && firstPageRef?.current.getBoundingClientRect().bottom > 328) {
+	// 			controls.start('firstPageOn');
+	// 		}else if(firstPageRef?.current.getBoundingClientRect().bottom < 328){
+	// 			controls.start('firstPageEnd');
+	// 		}else {
+	// 			controls.start('firstPageOff');
+	// 		}
+	
+	// 		console.log(firstPageRef?.current.offsetTop);
+	// 	}
+	
+	// 	scroll_position.scrollY.onChange(update)
+	// }, [controls, scroll_position.scrollY]);
 	
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -118,8 +171,8 @@ export default function Home() {
 											body: email,
 											method: 'POST'
 										})
-											.then(async (e) => { const j = await e.json(); ui_callback(j) })
-											.catch(async (e) => { const j = await e.json(); ui_callback(j) });
+											.then(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); })
+											.catch(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); });
 									}}>	
 								</Input>
 							</div>
@@ -141,42 +194,45 @@ export default function Home() {
 					<div className='gap-4'></div>
 				</div>
 				
-				<div className="flex flex-col gap-52 pt-32">
-					<div className="flex flex-col md:gap-16 gap-8 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative"> {/* border-l-2 border-violet-500 sm:border-0 */}
-						<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col z-20">
-							<h2 className="text-violet-500">VPN</h2>
-							<motion.h1 className="m-0 font-bold text-2xl md:text-3xl" variants={cardVariants}>Reseda is Blazing Fast, and Incredibly Secure</motion.h1>
-							<motion.p className="text-slate-600 text-base" variants={cardVariants}>Reseda is fast, easy to use and private. </motion.p>
-						</motion.div>
+				<div className="flex flex-col gap-52 pt-32 h-full relative">
+					<div style={{ height: 'auto', position: 'relative' }} ref={firstPageRef}>
+						<motion.div  initial="firstPageOff" animate={controls} variants={closeReveal} className="flex flex-col md:gap-16 gap-8 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative"> {/* border-l-2 border-violet-500 sm:border-0 */}
+							<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col z-20">
+								<h2 className="text-violet-500">VPN</h2>
+								<motion.h1 className="m-0 font-bold text-2xl md:text-3xl" variants={cardVariants}>Reseda is Blazing Fast, and Incredibly Secure</motion.h1>
+								<motion.p className="text-slate-600 text-base" variants={cardVariants}>Reseda is fast, easy to use and private. </motion.p>
+							</motion.div>
 
-						<div className="absolute -rotate-6 w-full h-full bg-violet-100 z-0 bg-opacity-80"></div>
-						
-						<div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 items-center justify-center z-20">
-							<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-								<Image src={"/assets/duotone/rocket_purple.svg"} alt={"1GB/s Speeds"} height={45} width={45} className={styles.dtsvg}/>
-								<h1 className="font-bold text-slate-800 sm:text-base text-lg">Blazing 1GB/s Speeds</h1> {/* before:h-full before:bg-violet-500 before:absolute relative before:-left-2 md:before:bg-white */}
-								<p className="text-sm text-slate-700 text-left">With real world speeds up to <strong className="text-violet-500 rounded-sm py-0 px-1" >1GB/s</strong>, Reseda can handle any task from fast-updates to streaming</p>
-							</div>
-
-							<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-								<Image src={"/assets/duotone/time_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
-								<h1 className="font-bold text-slate-800 sm:text-base text-lg">Incredibly low wait times</h1>
-								<p className="text-sm text-slate-900">Connect to in under <strong className="text-violet-500 rounded-sm py-0 px-1" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
-							</div>
+							<div className="absolute -rotate-6 w-full h-full bg-violet-100 z-0 bg-opacity-80"></div>
 							
-							<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-								<Image src={"/assets/duotone/no_location_purple.svg"} alt={"<2s Connection"} quality={100}  height={45} width={45} className={styles.dtsvg}/>
-								<h1 className="font-bold text-slate-800 sm:text-base text-lg">Keep your location private</h1>
-								<p className="text-sm text-slate-900 text-left">Reseda is secure, keeping your location <strong className="text-violet-500 rounded-sm py-0 px-1" >hidden</strong>. </p>
-							</div>
+							<div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 items-center justify-center z-20">
+								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+									<Image src={"/assets/duotone/rocket_purple.svg"} alt={"1GB/s Speeds"} height={45} width={45} className={styles.dtsvg}/>
+									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Blazing 1GB/s Speeds</h1> {/* before:h-full before:bg-violet-500 before:absolute relative before:-left-2 md:before:bg-white */}
+									<p className="text-sm text-slate-700 text-left">With real world speeds up to <strong className="text-violet-500 rounded-sm py-0 px-1" >1GB/s</strong>, Reseda can handle any task from fast-updates to streaming</p>
+								</div>
 
-							<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-								<Image src={"/assets/duotone/component_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
-								<h1 className="font-bold text-slate-800 sm:text-base text-lg">Component-Based Backend</h1>
-								<p className="text-sm text-slate-900 text-left">Reseda implements safeguards to ensure your connection remains open whilst the server is up.</p>
+								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+									<Image src={"/assets/duotone/time_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
+									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Incredibly low wait times</h1>
+									<p className="text-sm text-slate-900">Connect to in under <strong className="text-violet-500 rounded-sm py-0 px-1" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
+								</div>
+								
+								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+									<Image src={"/assets/duotone/no_location_purple.svg"} alt={"<2s Connection"} quality={100}  height={45} width={45} className={styles.dtsvg}/>
+									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Keep your location private</h1>
+									<p className="text-sm text-slate-900 text-left">With a strict, no-tracing policy, be comfortable in knowing Reseda is secure, keeping your location <strong className="text-violet-500 rounded-sm py-0 px-1" >hidden</strong>, and traffic <strong className="text-violet-500 rounded-sm py-0 px-1" >private</strong> </p>
+								</div>
+
+								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+									<Image src={"/assets/duotone/component_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
+									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Component-Based Backend</h1>
+									<p className="text-sm text-slate-900 text-left">Reseda implements safeguards to ensure your connection remains open whilst the server is up.</p>
+								</div>
 							</div>
-						</div>
+						</motion.div>
 					</div>
+					
 
 					<div className="flex flex-col gap-16 max-w-screen-lg w-full my-0 mx-auto py-2 px-4 relative">
 						<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col items-end z-20">

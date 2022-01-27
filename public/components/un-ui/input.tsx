@@ -16,7 +16,9 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
 
     const sendAway = () => {
         setSendingAway(true);
-        if(input_ref?.current) callback(input_ref.current.value, (val: { res: String }) => { 
+        if(input_ref?.current) callback(input_ref.current.value, (val: { res: String, err: any }) => { 
+            console.log(val?.err);
+
             setSuccess(val?.res);
         })
     }

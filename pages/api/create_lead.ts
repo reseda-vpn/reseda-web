@@ -14,11 +14,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
                 .json({ res: "success" })
         }else {
             res .status(400)
-                .json({ error: e.data, res: "exists" })
+                .json({ error: e, res: "exists" })
         }
     }).catch(e => {
         res .status(400)
-            .json({ error: e.data, res: "exists" })
+            .json({ error: e, res: "exists" })
     })
 }
   
