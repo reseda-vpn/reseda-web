@@ -12,6 +12,19 @@ import { Check } from 'react-feather';
 import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
 import useMediaQuery from '@components/media_query';
 
+export async function getServerSideProps() {
+	const metaTags = {
+		"og:title": `Fast. Affordable. Secure`,
+		"og:description": "Reseda is boasts up to 1GB/s real world throughput, affordably pricing, and incredible security",
+		"og:url": `https://reseda.app/`,
+	};
+	return {
+	  props: {
+		metaTags
+	  }
+	}
+  }
+
 export default function Home() {
 	const small = useMediaQuery(640);
 
