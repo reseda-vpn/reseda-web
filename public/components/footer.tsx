@@ -12,16 +12,16 @@ export const Footer = () => {
                         <div className="flex flex-1 flex-row gap-2 sm:gap-16 w-full justify-between md:justify-start">
                             <div className="flex flex-col">
                                 <p className="font-semibold text-base text-slate-100">Product</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Pricing</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Open-Source</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Server Locations</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Security Tools</p>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60" href="../#pricing">Pricing</a>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60" >Open-Source</a>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60">Server Locations</a>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60">Security Tools</a>
 
                             </div>
 
                             <div className="flex flex-col">
                                 <p className="font-semibold text-base text-slate-100">Pre-Release</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">No-Cost Plans</p>
+                                <p className="font-light text-slate-50 text-sm text-opacity-60">Supporter Tier</p>
                                 <p className="font-light text-slate-50 text-sm text-opacity-60">Security Testing</p>
                                 <p className="font-light text-slate-50 text-sm text-opacity-60">Speed Analysis</p>
                             </div>

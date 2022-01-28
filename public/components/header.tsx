@@ -11,7 +11,7 @@ export const Header = () => {
                     <div className="font-bold font-altSans text-lg sm:text-slate-800 text-slate-100">RESEDA</div>   
 
                     <div className="flex flex-row items-center gap-4">
-                        <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">VPN</Button>
+                        <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800" onClick={() => window.location.href = ""} >VPN</Button>
                         <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Pricing</Button>
                         <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Why Reseda?</Button>
                     </div> 
@@ -19,7 +19,7 @@ export const Header = () => {
 
                 <div className="flex flex-row items-center gap-4">
                     <Button icon={false}>Login</Button>
-                    <Button icon={false} style={{ background: "linear-gradient(-45deg, rgba(99,85,164,0.6) 0%, rgba(232,154,62,.6) 100%)", color: 'rgb(255,255,255)', fontWeight: '600', display: small ? "none" : "flex" }}>Get Reseda</Button>
+                    <Button icon={false} onClick={() => document.getElementById("waitlistInput").focus()} style={{ background: "linear-gradient(-45deg, rgba(99,85,164,0.6) 0%, rgba(232,154,62,.6) 100%)", color: 'rgb(255,255,255)', fontWeight: '600', display: small ? "none" : "flex" }}>Get Reseda</Button>
                 </div>
             </div>
         </div>

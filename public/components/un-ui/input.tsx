@@ -1,7 +1,7 @@
 import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import styles from './UnUI.module.css'
 
-import { ArrowRight, Check, CornerDownLeft, Heart, Key, Loader, Triangle } from 'react-feather'
+import { ArrowRight, Check, CornerDownLeft, Heart, Key, Loader, RefreshCw, Repeat, Triangle } from 'react-feather'
 
 interface Props { callback: Function, children?: React.ReactNode };
 declare type NativeAttrs = Omit<React.InputHTMLAttributes<any>, keyof Props>;
@@ -26,8 +26,8 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
     return isValidEmail && sendingAway ?
         success == "success" ?
         (
-            <div className={styles.input} style={{ backgroundColor: 'rgb(219 255 228)', color: 'green', boxShadow: 'rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 12%) 0px 1px 1px 0px, rgb(157 255 132 / 16%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(123 255 107 / 8%) 0px 2px 5px 0px' }}>
-                <p>Success!</p>
+            <div className={styles.input} style={{ backgroundColor: 'rgb(219 255 228)', color: 'green' }}>
+                <p>Keep an eye on your inbox!</p>
 
                 <Check size={20 } />
             </div>
@@ -36,10 +36,14 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
         success == "exists"
         ?
         (
-            <div className={styles.input} style={{ backgroundColor: '#e3d7fe', color: '#9063f6', boxShadow: 'rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 12%) 0px 1px 1px 0px, rgb(227 215 254) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(227 215 254) 0px 2px 5px 0px' }}>
+            <div className={styles.input} style={{ backgroundColor: '#e3d7fe', color: '#9063f6' }}>
                 <p>You are already on the waitlist!</p>
 
-                <Check size={18} />
+                <Repeat size={18} onClick={() => {
+                    setSuccess("nsy");
+                    setIsValidEmail(false);
+                    setSendingAway(false);
+                }}/>
             </div>
         ) 
         :
@@ -54,7 +58,6 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
         (
             <div className={styles.input}>
                 <input 
-                
                     onChange={() => {
                         if(input_ref?.current.value.trim().match(mail_format)) setIsValidEmail(true)
                         else setIsValidEmail(false);

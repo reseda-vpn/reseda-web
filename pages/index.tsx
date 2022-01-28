@@ -48,7 +48,7 @@ export default function Home() {
 				type: "spring",
 				bounce: 0.2,
 				duration: 0.5,
-				delay: 0.5
+				delay: 0.3
 			}
 		}
 	}
@@ -123,8 +123,9 @@ export default function Home() {
 						<div className="flex flex-col gap-2">
 							<h2 className="uppercase text-sm text-slate-100 font-semibold">Join the waitlist</h2>
 
-							<div className="flex flex-row align-center justify-center">
+							<div className="flex flex-row align-center justify-center" id="waitlist">
 								<Input  
+									id="waitlistInput"
 									placeholder='Email'
 									callback={(email, ui_callback) => {
 										fetch('/api/create_lead', {
@@ -154,7 +155,7 @@ export default function Home() {
 					<div className='gap-4'></div>
 				</div>
 				
-				<div className="flex flex-col gap-52 pt-32 h-full relative">
+				<div className="flex flex-col gap-52 pt-32 h-full relative" id="vpn">
 					<div style={{ height: 'auto', position: 'relative' }}>
 						<motion.div className="flex flex-col md:gap-16 gap-8 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative"> {/* border-l-2 border-violet-500 sm:border-0 */}
 							<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col z-20">
@@ -163,7 +164,7 @@ export default function Home() {
 								<motion.p className="text-slate-600 text-base" variants={cardVariants}>Reseda is fast, easy to use and private. </motion.p>
 							</motion.div>
 
-							<div className="absolute -rotate-6 w-full h-full bg-violet-100 z-0 bg-opacity-80"></div>
+							<div className="absolute w-full h-full bg-violet-50 z-0 bg-opacity-80 blur-3xl"></div>
 							
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 items-center justify-center z-20">
 								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
@@ -194,20 +195,22 @@ export default function Home() {
 					</div>
 					
 
-					<div className="flex flex-col gap-16 max-w-screen-lg w-full my-0 mx-auto py-2 px-4 relative">
-						<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col items-end z-20">
+					<div className="flex flex-col gap-16 max-w-screen-lg w-full my-0 mx-auto py-2 px-4 relative" id="pricing">
+						<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col items-start sm:items-end z-20">
 							<h2 className="text-orange-500">PRICING</h2>
-							<motion.h1 className="m-0 font-bold text-2xl md:text-3xl text-right" variants={cardVariants}>Transparent, Affordable Pricing</motion.h1>
-							<motion.p className="text-slate-600 text-base text-right" variants={cardVariants}>Pay as you go plans so you know what you{'\''}re paying, before you pay.</motion.p>
+							<motion.h1 className="m-0 font-bold text-2xl md:text-3xl sm:text-right" variants={cardVariants}>Transparent, Affordable Pricing</motion.h1>
+							<motion.p className="text-slate-600 text-base sm:text-right" variants={cardVariants}>Pay as you go plans so you know what you{'\''}re paying, before you pay.</motion.p>
 						</motion.div>
+
+						<div className="absolute w-full h-full bg-orange-50 z-0 bg-opacity-80 blur-3xl"></div>
 						
-						<div className="flex flex-row justify-around flex-wrap z-20">
-							<div className="rounded-lg h-64 w-64 flex flex-col justify-between gap-6">
+						<div className="flex flex-row flex-wrap z-20 justify-start sm:justify-around gap-8 sm:gap-0">
+							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
 								<div>
-									<h2 className="text-xl">Free</h2>
+									<h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
 									<h1 className="text-4xl font-semibold">$0.00 <i className="text-base not-italic text-orange-300">/month</i></h1>
 
-									<p className="text-sm text-slate-400">No Credit Card Required</p>
+									<p className="text-sm text-slate-400">Billing Information Required</p>
 								</div>
 
 								<div className="flex flex-col flex-1">	
@@ -226,9 +229,9 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="rounded-lg h-64 w-64 flex flex-col justify-between gap-6">
+							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
 								<div>
-									<h2 className="text-xl">Reseda</h2>
+									<h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
 									<h1 className="text-4xl font-semibold relative">$2.00 <i className="text-base not-italic text-orange-400 no-underline">/100GB</i></h1> {/* after:content-['*'] after:opacity-50 */}
 
 									<p className="text-sm text-slate-400">Costs 2.90/mo @ 150GB used</p>
@@ -254,7 +257,7 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className="rounded-lg h-64 w-64 flex flex-col justify-between gap-6">
+							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
 								<div>
 									<h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
 									<h1 className="text-4xl font-semibold relative ">$2.40 <i className="text-base not-italic text-orange-500">/100GB</i></h1> {/* after:content-['*'] after:opacity-50 */}
@@ -281,6 +284,71 @@ export default function Home() {
 									</div>
 								</div>
 							</div>				
+						</div>
+					</div>
+
+					<div className="flex flex-col gap-16 max-w-screen-lg w-full my-0 mx-auto py-2 px-4 relative">
+						<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col  z-20">
+							<h2 className="text-transparent bg-gradient-to-tr bg-clip-text font-semibold">PRE-RELEASE BONUSES</h2>
+							<motion.h1 className="m-0 font-bold text-2xl md:text-3xl" variants={cardVariants}>Why Join Reseda in Pre-Release?</motion.h1>
+							<motion.p className="text-slate-600 text-base" variants={cardVariants}>Users that join Reseda during Pre-Release receive some awesome bonuses.</motion.p>
+						</motion.div>
+
+						{
+							//@ts-expect-error
+							<div className="absolute w-full h-full bg-gradient-to-tr z-0 bg-opacity-10 blur-3xl" style={{ ["--tw-gradient-stops"]: 'rgba(156, 138, 236, 0.2) 0%, rgba(250, 193, 128, 0.2) 100%' }}></div>
+						}
+						
+						<div className="flex flex-col sm:flex-row justify-between flex-wrap z-20 gap-4 items-start">
+							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6 relative text-xl "> {/* before:content-['1.'] before:absolute before:-top-5 before:-left-5 before:font-extrabold before:bg-gradient-to-tr before:text-transparent before:text-sm before:flex before:items-center before:justify-center before:rounded-md before:text-slate-100 before:h-5 before:w-5 */}
+								<div>
+									<h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
+									<h1 className="text-4xl font-semibold">$0.00 <i className="text-base not-italic text-transparent bg-gradient-to-tr bg-clip-text">/month</i></h1>
+
+									<p className="text-sm text-slate-400">Tier dissolved upon release, holders gain 25% global discount</p>
+								</div>
+
+								<div className="flex flex-col flex-1">	
+									<div className="flex flex-row gap-2 items-center">
+										<div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
+										<div className="text-base text-slate-700">50GB Free</div>
+									</div>
+									<div className="flex flex-row gap-2 items-center ">
+										<div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
+										<div className="text-base text-slate-700">Up to <strong className="bg-gradient-to-tr text-transparent bg-clip-text rounded-sm py-0 px-1" >1GB/s</strong> Transfer</div>
+									</div>
+									<div className="flex flex-row gap-2 items-center ">
+										<div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
+										<div className="text-base text-slate-700">Unlimited Devices <i className="not-italic text-sm text-slate-400">(concurrent)</i> </div>
+									</div>
+								</div>
+							</div>
+
+							<div className="flex flex-col flex-1 max-w-xl text-justify gap-4">
+								<p className="text-slate-600">Joining in pre-release gives you access to the reseda <strong className="bg-gradient-to-tr text-transparent bg-clip-text rounded-sm py-0 px-1" >supporter</strong> tier. Whilst in development, as a supporter - you can reap 50GB free data, and an uncapped data transfer rate. Supporting as many devices as you want at the same time. All for the low cost of $0.00. <i className="text-slate-400 not-italic text-sm">*Requires Waitlist Acceptance (Multi-Accounts not permitted)</i></p>
+
+								<Button onClick={() => {
+									document.getElementById("waitlistInput").focus();
+								}}>
+									Get Reseda
+								</Button>
+
+								{/* <div className="hidden md:flex flex-col">
+									<h2 className="uppercase text-sm text-slate-700 font-semibold">Join the waitlist</h2>
+
+									<Input  
+										placeholder='Email'
+										callback={(email, ui_callback) => {
+											fetch('/api/create_lead', {
+												body: email,
+												method: 'POST'
+											})
+												.then(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); })
+												.catch(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); });
+										}}>	
+									</Input>
+								</div> */}
+							</div>
 						</div>
 					</div>
 				</div>
