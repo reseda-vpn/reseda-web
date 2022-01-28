@@ -1,26 +1,37 @@
 import { useEffect, useRef, useState } from "react";
 import styles from './UnUI.module.css'
 
-import { ArrowRight } from 'react-feather'
+import { ArrowRight, Loader } from 'react-feather'
 
-interface Props { icon?: any, inline?: boolean, children?: React.ReactNode };
+interface Props { icon?: any, inline?: boolean, children?: React.ReactNode, loaderOnly?: boolean };
 declare type NativeAttrs = Omit<React.LinkHTMLAttributes<any>, keyof Props>;
 
-const Button: React.FC<Props & NativeAttrs> = ({ icon, inline, children, ...args }) => {
+const Button: React.FC<Props & NativeAttrs> = ({ icon, inline, children, className, loaderOnly, ...args }) => {
     return (
         <a 
-            className={`${ inline ? styles.inlineButton : "flex items-center justify-center relative h-8 px-3 py-0 rounded-md font-sans hover:cursor-pointer outline-none gap-2 text-sm text-slate-100 sm:text-slate-600" }`}
-            {...args}>
+            {...args}
+            className={`${ inline ? styles.inlineButton : "flex items-center justify-center relative h-8 px-3 py-0 rounded-md font-sans hover:cursor-pointer outline-none gap-2 text-sm "+className }`}
+            >
             {
-                children ?? children
+                loaderOnly ? 
+                <>
+                    <Loader size={16} className={styles.spinning}/>
+                </>
+                :
+                <>
+                    {
+                    children ?? children
+                    }
+        
+                    {
+                        icon == false ?
+                            <></>
+                        : 
+                            icon ? icon : <ArrowRight size={16} />
+                    }
+                </>
             }
-
-            {
-                icon == false ?
-                    <></>
-                : 
-                    icon ? icon : <ArrowRight size={16} />
-            }
+            
         </a>
     )
 }

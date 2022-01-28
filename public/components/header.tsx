@@ -1,8 +1,10 @@
+import { useRouter } from 'next/router';
 import useMediaQuery from './media_query';
 import Button from './un-ui/button';
 
 export const Header = () => {
 	const small = useMediaQuery(640);
+    const router = useRouter();
 
     return (
         <div className="flex flex-row z-50 sm:bg-white bg-opacity-80 sm:backdrop-blur-md">
@@ -18,7 +20,7 @@ export const Header = () => {
                 </div>
 
                 <div className="flex flex-row items-center gap-4">
-                    <Button icon={false}>Login</Button>
+                    <Button icon={false} onClick={() => router.push('./login')}>Login</Button>
                     <Button icon={false} onClick={() => document.getElementById("waitlistInput").focus()} style={{ background: "linear-gradient(-45deg, rgba(99,85,164,0.6) 0%, rgba(232,154,62,.6) 100%)", color: 'rgb(255,255,255)', fontWeight: '600', display: small ? "none" : "flex" }}>Get Reseda</Button>
                 </div>
             </div>

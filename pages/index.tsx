@@ -11,6 +11,7 @@ import Footer from '@components/footer';
 import { Check } from 'react-feather';
 import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
 import useMediaQuery from '@components/media_query';
+import { cardVariants, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
 
 export async function getServerSideProps() {
 	const metaTags = {
@@ -38,67 +39,7 @@ export default function Home() {
           gradient.initGradient('#gradient-canvas')
 	}, []);
 
-	const subTitleControl: Variants = {
-		offscreen: { opacity: 0, y: 20, },
-		onscreen: {
-			opacity: 1,
-			y: 0,
-			transition: {
-				staggerChildren: 0.5,
-				type: "spring",
-				bounce: 0.2,
-				duration: 0.5,
-				delay: 0.3
-			}
-		}
-	}
-
-	const titleControl: Variants = {
-		offscreen: { opacity: 0, y: 20, },
-		onscreen: {
-			opacity: 1,
-			y: 0,
-			transition: {
-				staggerChildren: 0.6,
-				type: "tween",
-				ease: "easeOut",
-				duration: 0.4,
-				delay: 0.2
-			}
-		}
-	}
-
-	const titleVariants: Variants = {
-		offscreen: {
-			opacity: 0,
-			y: 20
-		},
-		onscreen: {
-			opacity: 1,
-			y: 0,
-			transition: {
-				type: "tween",
-				ease: "easeOut",
-				duration: 0.4,
-			}
-		}
-	}
-
-	const cardVariants: Variants = {
-		offscreen: {
-		  	opacity: 0,
-			y: 20
-		},
-		onscreen: {
-		 	opacity: 1,
-			y: 0,
-			transition: {
-				type: "tween",
-				ease: "easeOut",
-				duration: 0.4,
-			}
-		}
-	};
+	
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -107,7 +48,7 @@ export default function Home() {
 			<div className="flex-col flex font-sans min-h-screen w-screen relative">
 				<Header />
 
-				<canvas id="gradient-canvas" className="md:top-0" data-transition-in></canvas>
+				<canvas id="gradient-canvas" className="md:top-0" style={{ height: '800px' }} data-transition-in></canvas>
 
 				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : '800px' }}>
 					<div className="h-fit flex flex-col gap-16 md:gap-8 items-start">
@@ -299,7 +240,7 @@ export default function Home() {
 							<div className="absolute w-full h-full bg-gradient-to-tr z-0 bg-opacity-10 blur-3xl" style={{ ["--tw-gradient-stops"]: 'rgba(156, 138, 236, 0.2) 0%, rgba(250, 193, 128, 0.2) 100%' }}></div>
 						}
 						
-						<div className="flex flex-col sm:flex-row justify-between flex-wrap z-20 gap-4 items-start">
+						<div className="flex flex-col sm:flex-row justify-between flex-wrap z-20 gap-4 items-start sm:items-center">
 							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6 relative text-xl "> {/* before:content-['1.'] before:absolute before:-top-5 before:-left-5 before:font-extrabold before:bg-gradient-to-tr before:text-transparent before:text-sm before:flex before:items-center before:justify-center before:rounded-md before:text-slate-100 before:h-5 before:w-5 */}
 								<div>
 									<h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
@@ -333,7 +274,7 @@ export default function Home() {
 									Get Reseda
 								</Button>
 
-								{/* <div className="hidden md:flex flex-col">
+								{/* <div className="hidden md:flex flex-col gap-4">
 									<h2 className="uppercase text-sm text-slate-700 font-semibold">Join the waitlist</h2>
 
 									<Input  

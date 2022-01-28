@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@lancero/node": "^0.0.14",
+    "@supabase/supabase-js": "^1.29.4",
     "@types/node": "^17.0.10",
     "@types/react": "^17.0.38",
     "framer-motion": "^6.2.3",
