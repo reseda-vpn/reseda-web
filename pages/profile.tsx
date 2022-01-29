@@ -59,19 +59,19 @@ export default function Home() {
                                         )
                                     case "usage":
                                         return (
-                                            <div>
-
+                                            <div className="flex flex-col items-start">
+                                                <h1 className="font-semibold text-lg">Usage</h1>
                                             </div>
                                         )
                                     case "billing":
                                         return (
-                                            <div>
-
+                                            <div className="flex flex-col items-start">
+                                                <h1 className="font-semibold text-lg">Billing</h1>
                                             </div>
                                         )
                                     default:
                                         return (
-                                            <div>
+                                            <div className="flex flex-col items-center justify-center">
                                                 Something went wrong!
                                             </div>
                                         )
