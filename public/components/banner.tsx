@@ -3,8 +3,10 @@ import styles from '@styles/Home.module.css'
 import Button from './un-ui/button';
 import { X } from 'react-feather';
 import { Router, useRouter } from 'next/dist/client/router';
+import useMediaQuery from './media_query';
 
 const Banner: React.FC<{ title: string, text: string, url: string }> = ({ title, text, url }) =>  {
+	const small = useMediaQuery(640);
     const [ visible, setVisible ] = useState(true);
     const router = useRouter();
 
@@ -15,14 +17,18 @@ const Banner: React.FC<{ title: string, text: string, url: string }> = ({ title,
                 <p className="text-sm my-0 opacity-80 hidden sm:flex">—</p>
                 <p className="text-sm my-0 opacity-80">{text}</p>
                 <span className="h-3 text-white bg-white border-none opacity-60 ml-2 hidden sm:flex" style={{ width: '1px' }}></span>
-                <Button 
-                    className="text-sm mx-2 hidden sm:flex flex-row items-center "
-                    inline={true}
-                    onClick={() => {
-                        router.push(url);
-                    }}>
-                        Learn More
-                </Button>
+                {
+                    small ?
+                        <></>
+                    :
+                        <Button 
+                            className="text-sm mx-2 hidden sm:flex flex-row items-center"
+                            inline={true}
+                            onClick={() => {
+                                router.push(url);
+                            }}>Learn More
+                        </Button>
+                }
             </div>
             
             <X onClick={() => setVisible(false)} opacity={0.6} size={18}/>

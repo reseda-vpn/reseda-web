@@ -39,8 +39,6 @@ export default function Home() {
           gradient.initGradient('#gradient-canvas')
 	}, []);
 
-	
-
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<Banner title={"💪 Support"} text={"Reseda is releasing support for MacOS and Linux"} url={""} />
