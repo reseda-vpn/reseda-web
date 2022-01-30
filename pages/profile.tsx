@@ -5,7 +5,8 @@ import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
 import Header from '@components/header';
 import { Activity, Check, CreditCard, Settings, User as UserIcon } from 'react-feather';
-import { PrismaClient } from '@prisma/client';
+import { GetServerSideProps, GetStaticProps } from 'next';
+import prisma from '../lib/prisma'
 
 export const getServerSideProps = async ({ req, res }) => {
     const { user } = await supabase.auth.api.getUserByCookie(req);
@@ -17,54 +18,30 @@ export const getServerSideProps = async ({ req, res }) => {
     //     return e;
     // });
 
-    const prisma = new PrismaClient()
-    
-    await prisma.user.create({
-        data: {
-          name: 'Alice',
-          email: 'alice@prisma.io',
-          posts: {
-            create: { title: 'Hello World' },
-          },
-          profile: {
-            create: { bio: 'I like turtles' },
-          },
-        },
-      })
-    
-    const allUsers = await prisma.user.findMany({
-        include: {
-            posts: true,
-            profile: true,
-        },
+    const output = await fetch(`${process.env.URL}/api/user/1`, {
+        method: "GET"
     });
-
-    console.dir(allUsers, { depth: null })
+    const json = await output.json();
 
     return {
         props: {
             user,
-            allUsers
-            // profile: {
-            //     data, error
-            // }
+            prisma: json,
         }
     };
 }
 
-export default function Home({ user, posts }) {
+export default function Home({ user, prisma }) {
     const [ userInformation, setUserInformation ] = useState(null);
     const [ menu, setMenu ] = useState("account");
     const router = useRouter();
 
-    console.log(posts);
+    console.log(prisma);
 
 	useEffect(() => {
         if(!user) {
             router.push('./login');
         }
-
-        console.log(user);
 
         // Create your instance
         const gradient = new Gradient()
@@ -74,21 +51,21 @@ export default function Home({ user, posts }) {
         //@ts-expect-error
         gradient.initGradient('#gradient-canvas');
 
-        const a = async () => {
-            const { data, error } = await supabase.from('users').select("*").match({ id: user.id });
-            if(!error) setUserInformation(data[0]);
+        // const a = async () => {
+        //     const { data, error } = await supabase.from('users').select("*").match({ id: user.id });
+        //     if(!error) setUserInformation(data[0]);
 
-            console.log(data);
-        };
+        //     console.log(data);
+        // };
 
-        supabase.auth.onAuthStateChange((state) => {
-            if(state == "SIGNED_OUT") {
-                router.push('./login');
-            }
-        });
+        // supabase.auth.onAuthStateChange((state) => {
+        //     if(state == "SIGNED_OUT") {
+        //         router.push('./login');
+        //     }
+        // });
 
-        a();
-	}, [router, user.id]);
+        // if(user) a();    
+	}, [router, user]);
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}

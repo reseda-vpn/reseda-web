@@ -12,6 +12,7 @@ import { Check } from 'react-feather';
 import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
 import useMediaQuery from '@components/media_query';
 import { cardVariants, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
+import Waitlist from '@components/waitlist';
 
 export async function getServerSideProps() {
 	const metaTags = {
@@ -62,20 +63,7 @@ export default function Home() {
 						<div className="flex flex-col gap-2">
 							<h2 className="uppercase text-sm text-slate-100 font-semibold">Join the waitlist</h2>
 
-							<div className="flex flex-row align-center justify-center" id="waitlist">
-								<Input  
-									id="waitlistInput"
-									placeholder='Email'
-									callback={(email, ui_callback) => {
-										fetch('/api/create_lead', {
-											body: email,
-											method: 'POST'
-										})
-											.then(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); })
-											.catch(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); });
-									}}>	
-								</Input>
-							</div>
+							<Waitlist />
 						</div>
 					</div>
 
