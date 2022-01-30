@@ -2,19 +2,20 @@
 import '../styles/globals.css'
 import type { AppProps /*, AppContext */ } from 'next/app'
 import Head from 'next/head'
+import { SessionProvider } from "next-auth/react"
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps: { session, metaTags, ...pageProps } }: AppProps) {
   return (
-    <>
+    <SessionProvider session={session}>
       <Head>
-        {pageProps.metaTags &&
-          Object.entries(pageProps.metaTags).map((entry) => (
+        {metaTags &&
+          Object.entries(metaTags).map((entry) => (
             <meta key={entry[0] + entry[1]} property={entry[0]} content={entry[1][0]} />
           ))}
         <title>Reseda</title>
       </Head>
       <Component {...pageProps} />
-    </>
+      </SessionProvider>
   )
 }
 
