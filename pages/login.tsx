@@ -37,7 +37,7 @@ export default function Home() {
 
         supabase.auth.signIn({
             ...authInformation
-        }).then(res => {                                                
+        }).then(res => {         
             if(res.error) {
                 setAuthFailure(res.error.message);
                 setAuthSuccess("login_failure");
@@ -46,7 +46,18 @@ export default function Home() {
             else {
                 setAwaitingReply(false);
                 setAuthSuccess("logged_in");
-                router.push('/profile');
+                fetch('/api/set_auth_cookie', {
+                    method: "POST",
+                    body: JSON.stringify({
+                        event: res.user ? 'SIGNED_IN' : 'SIGNED_OUT',
+                        session: supabase.auth.session()
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(e => {
+                    router.push('/profile');
+                });
             }
         })
     }

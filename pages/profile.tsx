@@ -6,8 +6,28 @@ import { useRouter } from 'next/router';
 import Header from '@components/header';
 import { Activity, CreditCard, Settings, User as UserIcon } from 'react-feather';
 
-export default function Home() {
-    const [ user, setUser ] = useState<User>(null);
+export const getServerSideProps = async ({ req, res }) => {
+    const { user } = await supabase.auth.api.getUserByCookie(req);
+  
+    if (!user) return { props: {}, redirect: { destination: '/login', permanent: false } }
+
+    // const { data, error } = await supabase.from('users').select("*").match({ id: "b78e7286-c7ad-4b7d-b427-28f541894fbd" }).then(e => {
+    //     console.log(e);
+    //     return e;
+    // });
+
+    return {
+        props: {
+            user,
+            // profile: {
+            //     data, error
+            // }
+        }
+    };
+}
+
+export default function Home({ user, profile }) {
+    const [ userInformation, setUserInformation ] = useState(null);
     const [ menu, setMenu ] = useState("account");
     const router = useRouter();
 
@@ -20,11 +40,15 @@ export default function Home() {
         //@ts-expect-error
         gradient.initGradient('#gradient-canvas');
 
-        const auth_usr = supabase.auth.user();
-        
-        if(auth_usr.aud == "authenticated") setUser(auth_usr);
-        else router.push('./login');
-	}, [router]);
+        const a = async () => {
+            const { data, error } = await supabase.from('users').select("*").match({ id: user.id });
+            if(!error) setUserInformation(data[0]);
+
+            console.log(data);
+        };
+
+        a();
+	}, [router, user.id]);
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -34,15 +58,17 @@ export default function Home() {
                 <canvas id="gradient-canvas" className="md:top-0" style={{ height: '250px' }} data-transition-in></canvas>
 
                 <div className="flex flex-row py-2 px-4 max-w-screen-lg w-full my-0 mx-auto z-50 h-full flex-1 gap-8" style={{ marginTop: '250px', marginBottom: '50px' }}>
-                    <div className="flex flex-col justify-between">
-                        <div>
+                    <div className="flex flex-col justify-between w-32">
+                        <div className="flex flex-col gap-2">
                             {/* <p className="font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Account</p> */}
-                            <p className="flex flex-row items-center gap-2 px-2 py-1" onClick={() => setMenu("account")} >{ <UserIcon size={16}/>  } Account</p>
-                            <p className="flex flex-row items-center gap-2 px-2 py-1" onClick={() => setMenu("usage")}>{ <Activity size={16}/>  } Usage</p>
-                            <p className="flex flex-row items-center gap-2 px-2 py-1" onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "account" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("account")} >{ <UserIcon size={16}/>  } Account</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "usage" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("usage")}>{ <Activity size={16}/>  } Usage</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "billing" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
                         </div>
 
-                        <p className="flex flex-row items-center gap-2 px-2 py-1 self-end" >{ <Settings size={16}/>  } Settings</p>
+                        <div className="flex flex-col gap-2">
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "settings" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("settings")}>{ <Settings size={16}/>  } Settings</p>
+                        </div>
                     </div>
 
                     <div>
@@ -52,8 +78,8 @@ export default function Home() {
                                     case "account":
                                         return (
                                             <div className="flex flex-col items-start">
-                                                <h1 className="font-semibold text-lg"></h1>
-                                                <p>{ user?.email }</p>
+                                                <h1 className="font-bold text-xl ">{userInformation?.username}</h1>
+                                                <p className="text-slate-700">{ user?.email }</p>
                                                 
                                             </div>
                                         )
