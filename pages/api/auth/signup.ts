@@ -4,7 +4,7 @@ import prisma from "@root/lib/prisma";
 async function handler(req, res) {
     if (req.method !== 'POST') return;
 
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
 
     if (
         !email ||
@@ -30,7 +30,9 @@ async function handler(req, res) {
 
     await prisma.user.create({
         data: {
-            email, password: hashedPassword,
+            email, 
+            password: hashedPassword,
+            name, 
             accounts: {
                 create: {
                     type: "credentials",

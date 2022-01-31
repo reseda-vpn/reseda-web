@@ -9,6 +9,9 @@ import { verifyPassword } from "@root/lib/crpyt";
 export default NextAuth({
 	// Configure one or more authentication providers
 	adapter: PrismaAdapter(prisma),
+	session: {
+		strategy: 'jwt',
+	},
 	secret: process.env.SECRET,
 	providers: [
 		GithubProvider({
@@ -18,13 +21,13 @@ export default NextAuth({
 		CredentialsProvider({
 			name: "credentials",
 			credentials: {
-				username: { label: "email", type: "email", placeholder: "jonnydoe@test.com" },
-				password: { label: "password", type: "password" }
+				email: { label: "email", type: "email" },
+				password: { label: "password", type: "password" },
 			},
 			async authorize(credentials) {
 				const possibleUser = await prisma.user.findUnique({
 					where: {
-						email: credentials.username
+						email: credentials.email
 					},
 					select: {
 						password: true
@@ -41,31 +44,14 @@ export default NextAuth({
 
 				const user = await prisma.user.findUnique({
 					where: {
-						email: credentials.username
+						email: credentials.email
 					}
 				});
 
 				return user;
 			}
 		}),
-		// EmailProvider({
-		//   server: process.env.EMAIL_SERVER,
-		//   from: process.env.EMAIL_FROM,
-		//   sendVerificationRequest({
-		//     identifier,
-		//     url,
-		//     provider: { server, from },
-		//   }) {
-		//     sendVerif({ 
-		//       identifier, 
-		//       url, 
-		//       provider: { 
-		//         server, 
-		//         from 
-		//       } 
-		//     })
-		//   },
-		// }),
+
   	],
   	pages: {
     	signIn: '/login',
@@ -153,3 +139,22 @@ function html({ url, host, email }: Record<"url" | "host" | "email", string>) {
 function text({ url, host }: Record<"url" | "host", string>) {
   return `Sign in to ${host}\n${url}\n\n`
 }
+
+		// EmailProvider({
+		//   server: process.env.EMAIL_SERVER,
+		//   from: process.env.EMAIL_FROM,
+		//   sendVerificationRequest({
+		//     identifier,
+		//     url,
+		//     provider: { server, from },
+		//   }) {
+		//     sendVerif({ 
+		//       identifier, 
+		//       url, 
+		//       provider: { 
+		//         server, 
+		//         from 
+		//       } 
+		//     })
+		//   },
+		// }),

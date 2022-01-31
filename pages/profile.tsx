@@ -11,7 +11,6 @@ import { prisma } from '@prisma/client';
 export const getServerSideProps = async ({ req, res }) => {
 
     const session = await getSession({ req });
-    console.log(session);
     // if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
 
     return {
@@ -32,8 +31,6 @@ export default function Home(cont) {
         // Create your instance
         const gradient = new Gradient()
 
-        console.log(session)
-
         // if(session.status !== "authenticated") router.push('./login');
 
         //@ts-expect-error
@@ -44,7 +41,6 @@ export default function Home(cont) {
             const usr = await fetch(`/api/user/${session?.data?.user?.email}`)
             const data = await usr.json();
 
-            console.log(data);
             setUserInformation(data.accounts[0]);
         }
 

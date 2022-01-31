@@ -16,7 +16,8 @@ import { filter } from "lodash";
 export default function Home({ providers }) {
     const [ authInformation, setAuthInformation ] = useState({
         email: "",
-        password: ""
+        password: "",
+        name: ""
     });
 
     const router = useRouter();
@@ -53,15 +54,33 @@ export default function Home({ providers }) {
             });
             
             const data = await response.json();
-            setAwaitingReply(false);
 
             if (!response.ok) {
+                setAwaitingReply(false);
                 throw new Error(data.message || 'Something went wrong!');
             }
 
             if(response.status == 201) {
-                router.push('./profile');
+                const { ok, error } = await signInAuth("credentials", {
+                    email: authInformation.email,
+                    password: authInformation.password,
+                    redirect: false,
+                });
+    
+                setAwaitingReply(false);
+    
+                if(error) {
+                    console.log(error);
+                    setAuthSuccess("login_failure");
+                    setAuthFailure("Account does not exist, try signing up!");
+                }else {
+                    setAuthSuccess("logged_in");
+                    setAuthFailure("");
+    
+                    router.replace('./profile');
+                }
             }else {
+                setAwaitingReply(false);
                 setAuthSuccess("login_failure");
                 setAuthFailure(data?.message ?? "Authentication Failure");
             }
@@ -83,6 +102,20 @@ export default function Home({ providers }) {
                             </motion.div>
 
                             <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-sm uppercase text-slate-500">Name</p>
+                                    <InputField
+                                        placeholder='Username'
+                                        type="text"
+                                        callback={(name) => {
+                                            setAuthInformation({
+                                                ...authInformation,
+                                                name
+                                            })
+                                        }}
+                                    />
+                                </div>
+
                                 <div className="flex flex-col gap-1">
                                     <p className="text-sm uppercase text-slate-500">Email</p>
                                     <InputField

@@ -47,7 +47,7 @@ export default function Home({ providers }) {
         else {
             // >> First Hash password for comparison, don't send un-hashed password!.
             const { ok, error } = await signInAuth("credentials", {
-                username: authInformation.email,
+                email: authInformation.email,
                 password: authInformation.password,
                 redirect: false,
             });
@@ -55,13 +55,14 @@ export default function Home({ providers }) {
             setAwaitingReply(false);
 
             if(error) {
+                console.log(error);
                 setAuthSuccess("login_failure");
                 setAuthFailure("Account does not exist, try signing up!");
             }else {
                 setAuthSuccess("logged_in");
                 setAuthFailure("");
 
-                window.location.href = './profile'
+                router.replace('./profile');
             }
         }
     }
