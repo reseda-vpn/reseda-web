@@ -3,10 +3,11 @@ import { Gradient } from '@components/gradient'
 import { supabase } from '@root/client';
 import { useRouter } from 'next/router';
 import Header from '@components/header';
-import { Activity, Check, CreditCard, Settings, User as UserIcon } from 'react-feather';
+import { Activity, ArrowUpRight, Check, CreditCard, Download, Settings, User as UserIcon } from 'react-feather';
 
 import { useSession, getSession, signIn, signOut } from "next-auth/react"
 import { prisma } from '@prisma/client';
+import Button from '@components/un-ui/button';
 
 export const getServerSideProps = async ({ req, res }) => {
 
@@ -24,6 +25,7 @@ export default function Home(cont) {
     const session = useSession();
 
     const [ userInformation, setUserInformation ] = useState(null);
+    const [ eligibleForDownload, setEligibleForDownload ] = useState(false);
     const [ menu, setMenu ] = useState("account");
     const router = useRouter();
 
@@ -42,6 +44,11 @@ export default function Home(cont) {
             const data = await usr.json();
 
             setUserInformation(data.accounts[0]);
+
+            const eligible = await fetch(`/api/lead/email/${session?.data?.user?.email}`);
+            const eligibility = await eligible.json();
+
+            console.log(eligibility);
         }
 
         if(session.status == "authenticated") as();    
@@ -91,6 +98,32 @@ export default function Home(cont) {
                                                         }}>Log Out</a>
                                                     </div>
                                                 </div>
+                                                
+                                                {
+                                                    eligibleForDownload ? 
+                                                    <div className="flex flex-row gap-4 px-4 py-2 bg-green-200 w-full rounded-xl items-center">
+                                                        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-green-500"><Check size={20} color="#fff" /></div>
+
+                                                        <div className="flex flex-col flex-1">
+                                                            <h1 className="font-semibold text-green-900">You are eligible for Reseda Pre-Release</h1>
+                                                            <p className="text-green-700">You have been selected to join us in pre-release.</p> 
+                                                        </div>
+
+                                                        <Button className="" icon={<ArrowUpRight size={16}/>}>Download</Button>
+                                                    </div>
+                                                    :
+                                                    <div className="flex flex-row gap-4 px-4 py-2 bg-orange-200 w-full rounded-xl items-center">
+                                                        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-orange-400"><Check size={20} color="#fff" /></div>
+
+                                                        <div className="flex flex-col flex-1">
+                                                            <h1 className="font-semibold text-orange-900">Verification Pending</h1>
+                                                            <p className="text-orange-900">Your account is awaiting approval, average approval time is 24h.</p> 
+                                                        </div>
+
+                                                        {/* <Button className="" icon={<ArrowUpRight size={16}/>}>Download</Button> */}
+                                                    </div>
+                                                }
+                                                
                                                 
                                                 <div className="flex flex-col gap-2 bg-slate-100 rounded-lg px-4 py-2 w-full">
                                                     <p className="text-sm uppercase text-slate-400">Plan</p>

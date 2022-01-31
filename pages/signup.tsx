@@ -41,8 +41,6 @@ export default function Home({ providers }) {
 
         if(provider) 
             signInAuth(provider).then(e => {
-                console.log(e);
-                alert(e);
             });
         else {
             const response = await fetch('/api/auth/signup', {

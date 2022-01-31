@@ -17,6 +17,8 @@ model Lead {
   email     String   @unique
   id        String   @id @default(uuid())
   signupAt  DateTime @updatedAt @default(now())
+  claimable Boolean  @default(false)
+  claimed   Boolean  @default(false)
 }
 
 model Server {
