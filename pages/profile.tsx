@@ -5,43 +5,40 @@ import { useRouter } from 'next/router';
 import Header from '@components/header';
 import { Activity, Check, CreditCard, Settings, User as UserIcon } from 'react-feather';
 
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, getSession, signIn, signOut } from "next-auth/react"
+import { prisma } from '@prisma/client';
 
 export const getServerSideProps = async ({ req, res }) => {
     // const { user } = await supabase.auth.api.getUserByCookie(req);
-    // if (!user) return { props: {}, redirect: { destination: '/login', permanent: false } }
+    const session = await getSession({ req });
+    if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
 
     // const { data, error } = await supabase.from('users').select("*").match({ id: "b78e7286-c7ad-4b7d-b427-28f541894fbd" }).then(e => {
     //     console.log(e);
     //     return e;
     // });
 
-    // const output = await fetch(`${process.env.URL}/api/user/1`, {
-    //     method: "GET"
-    // });
-    // const json = await output.json();
+    // const ret = await fetch(`${process.env.NEXTAUTH_URL}/api/user/${session.user.email}`)
+    // const data = await ret.json();
+
+    // const data = await fetch(`${process.env.NEXTAUTH_URL}/api/user/${session.user.email}`)
+    // const raw = await data.json();
 
     return {
         props: {
-            user: {},
-            prisma: {},
-        }
-    };
+            session
+        },
+    }
 }
 
-export default function Home({ user, prisma }) {
+export default function Home(cont) {
     const session = useSession();
+
     const [ userInformation, setUserInformation ] = useState(null);
     const [ menu, setMenu ] = useState("account");
     const router = useRouter();
 
-    console.log(session);
-
 	useEffect(() => {
-        // if(!user) {
-        //     router.push('./login');
-        // }
-
         // Create your instance
         const gradient = new Gradient()
 
@@ -57,14 +54,22 @@ export default function Home({ user, prisma }) {
         //     console.log(data);
         // };
 
+        const as = async () => {
+            const usr = await fetch(`/api/user/${session.data.user.email}`)
+            const data = await usr.json();
+
+            console.log(data);
+            setUserInformation(data.accounts[0]);
+        }
+
         // supabase.auth.onAuthStateChange((state) => {
         //     if(state == "SIGNED_OUT") {
         //         router.push('./login');
         //     }
         // });
 
-        // if(user) a();    
-	}, [router, user]);
+        if(session) as();    
+	}, [session]);
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -95,8 +100,8 @@ export default function Home({ user, prisma }) {
                                         return (
                                             <div className="flex flex-col items-start w-full flex-1 gap-8">
                                                 <div>
-                                                    <h1 className="font-bold text-xl ">{userInformation?.username}</h1>
-                                                    <p className="text-slate-700">{ user?.email }</p>
+                                                    <h1 className="font-bold text-xl ">{ session?.data?.user?.name} <i className="text-sm text-slate-500 not-italic font-light">({ session?.data?.user?.name })</i></h1>
+                                                    <p className="text-slate-700">{ session?.data?.user?.email }</p>
 
                                                     <div className="flex flex-row items-center gap-8">
                                                         <a href="" className="text-violet-400">Forgot Password?</a>

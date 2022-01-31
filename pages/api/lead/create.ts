@@ -18,7 +18,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 		const result = await prisma.lead.create({
 			data: {
 				email,
-			},
+			}
 		})
 	
 		res.json({

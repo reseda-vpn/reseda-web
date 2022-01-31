@@ -6,21 +6,26 @@ import prisma from '@root/lib/prisma'
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
     const userId = req.query.id.toString();
 
-    console.log(Number(userId));
+    console.log(String(userId));
 
-    if(Number(userId)) {
+    if(String(userId)) {
         const result = await prisma.user.findUnique({
             where: {
-                id: Number(userId)
+                email: String(userId)
+            },
+            select: {
+                'accounts': true,
+                'email': true,
+                'name': true
             }
         });
 
-        const updatedData = JSON.stringify(result, (_key, value) => {
-            typeof value === 'bigint' ? value = value.toString() : value
-        })
-    
         console.log(result);
-    
+
+        // const updatedData = JSON.stringify(result, (_key, value) => {
+        //     typeof value === 'bigint' ? value = value.toString() : value
+        // })
+        
         res.json(result);
     }else {
         res.json({});
