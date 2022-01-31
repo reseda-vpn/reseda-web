@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from "framer-motion";
 import { cardVariants, subTitleControl } from '@components/framer_constants';
 
-import { getSession, getCsrfToken, signIn as signInAuth, getProviders, useSession } from "next-auth/react";
+import { getSession, getCsrfToken, signIn as signInAuth, getProviders } from "next-auth/react";
 import { GetServerSidePropsContext } from 'next';
 
 import { Gradient } from '@components/gradient';
@@ -12,7 +12,6 @@ import Button from '@components/un-ui/button';
 import { ArrowRight, Check, GitHub  } from 'react-feather';
 import { useRouter } from 'next/router';
 import { filter } from "lodash";
-import { hashPassword } from '@root/lib/crpyt';
 
 export default function Home({ providers }) {
     const [ authInformation, setAuthInformation ] = useState({
@@ -45,23 +44,26 @@ export default function Home({ providers }) {
                 alert(e);
             });
         else {
-            // >> First Hash password for comparison, don't send un-hashed password!.
-            const { ok, error } = await signInAuth("credentials", {
-                username: authInformation.email,
-                password: authInformation.password,
-                redirect: false,
+            const response = await fetch('/api/auth/signup', {
+                method: 'POST',
+                body: JSON.stringify({ ...authInformation }),
+                headers: {
+                  'Content-Type': 'application/json',
+                },
             });
-
+            
+            const data = await response.json();
             setAwaitingReply(false);
 
-            if(error) {
-                setAuthSuccess("login_failure");
-                setAuthFailure("Account does not exist, try signing up!");
-            }else {
-                setAuthSuccess("logged_in");
-                setAuthFailure("");
+            if (!response.ok) {
+                throw new Error(data.message || 'Something went wrong!');
+            }
 
-                window.location.href = './profile'
+            if(response.status == 201) {
+                router.push('./profile');
+            }else {
+                setAuthSuccess("login_failure");
+                setAuthFailure(data?.message ?? "Authentication Failure");
             }
         }
     }
@@ -76,8 +78,8 @@ export default function Home({ providers }) {
                         <div className="flex flex-col flex-1 gap-8 justify-center">
                             <motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl}>
                                 <h2 className="font-bold font-altSans text-lg text-slate-400">RESEDA</h2>
-                                <motion.h1 variants={cardVariants} className="m-0 font-bold text-2xl md:text-3xl">Login</motion.h1>
-                                <motion.p  variants={cardVariants} className="text-slate-600 text-base">It{'\''}s great to have you here!</motion.p>
+                                <motion.h1 variants={cardVariants} className="m-0 font-bold text-2xl md:text-3xl">Sign Up</motion.h1>
+                                <motion.p  variants={cardVariants} className="text-slate-600 text-base">Welcome to Reseda!</motion.p>
                             </motion.div>
 
                             <div className="flex flex-col gap-3">
@@ -141,15 +143,15 @@ export default function Home({ providers }) {
                                             "Success"
                                             :
                                             authSuccess == "login_failure" ?
-                                            "Login" // "Failed"
+                                            "Signup" // "Failed"
                                             :
-                                            "Login"
+                                            "Signup"
                                     }
                                 </Button>
                                 <div className="flex flex-row items-center text-sm text-slate-700">
-                                    No Account?<Button icon={false} className="bg-transparent text-violet-500 w-fit font-semibold" onClick={() => {
-                                        router.replace('./signup')
-                                    }}> Sign Up</Button>
+                                    Have an account?<Button icon={false} className="bg-transparent text-violet-500 w-fit font-semibold" onClick={() => {
+                                        router.replace('./login')
+                                    }}>Login</Button>
                                 </div>
                             </div>
 

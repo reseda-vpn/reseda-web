@@ -9,20 +9,10 @@ import { useSession, getSession, signIn, signOut } from "next-auth/react"
 import { prisma } from '@prisma/client';
 
 export const getServerSideProps = async ({ req, res }) => {
-    // const { user } = await supabase.auth.api.getUserByCookie(req);
+
     const session = await getSession({ req });
-    if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
-
-    // const { data, error } = await supabase.from('users').select("*").match({ id: "b78e7286-c7ad-4b7d-b427-28f541894fbd" }).then(e => {
-    //     console.log(e);
-    //     return e;
-    // });
-
-    // const ret = await fetch(`${process.env.NEXTAUTH_URL}/api/user/${session.user.email}`)
-    // const data = await ret.json();
-
-    // const data = await fetch(`${process.env.NEXTAUTH_URL}/api/user/${session.user.email}`)
-    // const raw = await data.json();
+    console.log(session);
+    // if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
 
     return {
         props: {
@@ -42,34 +32,24 @@ export default function Home(cont) {
         // Create your instance
         const gradient = new Gradient()
 
-        // Call `initGradient` with the selector to your canvas
+        console.log(session)
+
+        // if(session.status !== "authenticated") router.push('./login');
 
         //@ts-expect-error
         gradient.initGradient('#gradient-canvas');
 
-        // const a = async () => {
-        //     const { data, error } = await supabase.from('users').select("*").match({ id: user.id });
-        //     if(!error) setUserInformation(data[0]);
-
-        //     console.log(data);
-        // };
 
         const as = async () => {
-            const usr = await fetch(`/api/user/${session.data.user.email}`)
+            const usr = await fetch(`/api/user/${session?.data?.user?.email}`)
             const data = await usr.json();
 
             console.log(data);
             setUserInformation(data.accounts[0]);
         }
 
-        // supabase.auth.onAuthStateChange((state) => {
-        //     if(state == "SIGNED_OUT") {
-        //         router.push('./login');
-        //     }
-        // });
-
-        if(session) as();    
-	}, [session]);
+        if(session.status == "authenticated") as();    
+	}, [session, router]);
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -107,7 +87,11 @@ export default function Home(cont) {
                                                         <a href="" className="text-violet-400">Forgot Password?</a>
                                                         <a href="" className="text-violet-400">Change Username</a>
                                                         <a href="" className="text-violet-400" onClick={() => {
-                                                            supabase.auth.signOut();
+                                                            signOut({
+                                                                redirect: true
+                                                            }).then(() => {
+                                                                window.location.href = './login'
+                                                            })
                                                         }}>Log Out</a>
                                                     </div>
                                                 </div>
