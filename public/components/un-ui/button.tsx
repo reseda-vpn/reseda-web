@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import styles from './UnUI.module.css'
 
-import { ArrowRight, Loader } from 'react-feather'
+import { ArrowRight } from 'react-feather'
+import Loader from '@components/un-ui/loader'
 import Image from "next/image";
 
 interface Props { icon?: any, inline?: boolean, children?: React.ReactNode, loaderOnly?: boolean };
@@ -20,7 +21,8 @@ const Button: React.FC<Props & NativeAttrs> = ({ icon, inline, children, classNa
                         children ?? children
                     }
                     
-                    <Image src={"/assets/spin.svg"} alt="" className={styles.spinning} width={16} height={16} color={"#fff"}/>
+                    {/* <Image src={"/assets/spinner.svg"} alt="" width={16} height={16} color={"#fff"} /> className={styles.spinning}  */}
+                    <Loader color="#ffffff" height={16} />
                     {/* <Loader size={16} className={styles.spinning}/> */}
                 </>
                 :

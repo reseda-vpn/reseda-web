@@ -1,7 +1,9 @@
 import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import styles from './UnUI.module.css'
 
-import { ArrowRight, Check, CornerDownLeft, Heart, Key, Loader, RefreshCw, Repeat, Triangle } from 'react-feather'
+import { ArrowRight, Check, CornerDownLeft, Heart, Key, RefreshCw, Repeat, Triangle } from 'react-feather'
+import Loader from '@components/un-ui/loader'
+import Image from "next/image";
 
 interface Props { callback: Function, children?: React.ReactNode };
 declare type NativeAttrs = Omit<React.InputHTMLAttributes<any>, keyof Props>;
@@ -16,15 +18,13 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
 
     const sendAway = () => {
         setSendingAway(true);
-        if(input_ref?.current) callback(input_ref.current.value, (val: { res: String, err: any }) => { 
-            console.log(val?.err);
-
-            setSuccess(val?.res);
+        if(input_ref?.current) callback(input_ref.current.value, (val: { data: any, type: "pre-existing" | "new" }) => { 
+            setSuccess(val?.type);
         })
     }
 
     return isValidEmail && sendingAway ?
-        success == "success" ?
+        success == "new" ?
         (
             <div className={styles.input} style={{ backgroundColor: 'rgb(219 255 228)', color: 'green' }}>
                 <p>Keep an eye on your inbox!</p>
@@ -33,7 +33,7 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
             </div>
         ) 
         :
-        success == "exists"
+        success == "pre-existing"
         ?
         (
             <div className={styles.input} style={{ backgroundColor: '#e3d7fe', color: '#9063f6' }}>
@@ -51,7 +51,7 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
             <div className={styles.input}>
                 <p>Signing Up!</p>
 
-                <Loader size={20 } className={styles.spinning} />
+                <Loader color={"#000000"} height={16} />
             </div>
         ) 
         :

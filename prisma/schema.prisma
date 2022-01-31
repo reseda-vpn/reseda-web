@@ -16,7 +16,7 @@ generator client {
 model Lead {
   email     String   @unique
   id        String   @id @default(uuid())
-  signupAt  DateTime @updatedAt
+  signupAt  DateTime @updatedAt @default(now())
 }
 
 model Server {
@@ -30,7 +30,7 @@ model Server {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        String       @id @default(uuid())
   email     String    @unique
   name      String?   
   createdAt DateTime  @default(now())

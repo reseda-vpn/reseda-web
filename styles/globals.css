@@ -88,3 +88,28 @@ h1::before {
   font-weight: 1 999;
   font-style: italic;
 }
+
+
+/* Loader/Spinner */
+:root {
+  --spinner-animation-speed: 4s;
+}
+
+#spinner {
+  animation: spinner-rotate calc(var(--spinner-animation-speed) / 3) linear infinite;
+}
+
+@keyframes spinner-rotate {
+  100% { transform: rotate(360deg); }
+}
+
+.spinner-line {
+  animation: dash var(--spinner-animation-speed) ease-in-out infinite;
+}
+
+@keyframes dash {
+  75%, 100% {
+      stroke-dasharray: .5, 1;
+      stroke-dashoffset: -.8;
+  }
+}

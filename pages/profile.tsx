@@ -18,15 +18,15 @@ export const getServerSideProps = async ({ req, res }) => {
     //     return e;
     // });
 
-    const output = await fetch(`${process.env.URL}/api/user/1`, {
-        method: "GET"
-    });
-    const json = await output.json();
+    // const output = await fetch(`${process.env.URL}/api/user/1`, {
+    //     method: "GET"
+    // });
+    // const json = await output.json();
 
     return {
         props: {
             user,
-            prisma: json,
+            prisma: {},
         }
     };
 }
