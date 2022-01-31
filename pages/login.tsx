@@ -9,8 +9,16 @@ import { cardVariants, subTitleControl } from '@components/framer_constants';
 import { supabase } from '@root/client';
 import { AlertCircle, ArrowRight, Check } from 'react-feather';
 import Router, { useRouter } from 'next/router';
+import { filter } from "lodash";
+import {
+    getSession,
+    getCsrfToken,
+    signIn as signInAuth,
+    getProviders,
+  } from "next-auth/react";
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-export default function Home() {
+export default function Home({ providers }) {
     const [ authInformation, setAuthInformation ] = useState({
         email: "",
         password: ""
@@ -32,7 +40,12 @@ export default function Home() {
         gradient.initGradient('#gradient-canvas')
 	}, []);
 
-    const signIn = () => {
+    const signIn = (provider) => {
+        signInAuth(provider).then(e => {
+            console.log(e);
+        });
+
+        return;
         setAwaitingReply(true);
 
         supabase.auth.signIn({
@@ -144,6 +157,16 @@ export default function Home() {
                                 </Button>
                                 <Button icon={false} className="bg-transparent text-violet-500 w-fit font-semibold">No Account?</Button>
                             </div>
+
+                            <>
+                                {Object.values(providers).map((provider: { name: string, id: string }) => (
+                                    <div key={provider.name}>
+                                        <Button onClick={(e) => { e.preventDefault(); signInAuth(provider.id) }}>
+                                            Sign in with {provider.name}
+                                        </Button>
+                                    </div>
+                                ))}
+                            </>
                         </div>
                     </div>
                 </div>
@@ -151,3 +174,20 @@ export default function Home() {
 		</div>
 	)
 }
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const session = await getSession(context);
+  
+    if (session) {
+      return { redirect: { permanent: false, destination: "/profile" } };
+    }
+  
+    const csrfToken = await getCsrfToken({ req: context.req });
+    const providers = filter(await getProviders(), (provider) => {
+      return provider.type !== "credentials";
+    });
+  
+    return {
+      props: { csrfToken, providers },
+    };
+  }

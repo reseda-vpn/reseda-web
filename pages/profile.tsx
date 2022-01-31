@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Gradient } from '@components/gradient'
 import { supabase } from '@root/client';
-import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
 import Header from '@components/header';
 import { Activity, Check, CreditCard, Settings, User as UserIcon } from 'react-feather';
-import { GetServerSideProps, GetStaticProps } from 'next';
-import prisma from '../lib/prisma'
+
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export const getServerSideProps = async ({ req, res }) => {
-    const { user } = await supabase.auth.api.getUserByCookie(req);
-  
-    if (!user) return { props: {}, redirect: { destination: '/login', permanent: false } }
+    // const { user } = await supabase.auth.api.getUserByCookie(req);
+    // if (!user) return { props: {}, redirect: { destination: '/login', permanent: false } }
 
     // const { data, error } = await supabase.from('users').select("*").match({ id: "b78e7286-c7ad-4b7d-b427-28f541894fbd" }).then(e => {
     //     console.log(e);
@@ -25,23 +23,24 @@ export const getServerSideProps = async ({ req, res }) => {
 
     return {
         props: {
-            user,
+            user: {},
             prisma: {},
         }
     };
 }
 
 export default function Home({ user, prisma }) {
+    const session = useSession();
     const [ userInformation, setUserInformation ] = useState(null);
     const [ menu, setMenu ] = useState("account");
     const router = useRouter();
 
-    console.log(prisma);
+    console.log(session);
 
 	useEffect(() => {
-        if(!user) {
-            router.push('./login');
-        }
+        // if(!user) {
+        //     router.push('./login');
+        // }
 
         // Create your instance
         const gradient = new Gradient()
