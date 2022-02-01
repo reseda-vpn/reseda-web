@@ -6,30 +6,20 @@ import prisma from '@root/lib/prisma'
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
     const { email } = req.query;
 
-    console.log(email);
-	const exists = await prisma.lead.findFirst({
-		where: { email: email },
-        select: {
-            email: true,
-            signupAt: true,
-            claimable: true,
-            claimed: true,
-        }
+    const queryEmail = email.toString();    
+	const exists = await prisma.lead.findUnique({
+		where: { email: queryEmail }
 	});
 
-    console.log(exists);
-
-    // if(exists?.claimable) {
-    //     res.json({ 
-    //         data: exists,
-    //         type: "eligible"
-    //     });
-    // }else {
-    //     res.status(401).json({
-    //         data: exists,
-    //         type: "ineligible"
-    //     });
-    // }
-
-    res.status(200);
+    if(exists.claimable) {
+        res.status(200).json({ 
+            data: exists,
+            type: "eligible"
+        });
+    }else {
+        res.status(200).json({
+            data: exists,
+            type: "ineligible"
+        });
+    }
 }

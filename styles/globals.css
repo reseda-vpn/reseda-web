@@ -21,11 +21,11 @@ body {
   background-color: white;
 }
 
-@media screen and (max-width: 640px) {
+/* @media screen and (max-width: 640px) {
   #gradient-canvas {
-    height: 450px !important;
+    height: 450px;
   }
-}
+} */
 
 #gradient-canvas {
   width:  100%;

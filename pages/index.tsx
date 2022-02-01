@@ -47,7 +47,7 @@ export default function Home() {
 			<div className="flex-col flex font-sans min-h-screen w-screen relative">
 				<Header />
 
-				<canvas id="gradient-canvas" className="md:top-0" style={{ height: '800px' }} data-transition-in></canvas>
+				<canvas id="gradient-canvas" className="md:top-0" style={{ height: small ? '450px' : '800px' }} data-transition-in></canvas>
 
 				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : '800px' }}>
 					<div className="h-fit flex flex-col gap-16 md:gap-8 items-start">

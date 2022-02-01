@@ -16,7 +16,7 @@ const Banner: React.FC<{ title: string, text: string, url: string }> = ({ title,
                 <h4 className="text-sm hidden sm:flex">{title}</h4>
                 <p className="text-sm my-0 opacity-80 hidden sm:flex">—</p>
                 <p className="text-sm my-0 opacity-80">{text}</p>
-                <span className="h-3 text-white bg-white border-none opacity-60 ml-2 hidden sm:flex" style={{ width: '1px' }}></span>
+                <span className="h-3 text-white bg-white border-none opacity-60 ml-2 mr-2 hidden sm:flex" style={{ width: '1px' }}></span>
                 {
                     small ?
                         <></>
