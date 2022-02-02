@@ -73,7 +73,7 @@ export default function Home({ providers }) {
 				<canvas id="gradient-canvas" className="md:top-0 w-full z-10 absolute h-screen" style={{ width: '200%', height: '200%' }} data-transition-in></canvas>
 
                 <div className="flex-row flex-1 w-screen h-full grid sm:grid-cols-3">
-                    <div className="w-full bg-white z-20 flex justify-center items-center flex-col sm:p-72">
+                    <div className="w-full bg-white z-20 flex justify-center items-center flex-col sm:p-72 max-h-screen">
                         <div className="flex flex-col flex-1 gap-8 justify-center">
                             <motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl}>
                                 <h2 className="font-bold font-altSans text-lg text-slate-400">RESEDA</h2>

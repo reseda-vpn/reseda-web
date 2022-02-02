@@ -21,14 +21,27 @@ model Lead {
   claimed   Boolean  @default(false)
 }
 
+model Usage {
+  id            String    @id
+  user          User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String?
+  connEnd       DateTime  @default(now())
+  up            String
+  down          String
+  serverId      String
+  server        Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  connStart     DateTime  
+}
+
 model Server {
-  id        String    @unique @db.VarChar(255)
-  serverUp  DateTime  @default(now())
-  location  String    
-  country   String    
-  virtual   Boolean   @default(false)
-  hostname  String    @unique
-  flag      String    
+  id            String    @unique @db.VarChar(255)
+  serverUp      DateTime  @default(now())
+  location      String    
+  country       String    
+  virtual       Boolean   @default(false)
+  hostname      String    @unique
+  flag          String    
+  connectionHistory Usage[]
 }
 
 model Account {
@@ -58,11 +71,11 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    expires      DateTime
-    user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId       String?
+    id            String   @id @default(cuid())
+    sessionToken  String   @unique
+    expires       DateTime
+    user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        String?
 }
 
 model User {
@@ -77,6 +90,7 @@ model User {
     role          String?   @default("user")
     accounts      Account[]
     sessions      Session[]
+    usages        Usage[]
 }
 
 model VerificationToken {
