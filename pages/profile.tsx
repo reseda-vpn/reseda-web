@@ -92,7 +92,7 @@ export default function Home(cont) {
                                                         <a href="" className="text-violet-400">Forgot Password?</a>
                                                         <a href="" className="text-violet-400">Change Username</a>
                                                         <a href="" className="text-violet-400" onClick={async () => {
-                                                            const data = await signOut({ redirect: false, callbackUrl: "/login" });
+                                                            const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
                                                             router.push(data.url);
                                                         }}>Log Out</a>
                                                     </div>
