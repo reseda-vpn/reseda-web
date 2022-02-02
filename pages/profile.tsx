@@ -35,7 +35,7 @@ export default function Home(cont) {
         // Create your instance
         const gradient = new Gradient()
 
-        // if(session.status !== "authenticated") router.push('./login');
+        if(session.status !== "authenticated") router.push('./login');
 
         //@ts-expect-error
         gradient.initGradient('#gradient-canvas');
@@ -72,8 +72,8 @@ export default function Home(cont) {
                             <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "billing" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
                         </div>
 
-                        <div className="flex flex-col gap-2">
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "settings" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("settings")}>{ <Settings size={16}/>  } {small ? "" : "Settings"}</p>
+                        <div className="flex flex-col gap-2"> {/* height: 32px; align-items: center; justify-content: center; */}
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 h-8 content-center ${menu == "settings" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("settings")}>{ <Settings size={16}/>  } {small ? "" : "Settings"}</p>
                         </div>
                     </div>
 
@@ -91,15 +91,9 @@ export default function Home(cont) {
                                                     <div className="flex flex-row sm:items-center sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
                                                         <a href="" className="text-violet-400">Forgot Password?</a>
                                                         <a href="" className="text-violet-400">Change Username</a>
-                                                        <a href="" className="text-violet-400" onClick={() => {
-                                                            signOut({
-                                                                redirect: true
-                                                            }).then(() => {
-                                                                // window.location.href = './login'
-                                                                alert("Logged Out")
-                                                            }).catch(e => {
-                                                                window.location.href = './login'
-                                                            })
+                                                        <a href="" className="text-violet-400" onClick={async () => {
+                                                            const data = await signOut({ redirect: false, callbackUrl: "/login" });
+                                                            router.push(data.url);
                                                         }}>Log Out</a>
                                                     </div>
                                                 </div>
