@@ -110,7 +110,7 @@ export default function Home(cont) {
                                                         <div className="flex items-center justify-center h-6 w-6 rounded-full bg-violet-500"><Check size={20} color="#fff" /></div>
 
                                                         <div className="flex flex-col flex-1">
-                                                            <h1 className="font-semibold text-violet-900">You are eligible for Reseda Pre-Release</h1>
+                                                            <h1 className="font-semibold text-violet-900">You are eligible for Reseda { small ? "" : "Pre-Release" }</h1>
                                                             {/* <p className="text-violet-700">You have been selected to join us in pre-release.</p>  */}
                                                         </div>
 
