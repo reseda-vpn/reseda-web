@@ -5,25 +5,28 @@ import { useRouter } from 'next/router';
 import Header from '@components/header';
 import { Activity, ArrowUpRight, Check, CreditCard, Download, Settings, User as UserIcon } from 'react-feather';
 
-import { useSession, getSession, signIn, signOut } from "next-auth/react"
+import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
 import { prisma } from '@prisma/client';
 import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
 
 export const getServerSideProps = async ({ req, res }) => {
-
     const session = await getSession({ req });
-    // if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
+    const csrfToken = await getCsrfToken({ req: req });
+
+    if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
+    console.log(session, csrfToken);
 
     return {
         props: {
-            session
+            session,
+            csrfToken
         },
     }
 }
 
-export default function Home(cont) {
-    const session = useSession();
+export default function Home({ ss_session, token }) {
+    const session = useSession(ss_session);
 	const small = useMediaQuery(640);
 
     const [ userInformation, setUserInformation ] = useState(null);

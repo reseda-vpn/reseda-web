@@ -173,8 +173,6 @@ export default function Home({ providers }) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await getSession(context);
-
-    console.log(session);
   
     if (session) {
       return { redirect: { permanent: false, destination: "/profile" } };
