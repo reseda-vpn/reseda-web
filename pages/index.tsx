@@ -16,9 +16,9 @@ import Waitlist from '@components/waitlist';
 
 export async function getServerSideProps() {
 	const metaTags = {
-		"og:title": `Fast. Affordable. Secure`,
-		"og:description": "Reseda is boasts up to 1GB/s real world throughput, affordably pricing, and incredible security",
-		"og:url": `https://reseda.app/`,
+		"og:title": [`Fast. Affordable. Secure`],
+		"og:description": ["Reseda is boasts up to 1GB/s real world throughput, affordably pricing, and incredible security"],
+		"og:url": [`https://reseda.app/`],
 	};
 	return {
 	  props: {
