@@ -11,6 +11,8 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             virtual: req.body.virtual == 'true' ? true : false,
         },
     });
+
+    console.log(result);
     
     res.json(result)
 }
