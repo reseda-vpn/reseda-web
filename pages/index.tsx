@@ -42,7 +42,7 @@ export default function Home() {
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
-			<Banner title={"💪 Support"} text={"Reseda is releasing support for MacOS and Linux"} url={""} />
+			<Banner title={"💪 Improvements"} text={"Reseda is currently undergoing a major refactor"} url={"https://twitter.com/UnRealG3/status/1490596150944043012?s=20&t=DNFSbVhA3wkoWyVOkwAvxQ"} />
 
 			<div className="flex-col flex font-sans min-h-screen w-screen relative">
 				<Header />

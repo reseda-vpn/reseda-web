@@ -23,8 +23,8 @@ model Lead {
 
 model Usage {
   id            String    @id
-  user          User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String?
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
   connEnd       DateTime  @default(now())
   up            String
   down          String
