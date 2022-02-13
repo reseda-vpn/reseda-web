@@ -3,12 +3,26 @@ import { Gradient } from '@components/gradient'
 import { supabase } from '@root/client';
 import { useRouter } from 'next/router';
 import Header from '@components/header';
-import { Activity, ArrowUpRight, Check, CreditCard, Download, Settings, User as UserIcon } from 'react-feather';
+import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Download, Settings, User as UserIcon } from 'react-feather';
 
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
-import { prisma } from '@prisma/client';
+import { Account, prisma, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
+
+import {
+    Chart as ChartJS,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
+    TimeScale
+  } from 'chart.js';
+import { Chart } from 'react-chartjs-2';
+import 'chartjs-adapter-moment';
+
+ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale);
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -19,7 +33,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
     return {
         props: {
-            session,
+            ss_session: session,
             csrfToken
         },
     }
@@ -29,8 +43,9 @@ export default function Home({ ss_session, token }) {
     const session = useSession(ss_session);
 	const small = useMediaQuery(640);
 
-    const [ userInformation, setUserInformation ] = useState(null);
+    const [ userInformation, setUserInformation ] = useState<Account>(null);
     const [ eligibleForDownload, setEligibleForDownload ] = useState<0 | 1 | 2>(0); // 0 is not returned, 1 is true, 2 is false.
+    const [ usageInformation, setUsageInformation ] = useState<Usage[]>(null);
     const [ menu, setMenu ] = useState("account");
     const router = useRouter();
 
@@ -45,15 +60,27 @@ export default function Home({ ss_session, token }) {
 
 
         const as = async () => {
-            const usr = await fetch(`/api/user/${session?.data?.user?.email}`)
-            const data = await usr.json();
+            if(!userInformation) {
+                const usr = await fetch(`/api/user/${session?.data?.user?.email}`)
+                const data = await usr.json();
 
-            setUserInformation(data.accounts[0]);
+                setUserInformation(data.accounts[0]);
+            }
+            
+            if(eligibleForDownload == 0) {
+                const eligible = await fetch(`/api/lead/email/${session?.data?.user?.email}`);
+                const eligibility = await eligible.json();
 
-            const eligible = await fetch(`/api/lead/email/${session?.data?.user?.email}`);
-            const eligibility = await eligible.json();
+                setEligibleForDownload(eligibility.type == "eligible" ? 1 : 2);
+            }
 
-            setEligibleForDownload(eligibility.type == "eligible" ? 1 : 2);
+            if(!usageInformation && userInformation?.userId) {
+                const usage = await fetch(`/api/user/usage/${userInformation.userId}`);
+                const usage_data = await usage.json();
+
+                setUsageInformation(usage_data);
+                console.log(usage_data);
+            }            
         }
 
         if(session.status == "authenticated") as();    
@@ -68,15 +95,15 @@ export default function Home({ ss_session, token }) {
 
                 <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-50 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-start justify-between sm:w-32 w-full">
-                        <div className="flex flex-row sm:flex-col gap-2">
+                        <div className="flex flex-row sm:flex-col gap-2 w-full">
                             {/* <p className="font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Account</p> */}
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "account" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("account")} >{ <UserIcon size={16}/>  } Account</p>
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "usage" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("usage")}>{ <Activity size={16}/>  } Usage</p>
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "billing" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "account" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("account")} >{ <UserIcon size={16}/>  } Account</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "usage" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("usage")}>{ <Activity size={16}/>  } Usage</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "billing" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
                         </div>
 
-                        <div className="flex flex-col gap-2"> {/* height: 32px; align-items: center; justify-content: center; */}
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 h-8 content-center ${menu == "settings" ? "bg-violet-700 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("settings")}>{ <Settings size={16}/>  } {small ? "" : "Settings"}</p>
+                        <div className="flex flex-col gap-2 w-full"> {/* height: 32px; align-items: center; justify-content: center; */}
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 h-8 content-center ${menu == "settings" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("settings")}>{ <Settings size={16}/>  } {small ? "" : "Settings"}</p>
                         </div>
                     </div>
 
@@ -129,7 +156,6 @@ export default function Home({ ss_session, token }) {
                                                     :
                                                     <></>
                                                 }
-                                                
                                                 
                                                 <div className="flex flex-col gap-2 rounded-lg px-0 py-2 w-full">
                                                     <p className="font-bold text-xl">Plan</p>
@@ -237,11 +263,7 @@ export default function Home({ ss_session, token }) {
                                                             }
                                                         })()
                                                     }
-
                                                     </div>
-
-
-                                                   
                                                 </div>
                                             </div>
                                         )
@@ -249,6 +271,68 @@ export default function Home({ ss_session, token }) {
                                         return (
                                             <div className="flex flex-col items-start">
                                                 <h1 className="font-semibold text-lg">Usage</h1>
+
+                                                {
+                                                    usageInformation ? 
+                                                    <Chart type="scatter" data={{
+                                                        datasets: [
+                                                            {
+                                                                label: "Up",
+                                                                data: [usageInformation.map(e => {
+                                                                    return {
+                                                                        x: new Date(e.connEnd).toISOString(),
+                                                                        y: parseInt(e.up)
+                                                                    }
+                                                                })] 
+                                                            },
+                                                            {
+                                                                label: "Down",
+                                                                data: []
+                                                            }
+                                                        ]
+                                                    }}
+                                                    options={{
+                                                        scales: {
+                                                            x: {
+                                                                type: 'time',
+                                                                time: {
+                                                                    unit: 'day'
+                                                                }
+                                                            }
+                                                        }
+                                                    }}
+                                                    
+                                                    />
+                                                    :
+                                                    <></>
+                                                }
+                                                
+
+                                                <div className="flex flex-row items-center gap-6">
+                                                    <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
+                                                        <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                            Up
+                                                            <ArrowUp size={16} color={"#fff"}/>
+                                                        </div>
+                                                        
+                                                        <p className="px-4">
+                                                            { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.up) || 0), 0)) : "..." }
+                                                        </p>
+                                                        
+                                                    </div>
+
+                                                    <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
+                                                        <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                            Down
+                                                            <ArrowDown size={16} color={"#fff"}/>
+                                                        </div>
+
+                                                        <p className="px-4">
+                                                            { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.down) || 0), 0)) : "..." }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
                                             </div>
                                         )
                                     case "billing":
@@ -271,4 +355,16 @@ export default function Home({ ss_session, token }) {
             </div>
 		</div>
 	)
+}
+
+function getSize(size) {
+    var sizes = [' Bytes', ' KB', ' MB', ' GB', 
+                 ' TB', ' PB', ' EB', ' ZB', ' YB'];
+    
+    for (var i = 1; i < sizes.length; i++) {
+        if (size < Math.pow(1024, i)) 
+          return (Math.round((size / Math.pow(
+            1024, i - 1)) * 100) / 100) + sizes[i - 1];
+    }
+    return size;
 }

@@ -10,7 +10,6 @@ function App({ Component, pageProps: { session, metaTags, ...pageProps } }: AppP
       <Head>
         {metaTags &&
           Object.entries(metaTags).map((entry) => {
-            console.log(entry)
             return (
               <meta key={entry[0] + entry[1]} property={entry[0]} content={entry[1][0]} />
             )
