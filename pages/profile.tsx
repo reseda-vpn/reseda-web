@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Gradient } from '@components/gradient'
 import { supabase } from '@root/client';
 import { useRouter } from 'next/router';
@@ -9,20 +9,9 @@ import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth
 import { Account, prisma, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
+import { AxisOptions, Chart } from 'react-charts';
+import Loader from '@components/un-ui/loader';
 
-import {
-    Chart as ChartJS,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend,
-    TimeScale
-  } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
-import 'chartjs-adapter-moment';
-
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale);
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -59,32 +48,83 @@ export default function Home({ ss_session, token }) {
         gradient.initGradient('#gradient-canvas');
 
 
-        const as = async () => {
-            if(!userInformation) {
-                const usr = await fetch(`/api/user/${session?.data?.user?.email}`)
-                const data = await usr.json();
-
-                setUserInformation(data.accounts[0]);
-            }
+        const as = () => {
+            if(!userInformation) 
+                fetch(`/api/user/${session?.data?.user?.email}`).then(async e => {
+                    const data = await e.json();
+                    setUserInformation(data.accounts[0]);
+                });
             
-            if(eligibleForDownload == 0) {
-                const eligible = await fetch(`/api/lead/email/${session?.data?.user?.email}`);
-                const eligibility = await eligible.json();
+            if(eligibleForDownload == 0) 
+                fetch(`/api/lead/email/${session?.data?.user?.email}`).then(async e => {
+                    const data = await e.json();
 
-                setEligibleForDownload(eligibility.type == "eligible" ? 1 : 2);
-            }
+                    setEligibleForDownload(data.type == "eligible" ? 1 : 2);
+                });
 
-            if(!usageInformation && userInformation?.userId) {
-                const usage = await fetch(`/api/user/usage/${userInformation.userId}`);
-                const usage_data = await usage.json();
-
-                setUsageInformation(usage_data);
-                console.log(usage_data);
-            }            
+            if(!usageInformation && userInformation?.userId) 
+                fetch(`/api/user/usage/${userInformation.userId}`).then(async e => {
+                    const data = await e.json();
+                    setUsageInformation(data);
+                });
         }
 
         if(session.status == "authenticated") as();    
 	}, [session, router]);
+
+    type UsageReport = {
+        primary: Date,
+        secondary: number,
+    }
+      
+    type Series = {
+        label: string,
+        data: UsageReport[]
+    }
+
+    const primaryAxis = useMemo<
+    AxisOptions<typeof data[number]["data"][number]>
+    >(
+        () => ({
+            getValue: (datum) => datum.primary,
+            padBandRange: true
+        }),
+        []
+    );
+
+    const secondaryAxes = useMemo<
+    AxisOptions<typeof data[number]["data"][number]>[]
+    >(
+        () => [
+        {
+            getValue: (datum) => datum.secondary,
+            stacked: true,
+        }
+        ],
+        []
+    );
+    const data: Series[] = [
+        {
+            label: 'Up',
+            data: usageInformation?.map(e => {
+                return {
+                    primary: new Date(e.connEnd),
+                    secondary: parseInt(e.up)
+                }
+            }) ?? []
+        },
+        {
+            label: 'Down',
+            data: usageInformation?.map(e => {
+                return {
+                    primary: new Date(e.connEnd),
+                    secondary: parseInt(e.down)
+                }
+            }) ?? []
+        }
+    ];
+
+    console.log(data);
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -269,70 +309,52 @@ export default function Home({ ss_session, token }) {
                                         )
                                     case "usage":
                                         return (
-                                            <div className="flex flex-col items-start">
-                                                <h1 className="font-semibold text-lg">Usage</h1>
+                                            <div className="flex flex-col items-start h-full flex-1">
+                                                <div className="flex flex-row items-center justify-between w-full">
+                                                    <h1 className="font-semibold text-lg">Usage</h1>
 
-                                                {
-                                                    usageInformation ? 
-                                                    <Chart type="scatter" data={{
-                                                        datasets: [
-                                                            {
-                                                                label: "Up",
-                                                                data: [usageInformation.map(e => {
-                                                                    return {
-                                                                        x: new Date(e.connEnd).toISOString(),
-                                                                        y: parseInt(e.up)
-                                                                    }
-                                                                })] 
-                                                            },
-                                                            {
-                                                                label: "Down",
-                                                                data: []
-                                                            }
-                                                        ]
-                                                    }}
-                                                    options={{
-                                                        scales: {
-                                                            x: {
-                                                                type: 'time',
-                                                                time: {
-                                                                    unit: 'day'
-                                                                }
-                                                            }
-                                                        }
-                                                    }}
-                                                    
-                                                    />
-                                                    :
-                                                    <></>
-                                                }
-                                                
-
-                                                <div className="flex flex-row items-center gap-6">
-                                                    <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
-                                                        <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
-                                                            Up
-                                                            <ArrowUp size={16} color={"#fff"}/>
-                                                        </div>
-                                                        
-                                                        <p className="px-4">
-                                                            { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.up) || 0), 0)) : "..." }
-                                                        </p>
-                                                        
-                                                    </div>
-
-                                                    <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
-                                                        <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
-                                                            Down
-                                                            <ArrowDown size={16} color={"#fff"}/>
+                                                    <div className="flex flex-row items-center gap-6">
+                                                        <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
+                                                            <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                                Up
+                                                                <ArrowUp size={16} color={"#fff"}/>
+                                                            </div>
+                                                            
+                                                            <p className="px-4">
+                                                                { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.up) || 0), 0)) : "..." }
+                                                            </p>
+                                                            
                                                         </div>
 
-                                                        <p className="px-4">
-                                                            { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.down) || 0), 0)) : "..." }
-                                                        </p>
+                                                        <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
+                                                            <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                                Down
+                                                                <ArrowDown size={16} color={"#fff"}/>
+                                                            </div>
+
+                                                            <p className="px-4">
+                                                                { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.down) || 0), 0)) : "..." }
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                
+
+                                                <div className="flex flex-1 w-full">
+                                                    {
+                                                        usageInformation ? 
+                                                        <Chart
+                                                            options={{
+                                                                data,
+                                                                primaryAxis,
+                                                                secondaryAxes,
+                                                            }}
+                                                        />
+                                                        :
+                                                        <div className="flex items-center justify-center flex-1">
+                                                            <Loader color={"#000"} height={20} />
+                                                        </div>
+                                                    }
+                                                </div>
                                             </div>
                                         )
                                     case "billing":
