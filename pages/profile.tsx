@@ -9,8 +9,8 @@ import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth
 import { Account, prisma, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
-import { AxisOptions, Chart } from 'react-charts';
 import Loader from '@components/un-ui/loader';
+import Chart from '@components/chart';
 
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -70,61 +70,16 @@ export default function Home({ ss_session, token }) {
         }
 
         if(session.status == "authenticated") as();    
+    //@ts-ignore
 	}, [session, router]);
 
-    type UsageReport = {
-        primary: Date,
-        secondary: number,
-    }
-      
-    type Series = {
-        label: string,
-        data: UsageReport[]
-    }
-
-    const primaryAxis = useMemo<
-    AxisOptions<typeof data[number]["data"][number]>
-    >(
-        () => ({
-            getValue: (datum) => datum.primary,
-            padBandRange: true
-        }),
-        []
-    );
-
-    const secondaryAxes = useMemo<
-    AxisOptions<typeof data[number]["data"][number]>[]
-    >(
-        () => [
-        {
-            getValue: (datum) => datum.secondary,
-            stacked: true,
+    const data = usageInformation?.map(e => {
+        return {
+            key: new Date(e.connEnd),
+            first: parseInt(e.up),
+            second: parseInt(e.down)
         }
-        ],
-        []
-    );
-    const data: Series[] = [
-        {
-            label: 'Up',
-            data: usageInformation?.map(e => {
-                return {
-                    primary: new Date(e.connEnd),
-                    secondary: parseInt(e.up)
-                }
-            }) ?? []
-        },
-        {
-            label: 'Down',
-            data: usageInformation?.map(e => {
-                return {
-                    primary: new Date(e.connEnd),
-                    secondary: parseInt(e.down)
-                }
-            }) ?? []
-        }
-    ];
-
-    console.log(data);
+    }) ?? []
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -311,11 +266,12 @@ export default function Home({ ss_session, token }) {
                                         return (
                                             <div className="flex flex-col items-start h-full flex-1">
                                                 <div className="flex flex-row items-center justify-between w-full">
-                                                    <h1 className="font-semibold text-lg">Usage</h1>
+                                                    <h1 className="font-bold text-xl ">Usage <i className="text-sm text-slate-500 not-italic font-light">(This Billing Period)</i></h1>
+                                                    <p className="text-slate-700">{ new Date().toLocaleString("en-nz", { month: "long" }) }</p>
 
                                                     <div className="flex flex-row items-center gap-6">
                                                         <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
-                                                            <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                            <div className="bg-violet-300 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
                                                                 Up
                                                                 <ArrowUp size={16} color={"#fff"}/>
                                                             </div>
@@ -339,15 +295,11 @@ export default function Home({ ss_session, token }) {
                                                     </div>
                                                 </div>
 
-                                                <div className="flex flex-1 w-full">
+                                                <div className="flex flex-1 w-full p-8">
                                                     {
                                                         usageInformation ? 
                                                         <Chart
-                                                            options={{
-                                                                data,
-                                                                primaryAxis,
-                                                                secondaryAxes,
-                                                            }}
+                                                            data={data}
                                                         />
                                                         :
                                                         <div className="flex items-center justify-center flex-1">
@@ -379,7 +331,7 @@ export default function Home({ ss_session, token }) {
 	)
 }
 
-function getSize(size) {
+export function getSize(size) {
     var sizes = [' Bytes', ' KB', ' MB', ' GB', 
                  ' TB', ' PB', ' EB', ' ZB', ' YB'];
     
