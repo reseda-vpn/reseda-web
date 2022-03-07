@@ -48,7 +48,7 @@ export default function Home({ ss_session, token }) {
         gradient.initGradient('#gradient-canvas');
 
 
-        const as = () => {
+        const as = async () => {
             if(!userInformation) 
                 fetch(`/api/user/${session?.data?.user?.email}`).then(async e => {
                     const data = await e.json();
@@ -70,7 +70,7 @@ export default function Home({ ss_session, token }) {
         }
 
         if(session.status == "authenticated") as();    
-    //@ts-ignore
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [session, router]);
 
     const data = usageInformation?.map(e => {
@@ -300,6 +300,7 @@ export default function Home({ ss_session, token }) {
                                                         usageInformation ? 
                                                         <Chart
                                                             data={data}
+                                                            month={new Date().getMonth()}
                                                         />
                                                         :
                                                         <div className="flex items-center justify-center flex-1">

@@ -1,7 +1,7 @@
 import { getSize } from "@root/pages/profile";
 import { useEffect, useRef, useState } from "react";
 
-const Chart: React.FC<{ data: any[] }> = ({ data }) => {
+const Chart: React.FC<{ data: any[], month: number }> = ({ data, month }) => {
     const now = new Date();
     const days_in_this_month = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
 
@@ -10,6 +10,8 @@ const Chart: React.FC<{ data: any[] }> = ({ data }) => {
     const a_ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        const thisMonth = month;
+
         const dataSet = new Array(days_in_this_month)
         for (var i = 0; i < dataSet.length; i++) {
             dataSet[i] = { up: 0, down: 0, key: i+1 };
@@ -17,9 +19,10 @@ const Chart: React.FC<{ data: any[] }> = ({ data }) => {
 
         for(let i = 0; i < data.length; i++)
         {
-            dataSet[new Date(data[i].key).getDate()-1].up += data[i].first;
-            dataSet[new Date(data[i].key).getDate()-1].down += data[i].second;
-
+            if(thisMonth == new Date(data[i].key).getMonth()) {
+                dataSet[new Date(data[i].key).getDate()-1].up += data[i].first;
+                dataSet[new Date(data[i].key).getDate()-1].down += data[i].second;
+            }
         }
 
         setChartDataSet(dataSet);
@@ -34,7 +37,7 @@ const Chart: React.FC<{ data: any[] }> = ({ data }) => {
 
         const largest = max_first.first > max_second.second ? max_first.first : max_second.second;
         setMax(largest);
-    }, [data]);
+    }, [data, days_in_this_month, month]);
     
     return (
         <div className="flex flex-1 h-full gap-2" ref={a_ref}>

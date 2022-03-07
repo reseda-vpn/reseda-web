@@ -5,6 +5,8 @@ import prisma from '@root/lib/prisma'
 // Required fields in body: name, email
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
     const userId = req.query.id.toString();
+    console.log("Found Request");
+    const t = new Date().getTime();
 
     if(String(userId)) {
         const result = await prisma.user.findUnique({
@@ -17,6 +19,8 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                 'name': true
             }
         });
+
+        console.log("Finished Request in ", new Date().getTime() - t, "ms ");
 
         res.json(result);
     }else {
