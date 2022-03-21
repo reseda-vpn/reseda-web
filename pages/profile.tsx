@@ -20,16 +20,16 @@ export const getServerSideProps = async ({ req, res }) => {
     if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
     console.log(session, csrfToken);
 
-    let exists = await prisma.lead.findUnique({
+    const exists = prisma.lead.findUnique({
 		where: { email: session.user.email }
-	});
+	}).then(e => {
+        return {
+            ...e, 
+            signupAt: e.signupAt.toJSON() as unknown as Date
+        }
+    })
 
-    exists = {
-        ...exists, 
-        signupAt: exists.signupAt.toJSON() as unknown as Date
-    };
-
-    let user = await prisma.user.findUnique({
+    const user = prisma.user.findUnique({
             where: {
                 email: String(session.user.email)
             },
@@ -38,38 +38,29 @@ export const getServerSideProps = async ({ req, res }) => {
                 'email': true,
                 'name': true
             }
-        });
-
-    user = {
-        ...user, 
-        accounts: user.accounts.map(e => { 
-                    e.createdAt = e.createdAt.toJSON() as unknown as Date;
-                    e.updatedAt = e.updatedAt.toJSON() as unknown as Date;
-
-                    return e;
-                }) 
-    };
-
-    let usage = await prisma.usage.findMany({
-        where: {
-            userId: user.accounts[0].id.toString()
+    }).then(e => {
+        return {
+            ...e, 
+            accounts: e.accounts.map(ek => { 
+                        ek.createdAt = ek.createdAt.toJSON() as unknown as Date;
+                        ek.updatedAt = ek.updatedAt.toJSON() as unknown as Date;
+    
+                        return ek;
+                    }) 
         }
-    }).catch(e => {
-        console.log(e)
-    });
+    })
 
     return {
         props: {
             ss_session: session,
-            user: user,
-            eligible: exists,
-            usage: usage,
+            user: await user,
+            eligible: await exists,
             csrfToken
         },
     }
 }
 
-export default function Home({ ss_session, token, user, eligible, usage }) {
+export default function Home({ ss_session, token, user, eligible }) {
     const session = useSession(ss_session);
 	const small = useMediaQuery(640);
 
@@ -82,7 +73,7 @@ export default function Home({ ss_session, token, user, eligible, usage }) {
 	useEffect(() => {
         setUserInformation(user.accounts[0]);
         setEligibleForDownload(eligible.claimable ? 1 : 2);
-        setUsageInformation(usage);
+        // setUsageInformation(usage);
 
         // Create your instance
         const gradient = new Gradient()
@@ -93,6 +84,7 @@ export default function Home({ ss_session, token, user, eligible, usage }) {
         gradient.initGradient('#gradient-canvas');
 
         const as = async () => {
+            
             // if(!userInformation) 
             //     fetch(`/api/user/${session?.data?.user?.email}`).then(async e => {
             //         const data = await e.json();
@@ -106,11 +98,10 @@ export default function Home({ ss_session, token, user, eligible, usage }) {
             //         setEligibleForDownload(data.type == "eligible" ? 1 : 2);
             //     });
 
-            // if(!usageInformation && userInformation?.userId) 
-            //     fetch(`/api/user/usage/${userInformation.userId}`).then(async e => {
-            //         const data = await e.json();
-            //         setUsageInformation(data);
-            //     });
+            fetch(`/api/user/usage/${userInformation.userId}`).then(async e => {
+                    const data = await e.json();
+                    setUsageInformation(data);
+                });
         }
 
         if(session.status == "authenticated") as();    
