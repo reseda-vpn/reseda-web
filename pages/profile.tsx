@@ -6,12 +6,12 @@ import Header from '@components/header';
 import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Download, Settings, User as UserIcon } from 'react-feather';
 
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
-import { Account, prisma, Usage, User } from '@prisma/client';
+import { Account, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
 import Loader from '@components/un-ui/loader';
 import Chart from '@components/chart';
-
+import prisma from "@root/lib/prisma"
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -20,15 +20,56 @@ export const getServerSideProps = async ({ req, res }) => {
     if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
     console.log(session, csrfToken);
 
+    let exists = await prisma.lead.findUnique({
+		where: { email: session.user.email }
+	});
+
+    exists = {
+        ...exists, 
+        signupAt: exists.signupAt.toJSON() as unknown as Date
+    };
+
+    let user = await prisma.user.findUnique({
+            where: {
+                email: String(session.user.email)
+            },
+            select: {
+                'accounts': true,
+                'email': true,
+                'name': true
+            }
+        });
+
+    user = {
+        ...user, 
+        accounts: user.accounts.map(e => { 
+                    e.createdAt = e.createdAt.toJSON() as unknown as Date;
+                    e.updatedAt = e.updatedAt.toJSON() as unknown as Date;
+
+                    return e;
+                }) 
+    };
+
+    let usage = await prisma.usage.findMany({
+        where: {
+            userId: user.accounts[0].id.toString()
+        }
+    }).catch(e => {
+        console.log(e)
+    });
+
     return {
         props: {
             ss_session: session,
+            user: user,
+            eligible: exists,
+            usage: usage,
             csrfToken
         },
     }
 }
 
-export default function Home({ ss_session, token }) {
+export default function Home({ ss_session, token, user, eligible, usage }) {
     const session = useSession(ss_session);
 	const small = useMediaQuery(640);
 
@@ -39,6 +80,10 @@ export default function Home({ ss_session, token }) {
     const router = useRouter();
 
 	useEffect(() => {
+        setUserInformation(user.accounts[0]);
+        setEligibleForDownload(eligible.claimable ? 1 : 2);
+        setUsageInformation(usage);
+
         // Create your instance
         const gradient = new Gradient()
 
@@ -47,26 +92,25 @@ export default function Home({ ss_session, token }) {
         //@ts-expect-error
         gradient.initGradient('#gradient-canvas');
 
-
         const as = async () => {
-            if(!userInformation) 
-                fetch(`/api/user/${session?.data?.user?.email}`).then(async e => {
-                    const data = await e.json();
-                    setUserInformation(data.accounts[0]);
-                });
+            // if(!userInformation) 
+            //     fetch(`/api/user/${session?.data?.user?.email}`).then(async e => {
+            //         const data = await e.json();
+            //         setUserInformation(data.accounts[0]);
+            //     });
             
-            if(eligibleForDownload == 0) 
-                fetch(`/api/lead/email/${session?.data?.user?.email}`).then(async e => {
-                    const data = await e.json();
+            // if(eligibleForDownload == 0) 
+            //     fetch(`/api/lead/email/${session?.data?.user?.email}`).then(async e => {
+            //         const data = await e.json();
 
-                    setEligibleForDownload(data.type == "eligible" ? 1 : 2);
-                });
+            //         setEligibleForDownload(data.type == "eligible" ? 1 : 2);
+            //     });
 
-            if(!usageInformation && userInformation?.userId) 
-                fetch(`/api/user/usage/${userInformation.userId}`).then(async e => {
-                    const data = await e.json();
-                    setUsageInformation(data);
-                });
+            // if(!usageInformation && userInformation?.userId) 
+            //     fetch(`/api/user/usage/${userInformation.userId}`).then(async e => {
+            //         const data = await e.json();
+            //         setUsageInformation(data);
+            //     });
         }
 
         if(session.status == "authenticated") as();    
