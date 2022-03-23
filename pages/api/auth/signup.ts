@@ -25,6 +25,15 @@ async function handler(req, res) {
         return;
     }
 
+    const existingLead = await prisma.lead.findUnique({ where: { email } });
+    if(!existingLead) {
+        await prisma.lead.create({
+            data: {
+                email: email
+            }
+        })
+    }
+
     // Hash password, and do same on signup end for identical comparison.
     const hashedPassword = await hashPassword(password);
 

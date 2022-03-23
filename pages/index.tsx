@@ -14,18 +14,19 @@ import useMediaQuery from '@components/media_query';
 import { cardVariants, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
 import Waitlist from '@components/waitlist';
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
 	const metaTags = {
 		"og:title": [`Fast. Affordable. Secure. Reseda.`],
 		"og:description": ["Reseda boasts up to 1GB/s real world throughput, affordably pricing, and incredible security."],
 		"og:url": [`https://reseda.app/`],
 	};
+
 	return {
 	  props: {
 		metaTags
 	  }
 	}
-  }
+}
 
 export default function Home() {
 	const small = useMediaQuery(640);
@@ -284,7 +285,6 @@ export default function Home() {
 				
 				<Footer />
 			</div>
-			
 		</div>
 	)
 }
