@@ -68,7 +68,7 @@ export default function Home() {
                         <p>
                             <br />
                             <i className="text-sm not-italic">
-                            *It is worth noting, by using the wireguard protocol, IP's are stored in a cache for connection optimization. 
+                            *It is worth noting, by using the wireguard protocol, IP{'\''}s are stored in a cache for connection optimization. 
                             This is outside the control of reseda, and we are working on a local network protocol to remove this cache. However, this cache is not publicly accessible nor permanently stored in any way.
                             </i>
                         </p>
