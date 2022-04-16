@@ -75,7 +75,7 @@ export default function Home() {
             {
                 reqServer ?
                     <div 
-                        className="absolute top-0 left-0 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 flex items-center content-center justify-center"
+                        className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 items-center content-center justify-center"
                         onClick={() => setReqServer(null)}
                         >
                         <div 
