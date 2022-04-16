@@ -7,8 +7,18 @@ import useMediaQuery from './media_query';
 
 const Banner: React.FC<{ title: string, text: string, url: string }> = ({ title, text, url }) =>  {
 	const small = useMediaQuery(640);
-    const [ visible, setVisible ] = useState(true);
+    const [ visible, setVisible ] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        const vis = window.sessionStorage.getItem("banner");
+        if(vis == "false") setVisible(false);
+        else setVisible(true);
+    }, []);
+
+    useEffect(() => {
+        window.sessionStorage.setItem("banner", visible ? "true" : "false");
+    }, [visible]);
 
     return visible ? (
         <div className="w-full bg-black text-white flex flex-row items-center justify-between py-4 px-4 z-50 relative t">

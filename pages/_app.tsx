@@ -1,8 +1,17 @@
 
 import '../styles/globals.css'
+import '../styles/nprogress.css'
+
 import type { AppProps /*, AppContext */ } from 'next/app'
 import Head from 'next/head'
 import { SessionProvider } from "next-auth/react"
+
+import NProgress from "nprogress"
+import Router from "next/router"
+
+Router.events.on("routeChangeError", NProgress.done);
+Router.events.on("routeChangeStart", NProgress.start);
+Router.events.on("routeChangeComplete", NProgress.done);
 
 function App({ Component, pageProps: { session, metaTags, ...pageProps } }: AppProps) {
   return (

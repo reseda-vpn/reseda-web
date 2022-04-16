@@ -13,8 +13,8 @@ export const Footer = () => {
                             <div className="flex flex-col">
                                 <p className="font-semibold text-base text-slate-100">Product</p>
                                 <a className="font-light text-slate-50 text-sm text-opacity-60" href="../#pricing">Pricing</a>
-                                <a className="font-light text-slate-50 text-sm text-opacity-60" >Open-Source</a>
-                                <a className="font-light text-slate-50 text-sm text-opacity-60">Server Locations</a>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60" href="/product/open_source">Open-Source</a>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60" href="/product/server_locations">Server Locations</a>
                                 <a className="font-light text-slate-50 text-sm text-opacity-60">Security Tools</a>
 
                             </div>
@@ -53,8 +53,6 @@ export const Footer = () => {
 
                     <p className="text-slate-400 text-sm my-0">By <a href="https://ben-white.vercel.app" className="text-slate-200 text-sm my-0">@benji</a></p>
                 </div>
-                
-
             </div>
         </div>
         

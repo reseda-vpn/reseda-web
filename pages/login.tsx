@@ -73,10 +73,10 @@ export default function Home({ providers }) {
 				<canvas id="gradient-canvas" className="md:top-0 w-full z-10 absolute h-screen" style={{ width: '200%', height: '200%' }} data-transition-in></canvas>
 
                 <div className="flex-row flex-1 w-screen h-full grid sm:grid-cols-3">
-                    <div className="w-full bg-white z-20 flex justify-center items-center flex-col sm:p-72 max-h-screen">
+                    <div className="w-full bg-white z-20 flex justify-center items-center flex-col sm:px-72 max-h-screen">
                         <div className="flex flex-col flex-1 gap-8 justify-center">
                             <motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl}>
-                                <h2 className="font-bold font-altSans text-lg text-slate-400">RESEDA</h2>
+                                <a className="font-bold font-altSans text-lg text-slate-400 hover:cursor-pointer" href="../">RESEDA</a>
                                 <motion.h1 variants={cardVariants} className="m-0 font-bold text-2xl md:text-3xl">Login</motion.h1>
                                 <motion.p  variants={cardVariants} className="text-slate-600 text-base">It{'\''}s great to have you here!</motion.p>
                             </motion.div>
@@ -184,6 +184,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     });
   
     return {
-      props: { csrfToken, providers },
+      props: { csrfToken: csrfToken ? csrfToken : null, providers },
     };
   }
