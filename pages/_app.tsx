@@ -1,6 +1,7 @@
 
 import '../styles/globals.css'
 import '../styles/nprogress.css'
+import '../styles/twemoji.css'
 
 import type { AppProps /*, AppContext */ } from 'next/app'
 import Head from 'next/head'

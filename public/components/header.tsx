@@ -9,8 +9,8 @@ export const Header = () => {
     console.log()
 
     return (
-        <div className="flex flex-row z-50 sm:bg-white bg-opacity-80 sm:backdrop-blur-md">
-            <div className="flex flex-row py-2 px-4 justify-between max-w-screen-lg w-full my-0 mx-auto z-50">
+        <div className="flex flex-row z-40 sm:bg-white bg-opacity-80 sm:backdrop-blur-md">
+            <div className="flex flex-row py-2 px-4 justify-between max-w-screen-lg w-full my-0 mx-auto z-40">
                 <div className="flex flex-row items-center gap-4">
                     <div className="font-bold font-altSans text-lg sm:text-slate-800 text-slate-100 hover:cursor-pointer" onClick={() => router.push('../')}>RESEDA</div>   
 
