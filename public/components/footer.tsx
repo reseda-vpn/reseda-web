@@ -14,8 +14,8 @@ export const Footer = () => {
                             <div className="flex flex-col">
                                 <p className="font-semibold text-base text-slate-100">Product</p>
                                 <a className="font-light text-slate-50 text-sm text-opacity-60" href="../#pricing">Pricing</a>
-                                <Link href="/product/open_source" passHref={true}><p className="font-light text-slate-50 text-sm text-opacity-60">Open-Source</p></Link> 
-                                <Link href="/product/server_locations" passHref={true}><p className="font-light text-slate-50 text-sm text-opacity-60" >Server Locations</p></Link>
+                                <Link href="/product/open_source" passHref={true}><p className="hover:cursor-pointer font-light text-slate-50 text-sm text-opacity-60">Open-Source</p></Link> 
+                                <Link href="/product/server_locations" passHref={true}><p className="hover:cursor-pointer font-light text-slate-50 text-sm text-opacity-60" >Server Locations</p></Link>
                                 <a className="font-light text-slate-50 text-sm text-opacity-60">Security Tools</a>
 
                             </div>
