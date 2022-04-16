@@ -34,6 +34,7 @@ export default function Home() {
 	const small = useMediaQuery(640);
     const [ serverRegistry, setServerRegistry ] = useState([]);
     const [ fetching, setFetching ] = useState<boolean>(true);
+    const [ serverCurrent, setServerCurrent ] = useState(null);
     const [ reqServer, setReqServer ] = useState(null);
 
 	useEffect(() => {
@@ -53,7 +54,7 @@ export default function Home() {
 
     useEffect(() => {
         if(reqServer?.hostname)
-            fetch(`https://reseda.app/api/server/ping`, {
+            fetch(`../../api/server/ping`, {
                 method: "POST",
                 body: JSON.stringify({
                     location: reqServer.hostname
@@ -62,6 +63,8 @@ export default function Home() {
                 .then(async e => {
                     const json = await e.json();
                     console.log(json);
+                    setServerCurrent(json);
+
                 })
                 .catch(e => {
                     console.log(e)
@@ -76,7 +79,10 @@ export default function Home() {
                 reqServer ?
                     <div 
                         className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 items-center content-center justify-center"
-                        onClick={() => setReqServer(null)}
+                        onClick={() => { 
+                            setReqServer(null);
+                            setServerCurrent(null);
+                        }}
                         >
                         <div 
                             className="p-6 bg-slate-800 text-white rounded-lg"
@@ -102,8 +108,19 @@ export default function Home() {
                                 <div>
                                     <p className="text-sm opacity-50">Status</p>
                                     <div className="flex flex-row items-center gap-2">
-                                        <div className="h-2 w-2 bg-green-300 rounded-full"></div>
-                                        <p>Online</p>
+                                        {
+                                            serverCurrent?.status == "OK" ?
+                                                <>
+                                                    <div className="h-2 w-2 bg-green-300 rounded-full"></div>
+                                                    <p>Online</p>
+                                                </>
+                                            :
+                                                <>
+                                                    <div className="h-2 w-2 bg-red-300 rounded-full"></div>
+                                                    <p>Offline</p>
+                                                </>
+                                        }
+                                        
                                     </div>
                                 </div>
 
