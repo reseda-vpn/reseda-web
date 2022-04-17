@@ -34,8 +34,6 @@ export default function Home() {
 	useEffect(() => {
           // Create your instance
           const gradient = new Gradient()
-  
-          // Call `initGradient` with the selector to your canvas
 
 		  //@ts-expect-error
           gradient.initGradient('#gradient-canvas')
@@ -48,9 +46,9 @@ export default function Home() {
 			<div className="flex-col flex font-sans min-h-screen w-screen relative">
 				<Header />
 
-				<canvas id="gradient-canvas" className="md:top-0" style={{ height: small ? '450px' : '800px' }} data-transition-in></canvas>
+				<canvas id="gradient-canvas" className="md:top-0" style={{ height: small ? '450px' : '100vh' }} data-transition-in></canvas>
 
-				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : '800px' }}>
+				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : 'calc(100vh - 48px)' }}>
 					<div className="h-fit flex flex-col gap-16 md:gap-8 items-start">
 						<div className="z-50 relative flex flex-col gap-2">
 							<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={titleControl} className="text-4xl md:text-5xl font-extrabold m-0 text-slate-100 text-left z-50 flex flex-row flex-wrap gap-4 gap-y-0">
@@ -215,7 +213,7 @@ export default function Home() {
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-16 max-w-screen-lg w-full my-0 mx-auto py-2 px-4 relative">
+					<div className="flex flex-col gap-16 max-w-screen-lg w-full my-0 mx-auto py-2 px-4 relative" id="prerelease">
 						<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={subTitleControl} className="flex flex-col  z-20">
 							<h2 className="text-transparent bg-gradient-to-tr bg-clip-text font-semibold">PRE-RELEASE BONUSES</h2>
 							<motion.h1 className="m-0 font-bold text-2xl md:text-3xl" variants={cardVariants}>Why Join Reseda in Pre-Release?</motion.h1>

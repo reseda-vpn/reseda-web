@@ -50,32 +50,42 @@ export default function Home() {
 
                 <div className="w-full mx-auto flex-1">
                     <div className="mx-auto max-w-screen-lg p-4 pt-12">
-                        <h1 className="font-bold text-3xl">Our Commitment to Open Source  </h1>
+                        <h1 className="text-3xl font-bold">Legal</h1>
                         <br />
-                        <p className="text-justify">
-                            Reseda is committed to open source software, as such - our client is completely open source for any that wish to take a look, tinker with it or edit it. Reseda tracks usage server-side, checking only the data transferred. In no way are permanent logs taken of network traffic or IP* by reseda.
-                            <br /><br />
-                        </p>
-
-                        <div className="flex flex-row items-center gap-2">
-                            <GitHub size={16}/> 
-                            <p>
-                                You can find the reseda client source code <a className="text-violet-500" href="https://github.com/bennjii/reseda">here</a>.
-                            </p>
-                        </div>
-
+                        <h1 id="cookie" className="text-xl font-bold">Cookie Policy</h1>
+                        <p>We keep 3 cookies under 2 different categories. All of which do <strong>not</strong> apply to any user who has not logged in. We do not keep cookies or store tracing information of any user who visits reseda.app.</p>
+                        
+                        <br />
+                        <h3 className="font-bold">next-auth.session-token</h3>
                         <p>
-                            <br />
-                            <i className="text-sm not-italic">
-                            *It is worth noting, by using the wireguard protocol, IP{'\''}s are stored in a cache for connection optimization. 
-                            This is outside the control of reseda, and we are working on a local network protocol to remove this cache. However, this cache is not publicly accessible nor permanently stored in any way.
-                            </i>
+                            An essential cookie to keep auth state persistance after closing the tab. Managed by NextAuth; the cookie stores identification to determine the user and prove thier identification.
                         </p>
+
+                        <br />
+                        <h3 className="font-bold">next-auth.csrf-token</h3>
+                        <p>
+                            A session-based cookie which maintains the users authentication state whilst using the app, this prevents the need to continually query user information, and leaves it readily accessable for the client.
+                        </p>
+  
+                        <br />
+                        <h3 className="font-bold">next-auth.callback-url</h3>
+                        <p>
+                            A session-based cookie which maintains the users location for NextAuth to return to if neccesary upon recieving an error, a callback URL. 
+                        </p>
+                        
+                        <br />
+                        <h1 id="tos" className="text-xl font-bold">Terms of Service</h1>
+                        <p>See our TOS <a className="text-violet-500" href="../legal.html">here</a>.</p>
+                        
+                        <br />
+                        <h1 id="privacy" className="text-xl font-bold">Privacy Policy</h1>
+                        <p>See our privacy policy <a className="text-violet-500" href="../legal.html">here</a>.</p>
+                        {/* <iframe className="w-full rounded-md" src="../legal.html"></iframe> */}
                     </div>
                 </div>
 
 				<div className="pt-16 pb-16"></div>
-				
+
 				<Footer />
 			</div>
 		</div>

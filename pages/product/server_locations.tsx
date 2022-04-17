@@ -86,7 +86,8 @@ export default function Home() {
                         >
                         <div 
                             className="p-6 bg-slate-800 text-white rounded-lg"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={(e) => e.stopPropagation()}
+                            
                         >
                             <div className="flex flex-row items-center justify-between pb-2">
                                 <div>
@@ -106,7 +107,7 @@ export default function Home() {
 
                             <div className="grid grid-cols-3 pt-4 gap-3 gap-x-8">
                                 <div>
-                                    <p className="text-sm opacity-50">Status</p>
+                                    <p className="text-sm opacity-50 select-none">Status</p>
                                     <div className="flex flex-row items-center gap-2">
                                         {
                                             serverCurrent?.status == "OK" ?
@@ -125,29 +126,39 @@ export default function Home() {
                                 </div>
 
                                 <div>
-                                    <p className="text-sm opacity-50">Uptime</p>
+                                    <p className="text-sm opacity-50 select-none">Uptime</p>
                                     <div className="flex flex-row items-center gap-2">
-                                        <div className="h-2 w-2 bg-green-300 rounded-full"></div>
-                                        <p>{ moment.duration(new Date().getTime() - new Date(reqServer.serverUp).getTime()).humanize() }</p>
+                                        {
+                                            serverCurrent?.status == "OK" ?
+                                            <>
+                                                <div className="h-2 w-2 bg-green-300 rounded-full"></div>
+                                                <p>{ moment.duration(new Date().getTime() - new Date(reqServer.serverUp).getTime()).humanize() }</p>
+                                            </>
+                                            :
+                                            <>
+                                                <p>...</p>
+                                            </>
+                                        }
+                                        
                                     </div>
                                 </div>
                                 
                                 <div>
-                                    <p className="text-sm opacity-50">Location</p>
+                                    <p className="text-sm opacity-50 select-none">Location</p>
                                     <div className="flex flex-row items-center gap-2">
                                         {reqServer.location}
                                     </div>
                                 </div>
 
                                 <div>
-                                    <p className="text-sm opacity-50">Server Type</p>
+                                    <p className="text-sm opacity-50 select-none">Server Type</p>
                                     <div className="flex flex-row items-center gap-2">
                                         Physical
                                     </div>
                                 </div>
 
                                 <div>
-                                    <p className="text-sm opacity-50">Internet Protocol</p>
+                                    <p className="text-sm opacity-50 select-none">Internet Protocol</p>
                                     <div className="flex flex-row items-center gap-2">
                                         {reqServer.hostname}
                                     </div>

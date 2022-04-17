@@ -15,31 +15,32 @@ export const Footer = () => {
                                 <p className="font-semibold text-base text-slate-100">Product</p>
                                 <a className="font-light text-slate-50 text-sm text-opacity-60" href="../#pricing">Pricing</a>
                                 <Link href="/product/open_source" passHref={true}><p className="hover:cursor-pointer font-light text-slate-50 text-sm text-opacity-60">Open-Source</p></Link> 
-                                <Link href="/product/server_locations" passHref={true}><p className="hover:cursor-pointer font-light text-slate-50 text-sm text-opacity-60" >Server Locations</p></Link>
-                                <a className="font-light text-slate-50 text-sm text-opacity-60">Security Tools</a>
-
+                                <Link href="/product/server_locations" passHref={true}><p className="hover:cursor-pointer z font-light text-slate-50 text-sm text-opacity-60" >Server Locations</p></Link>
+                                <Link href="https://dnsleaktest.com/" passHref={true}><p className="hover:cursor-pointer z font-light text-slate-50 text-sm text-opacity-60" >Security Tools</p></Link>
                             </div>
 
                             <div className="flex flex-col">
                                 <p className="font-semibold text-base text-slate-100">Pre-Release</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Supporter Tier</p>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60" href="../#prerelease">Supporter Tier</a>
                                 <p className="font-light text-slate-50 text-sm text-opacity-60">Security Testing</p>
                                 <p className="font-light text-slate-50 text-sm text-opacity-60">Speed Analysis</p>
                             </div>
 
                             <div className="flex flex-col">
                                 <p className="font-semibold text-base text-slate-100">Legal</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Cookie Policy</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Terms of Service</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Privacy Policy</p>
+                                <Link href="/product/legal/#cookie" passHref={true}><p className="hover:cursor-pointer z font-light text-slate-50 text-sm text-opacity-60" >Cookie Policy</p></Link>
+                                <Link href="/product/legal/#tos" passHref={true}><p className="hover:cursor-pointer z font-light text-slate-50 text-sm text-opacity-60" >Terms of Service</p></Link>
+                                <Link href="/product/legal/#privacy" passHref={true}><p className="hover:cursor-pointer z font-light text-slate-50 text-sm text-opacity-60" >Privacy Policy</p></Link>
                             </div>
                         </div>
 
                         <div className="hidden md:flex flex-col">
-                            <h2 className="uppercase text-sm text-slate-100 font-semibold">Join the waitlist</h2>
+                            {/* <p className="text-lg text-white">Fast. Affordable. Secure.</p> */}
+                            {/* <h2 className="uppercase text-sm text-slate-100 font-semibold">Join the waitlist</h2> */}
 
-                            <Input  
+                            {/* <Input  
                                 placeholder='Email'
+                                className='bg-black'
                                 callback={(email, ui_callback) => {
                                     fetch('/api/create_lead', {
                                         body: email,
@@ -48,11 +49,11 @@ export const Footer = () => {
                                         .then(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); })
                                         .catch(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); });
                                 }}>	
-                            </Input>
+                            </Input> */}
                         </div>
                     </div>
 
-                    <p className="text-slate-400 text-sm my-0">By <a href="https://ben-white.vercel.app" className="text-slate-200 text-sm my-0">@benji</a></p>
+                    <p className="text-slate-400 text-xs my-0">Made by <a href="https://ben-white.vercel.app" className="text-slate-200 text-xs my-0">@benji</a></p>
                 </div>
             </div>
         </div>
