@@ -3,7 +3,7 @@ import { Gradient } from '@components/gradient'
 import { supabase } from '@root/client';
 import { useRouter } from 'next/router';
 import Header from '@components/header';
-import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Download, Settings, User as UserIcon } from 'react-feather';
+import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, LogOut, Settings, Trash, User as UserIcon } from 'react-feather';
 
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
 import { Account, Usage, User } from '@prisma/client';
@@ -12,13 +12,13 @@ import useMediaQuery from '@components/media_query';
 import Loader from '@components/un-ui/loader';
 import Chart from '@components/chart';
 import prisma from "@root/lib/prisma"
+import LinearChart from '@components/linear_chart';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
     const csrfToken = await getCsrfToken({ req: req });
 
     if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
-    console.log(session, csrfToken);
 
     const exists = prisma.lead.findUnique({
 		where: { email: session.user.email }
@@ -69,6 +69,15 @@ export default function Home({ ss_session, token, user, eligible }) {
     const [ usageInformation, setUsageInformation ] = useState<Usage[]>(null);
     const [ menu, setMenu ] = useState("account");
     const router = useRouter();
+    const [ month, setMonth ] = useState(new Date().getMonth());
+
+    const [ thisMonthData, setThisMonthData ] = useState([]);
+
+    useEffect(() => {
+        const new_data = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
+
+        setThisMonthData(new_data);
+    }, [usageInformation, month])
 
 	useEffect(() => {
         setUserInformation(user.accounts[0]);
@@ -84,7 +93,6 @@ export default function Home({ ss_session, token, user, eligible }) {
         gradient.initGradient('#gradient-canvas');
 
         const as = async () => {
-            
             // if(!userInformation) 
             //     fetch(`/api/user/${session?.data?.user?.email}`).then(async e => {
             //         const data = await e.json();
@@ -142,9 +150,9 @@ export default function Home({ ss_session, token, user, eligible }) {
                             <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "billing" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
                         </div>
 
-                        <div className="flex flex-col gap-2 w-full"> {/* height: 32px; align-items: center; justify-content: center; */}
+                        {/* <div className="flex flex-col gap-2 w-full">
                             <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 h-8 content-center ${menu == "settings" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("settings")}>{ <Settings size={16}/>  } {small ? "" : "Settings"}</p>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="flex flex-col flex-1 w-full">
@@ -153,8 +161,8 @@ export default function Home({ ss_session, token, user, eligible }) {
                                 switch(menu) {
                                     case "account":
                                         return (
-                                            <div className="flex flex-col items-start w-full flex-1 gap-8">
-                                                <div className="w-full sm:w-fit">
+                                            <div className="flex flex-col items-start w-full gap-8">
+                                                <div className="w-full sm:w-fit flex flex-col flex-1">
                                                     <h1 className="font-bold text-xl ">{ session?.data?.user?.name} <i className="text-sm text-slate-500 not-italic font-light">({ session?.data?.user?.name })</i></h1>
                                                     <p className="text-slate-700">{ session?.data?.user?.email }</p>
 
@@ -165,6 +173,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
                                                             router.push(data.url);
                                                         }}>Log Out</a>
+                                                        <a href="" className="text-red-400 flex-1 flex- justify-self-end">Delete Account</a>
                                                     </div>
                                                 </div>
                                                 
@@ -312,8 +321,8 @@ export default function Home({ ss_session, token, user, eligible }) {
                                             <div className="flex flex-col items-start h-full flex-1">
                                                 <div className="flex sm:flex-row flex-col sm:items-center justify-between w-full">
                                                     <div className="flex sm:flex-col flex-row items-center justify-between sm:py-0 py-5">
-                                                        <h1 className="font-bold text-xl ">Usage <i className="text-sm text-slate-500 not-italic font-light">(This Billing Period)</i></h1>
-                                                        <p className="text-slate-700">{ new Date().toLocaleString("en-nz", { month: "long" }) }</p>
+                                                        <h1 className="font-bold text-xl ">{ new Date().toLocaleString("en-nz", { month: "long" }) } <i className="text-sm text-slate-500 not-italic font-light">(This Billing Period)</i></h1>
+                                                        {/* <p className="text-slate-700"></p> */}
                                                     </div>
 
                                                     <div className="flex flex-row items-center gap-6">
@@ -324,7 +333,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             </div>
                                                             
                                                             <p className="px-4">
-                                                                { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.up) || 0), 0)) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.reduce((a, b) => a + (parseInt(b.up) || 0), 0)) : "..." }
                                                             </p>
                                                             
                                                         </div>
@@ -336,19 +345,20 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             </div>
 
                                                             <p className="px-4">
-                                                                { usageInformation ? getSize(usageInformation?.reduce((a, b) => a + (parseInt(b.down) || 0), 0)) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.reduce((a, b) => a + (parseInt(b.down) || 0), 0)) : "..." }
                                                             </p>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div className="flex flex-1 w-full p-8">
+                                                <div className="flex flex-1 w-full py-8">
                                                     {
                                                         usageInformation ? 
-                                                        <Chart
-                                                            data={data}
-                                                            month={new Date().getMonth()}
-                                                        />
+                                                        <LinearChart data={usageInformation} month={new Date().getMonth()} />
+                                                        // <Chart
+                                                        //     data={data}
+                                                        //     month={new Date().getMonth()}
+                                                        // />
                                                         :
                                                         <div className="flex items-center justify-center flex-1">
                                                             <Loader color={"#000"} height={20} />
@@ -360,7 +370,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                     case "billing":
                                         return (
                                             <div className="flex flex-col items-start">
-                                                <h1 className="font-semibold text-lg">Billing</h1>
+                                                <h1 className="font-bold text-xl">Billing</h1>
                                             </div>
                                         )
                                     default:
