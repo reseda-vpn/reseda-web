@@ -32,7 +32,7 @@ export async function getStaticProps() {
 
 export default function Home() {
 	const small = useMediaQuery(640);
-    const [ serverRegistry, setServerRegistry ] = useState([]);
+    const [ serverRegistry, setServerRegistry ] = useState(null);
     const [ fetching, setFetching ] = useState<boolean>(true);
     const [ serverCurrent, setServerCurrent ] = useState(null);
     const [ reqServer, setReqServer ] = useState(null);
@@ -196,11 +196,9 @@ export default function Home() {
                                         );
                                     })
                                 :
-                                <div className="flex justify-center items-center w-full">
-                                    <Loader color={"#000"} height={25}></Loader>
-
-                                </div>
-                                
+                                    <div className="flex justify-center items-center w-full">
+                                        <Loader color={"#8b5cf6"} height={25}></Loader>
+                                    </div>
                             }
                         </div>
                         <br />
