@@ -113,3 +113,7 @@ h1::before {
       stroke-dashoffset: -.8;
   }
 }
+
+.border {
+  box-shadow: 0 2px 5px 0 var(--sail-color-shadow-ambient),0 1px 1px 0 var(--sail-color-shadow-key);
+}

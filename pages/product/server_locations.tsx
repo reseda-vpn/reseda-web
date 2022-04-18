@@ -87,7 +87,6 @@ export default function Home() {
                         <div 
                             className="p-6 bg-slate-800 text-white rounded-lg"
                             onClick={(e) => e.stopPropagation()}
-                            
                         >
                             <div className="flex flex-row items-center justify-between pb-2">
                                 <div>

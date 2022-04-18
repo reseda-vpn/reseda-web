@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Gradient } from '@components/gradient'
 import { supabase } from '@root/client';
 import { useRouter } from 'next/router';
+import styles from '@styles/Home.module.css'
 import Header from '@components/header';
 import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, LogOut, Settings, Trash, User as UserIcon } from 'react-feather';
 
@@ -13,6 +14,8 @@ import Loader from '@components/un-ui/loader';
 import Chart from '@components/chart';
 import prisma from "@root/lib/prisma"
 import LinearChart from '@components/linear_chart';
+import Input from '@components/un-ui/input';
+import InputField from '@components/un-ui/input_field';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -72,6 +75,7 @@ export default function Home({ ss_session, token, user, eligible }) {
     const [ month, setMonth ] = useState(new Date().getMonth());
 
     const [ thisMonthData, setThisMonthData ] = useState([]);
+    const [ changingUsername, setChangingUsername ] = useState(false);
 
     useEffect(() => {
         const new_data = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
@@ -140,8 +144,53 @@ export default function Home({ ss_session, token, user, eligible }) {
                     </>
                 }
                 
+                {
+                    changingUsername ?
+                    <div 
+                        className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 items-center content-center justify-center"
+                        onClick={() => { 
+                            setChangingUsername(false);
+                        }}
+                        >
+                        <div 
+                            className={"p-6 bg-white text-slate-800 border-1 border-slate-400 rounded-lg " + styles.border}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex flex-col justify-between pb-2 gap-y-4">
+                                <div>
+                                    <h2 className="font-bold text-xl">Change Username</h2>
+                                    <p className="text-sm text-slate-500 not-italic font-light">Current Username: <strong className="font-bold">{user?.name}</strong></p>
+                                </div>
 
-                <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-50 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
+                                <div className="flex flex-col gap-2">
+                                    <p className="uppercase text-xs text-slate-500 not-italic">New Username</p>
+                                    <InputField enterCallback={(username) => {
+                                        fetch('/api/user/username', {
+                                            body: JSON.stringify({ 
+                                                username: username,
+                                                userId: userInformation.userId
+                                            }),
+                                            method: 'POST'
+                                        })
+                                            .then(e => {
+                                                if(e.ok) {
+                                                    const event = new Event("visibilitychange");
+                                                    document.dispatchEvent(event);
+                                                    // window.location.reload();
+                                                    user.name = username;
+                                                    setChangingUsername(false);
+                                                }
+                                            })
+                                    }} callback={() => {}} placeholder={user?.name}></InputField>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    <></>
+                }
+
+                <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-40 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-start justify-between sm:w-32 w-full">
                         <div className="flex flex-row sm:flex-col gap-2 w-full">
                             {/* <p className="font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Account</p> */}
@@ -163,12 +212,20 @@ export default function Home({ ss_session, token, user, eligible }) {
                                         return (
                                             <div className="flex flex-col items-start w-full gap-8">
                                                 <div className="w-full sm:w-fit flex flex-col flex-1">
-                                                    <h1 className="font-bold text-xl ">{ session?.data?.user?.name} <i className="text-sm text-slate-500 not-italic font-light">({ session?.data?.user?.name })</i></h1>
+                                                    <h1 className="font-bold text-xl ">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
                                                     <p className="text-slate-700">{ session?.data?.user?.email }</p>
 
                                                     <div className="flex flex-row sm:items-center sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
-                                                        <a href="" className="text-violet-400">Forgot Password?</a>
-                                                        <a href="" className="text-violet-400">Change Username</a>
+                                                        {
+                                                            user.accounts[0].type == "credentials" ?
+                                                            <a href="" className="text-violet-200 line-through">Change Password</a>
+                                                            :
+                                                            <></>
+                                                        }
+                                                        <a href="" className="text-violet-400" onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setChangingUsername(true)
+                                                        }}>Change Username</a>
                                                         <a href="" className="text-violet-400" onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
                                                             router.push(data.url);
