@@ -30,16 +30,23 @@ export async function getStaticProps() {
 
 export default function Home() {
 	const small = useMediaQuery(640);
+	const [ isTauri, setIsTauri ] = useState(false);
 
 	useEffect(() => {
-          // Create your instance
-          const gradient = new Gradient()
+		//@ts-expect-error
+        setIsTauri(!!window.__TAURI__);
 
-		  //@ts-expect-error
-          gradient.initGradient('#gradient-canvas')
+		//@ts-expect-error
+		if(window.__TAURI__) window.location.href = "./login?t=1";
+		
+		// Create your instance
+		const gradient = new Gradient()
+
+		//@ts-expect-error
+		gradient.initGradient('#gradient-canvas')
 	}, []);
 
-	return (
+	return !isTauri ? 
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<Banner title={"💪 Improvements"} text={"Reseda is currently undergoing a major refactor"} url={"https://twitter.com/UnRealG3/status/1490596150944043012?s=20&t=DNFSbVhA3wkoWyVOkwAvxQ"} />
 
@@ -284,5 +291,6 @@ export default function Home() {
 				<Footer />
 			</div>
 		</div>
-	)
+		:
+		<></>
 }

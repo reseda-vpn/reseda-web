@@ -2,7 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: "GT Walsheim Pro", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 
   max-width: 100vw;
@@ -58,6 +58,11 @@ body {
 }
 
 @import url(../public/fonts/walsh/stylesheet.css);
+
+@font-face {
+  font-family: "DM Mono";
+  src: url('../public/fonts/dm-mono/DMMono-Regular.ttf');
+}
 
 a {
   color: inherit;
@@ -116,4 +121,17 @@ h1::before {
 
 .border {
   box-shadow: 0 2px 5px 0 var(--sail-color-shadow-ambient),0 1px 1px 0 var(--sail-color-shadow-key);
+}
+
+:root {
+  --text-primary: #121829;
+  --text-secondary: #7A7F8B;
+
+  --accent-blue: #579CFB;
+  --off-accent: #ACBBE1;
+  --off-white: #f5f3f7;
+  --off-white-blue: #f1f3f8;
+  --accent-light: #8ea2d438;
+
+  --accent: #2e6ffd;
 }

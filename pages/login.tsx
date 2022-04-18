@@ -62,7 +62,12 @@ export default function Home({ providers }) {
                 setAuthSuccess("logged_in");
                 setAuthFailure("");
 
-                router.replace('./profile');
+                //@ts-expect-error
+                if(window.__TAURI_INVOKE__) {
+                    router.replace('./app');
+                }else {
+                    router.replace('./profile');
+                }
             }
         }
     }
@@ -173,9 +178,12 @@ export default function Home({ providers }) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await getSession(context);
+
+    //@ts-expect-error
+    const redirect_url = context.req.socket.parser.incoming.url.includes("t=1") ? "/app" : "/profile"
   
     if (session) {
-      return { redirect: { permanent: false, destination: "/profile" } };
+      return { redirect: { permanent: false, destination: redirect_url } };
     }
   
     const csrfToken = await getCsrfToken({ req: context.req });
@@ -186,4 +194,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
       props: { csrfToken: csrfToken ? csrfToken : null, providers },
     };
-  }
+}
