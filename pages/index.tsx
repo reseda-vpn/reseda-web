@@ -33,11 +33,14 @@ export default function Home() {
 	const [ isTauri, setIsTauri ] = useState(false);
 
 	useEffect(() => {
+		let tauri = false;
 		//@ts-expect-error
-        setIsTauri(!!window.__TAURI__);
+		if(window.__TAURI_IPC__ || window.__TAURI__ || window.__TAURI_METADATA__) tauri = true;
+
+        setIsTauri(tauri);
 
 		//@ts-expect-error
-		if(window.__TAURI__) window.location.href = "./login?t=1";
+		if(window.__TAURI_METADATA__) window.location.href = "./login?t=1";
 		
 		// Create your instance
 		const gradient = new Gradient()

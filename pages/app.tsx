@@ -17,7 +17,7 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         //@ts-expect-error
-        setIsTauri(!!window.__TAURI__);
+        setIsTauri(!!window.__TAURI_METADATA__);
     }, [])
 
 	const showFrame = false;

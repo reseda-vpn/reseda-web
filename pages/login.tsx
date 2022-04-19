@@ -63,7 +63,7 @@ export default function Home({ providers }) {
                 setAuthFailure("");
 
                 //@ts-expect-error
-                if(window.__TAURI_INVOKE__) {
+                if(window.__TAURI_METADATA__) {
                     router.replace('./app');
                 }else {
                     router.replace('./profile');
