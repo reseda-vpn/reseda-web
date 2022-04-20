@@ -160,9 +160,7 @@ const connect: ResedaConnect = async (location: Server, time_callback: Function,
 		console.log(config);
 	
 		config.wgInterface.address = [`192.168.69.${connection.client_number}/24`]
-		await config.writeToFile().then(e => {
-			console.log("Written!")
-		})
+		await config.writeToFile();
 
 		console.timeLog("establishConnection")
 
@@ -632,8 +630,10 @@ const recursiveInvocation = (message: string, data?: object): Promise<string> =>
 	return new Promise(r => {
 		const listener = (event) => {
 			try {
-				console.log("Recieved: ", event, "  ... wanted", nonce);
-				if(JSON.parse(event.data).nonce == nonce) r(JSON.parse(event.data).data);
+				if(JSON.parse(event.data).nonce == nonce) {
+					console.log("Received: ", event, "  ... wanted", nonce);
+					r(JSON.parse(event.data).data);
+				}
 			}catch(e) {
 				console.error(e);
 			}
