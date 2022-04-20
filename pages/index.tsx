@@ -34,6 +34,7 @@ export default function Home() {
 
 	useEffect(() => {
 		let tauri = false;
+		
 		//@ts-expect-error
 		if(window.__TAURI_IPC__ || window.__TAURI__ || window.__TAURI_METADATA__) tauri = true;
 

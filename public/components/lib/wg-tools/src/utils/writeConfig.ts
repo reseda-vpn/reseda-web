@@ -6,6 +6,7 @@ import { WgConfigObject } from '../types/WgConfigObject'
 import { generateConfigString } from './configParser'
 import { makeSureDirExists } from './makeSureDirExists'
 import { invoke } from '@tauri-apps/api/tauri'
+import { recursiveInvocation } from '../../../../../reseda-api'
 
 interface Options {
   /** The full path to the file to write (use path.join to construct a full path before passing into this function) */
@@ -27,7 +28,7 @@ export const writeConfig = async (opts: Options) => {
 
     console.log(configString);
 
-    const output: string = await invoke('write_text_file', { fileName: "wg0.conf", text: configString });
+    const output: string = await recursiveInvocation('write_text_file', { fileName: "wg0.conf", text: configString });
     // await fs.writeFile({ path: filePath, contents: configString })
     // await fs.chmod(filePath, '600')
   } catch (e) {

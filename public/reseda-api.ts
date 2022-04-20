@@ -6,6 +6,19 @@ import { DefaultEventsMap } from '@socket.io/component-emitter';
 import { Session } from 'next-auth';
 import { WgConfig, getConfigObjectFromFile } from '@components/lib/wg-tools/src/index';
 import { invoke } from '@tauri-apps/api/tauri'
+import { randomBytes } from 'crypto';
+
+const nonces = new Set();
+
+function getNonce(): string {
+	let nonce = '';
+	while (nonce === '' || nonces.has(nonce)) {
+		nonce = randomBytes(4).toString('hex');
+	}
+	nonces.add(nonce);
+	return nonce;
+}
+
 
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
@@ -80,9 +93,12 @@ const connect: ResedaConnect = async (location: Server, time_callback: Function,
 	// Client Event Id
 	let EVT_ID;
 
-	const puckey: string = await invoke('generate_public_key', {
+	const puckey: string = await recursiveInvocation('generate_public_key', {
 		privateKey: config.wgInterface.privateKey
 	}); 
+
+	console.log("PUCKEY", puckey);
+
 	console.log(puckey);
 	// should be 44 long
 	console.log(puckey.length)
@@ -317,14 +333,14 @@ const init = async () => {
 }
 
 const up = async (cb: Function, conf?: WgConfig) => {
-	await invoke('start_wireguard_tunnel').then(e => {
+	await recursiveInvocation('start_wireguard_tunnel').then(e => {
 		console.log(e);
 		cb();
 	})
 }
 
 const down = async (cb: Function, conf?: WgConfig) => {
-	await invoke('stop_wireguard_tunnel').then(e => {
+	await recursiveInvocation('stop_wireguard_tunnel').then(e => {
 		cb();
 	})
 }
@@ -343,7 +359,7 @@ const restart = (cb: Function) => {
 } 
 
 const forceDown = (cb: Function) => {
-	invoke('remove_windows_service').then(e => {
+	recursiveInvocation('remove_windows_service').then(e => {
 		cb();
 	})
 	
@@ -351,7 +367,7 @@ const forceDown = (cb: Function) => {
 }
 
 const isUp = async (cb: Function) => {
-	const data: string = await invoke('is_wireguard_up');
+	const data: string = await recursiveInvocation('is_wireguard_up');
 	console.log(data, data.includes("STOPPED"));
 
 	const stopped = data.includes("STOPPED");
@@ -380,7 +396,7 @@ const resumeConnection = async (reference: Function, timeCallback: Function, ser
 		...client_config
 	});
 
-	const public_key: string = await invoke('generate_public_key', {
+	const public_key: string = await recursiveInvocation('generate_public_key', {
 		privateKey: config.wgInterface.privateKey
 	})
 	
@@ -603,4 +619,28 @@ const disconnect_pure: ResedaDisconnect = async (connection: ResedaConnection, r
 	}, config)
 }
 
-export { connect, disconnect, resumeConnection, disconnect_pure };
+const recursiveInvocation = (message: string, data?: object): Promise<string> => {
+	const nonce = getNonce();
+
+	window.parent.postMessage(JSON.stringify({
+		message: message,
+		data: data ? data : null,
+		type: "call-of-the-deep",
+		nonce: nonce
+	}), "*")
+
+	return new Promise(r => {
+		const listener = (event) => {
+			try {
+				console.log("Recieved: ", event, "  ... wanted", nonce);
+				if(JSON.parse(event.data).nonce == nonce) r(JSON.parse(event.data).data);
+			}catch(e) {
+				console.error(e);
+			}
+		};
+
+		window.addEventListener("message", listener);
+	})
+}
+
+export { connect, disconnect, resumeConnection, disconnect_pure, recursiveInvocation };

@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { parseConfigString } from './configParser'
+import { recursiveInvocation } from '../../../../../reseda-api'
 
 interface Options {
   /** Full, absolute path to file including file name and extension */
@@ -18,7 +19,7 @@ export const getConfigStringFromFile = async (opts: Options) => {
  * Get a wireguard config file as a parsed object
  */
 export const getConfigObjectFromFile = async (opts: Options) => {
-  const output: string = await invoke('read_text_file', { fileName: opts.filePath });
+  const output: string = await recursiveInvocation('read_text_file', { fileName: opts.filePath });
   console.log(output);
   
   const obj = parseConfigString(output)
