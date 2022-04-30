@@ -129,11 +129,26 @@ const connect: ResedaConnect = async (location: Server, time_callback: Function,
 		}
 	});
 
+	console.log("Created Websocket...");
+	await recursiveInvocation('log_to_console', {
+		content: `Created WS...`
+	}); 
+
 	socket.emit('request_connect', {
 		cPk: config.publicKey
 	});
 
+	console.log(`Emitted WS Request with cPk: ${config.publicKey}`);
+	await recursiveInvocation('log_to_console', {
+		content: `Emitted WS Request with cPk: ${config.publicKey}`
+	}); 
+
 	socket.on('request_accepted', async (connection: Packet) => {
+		console.log(`Received WS connection response...`);
+		await recursiveInvocation('log_to_console', {
+			content: `Received WS connection response...`
+		}); 
+
 		console.timeEnd("createSocket");
 		console.time("establishConnection");
 		console.log(connection);
@@ -157,10 +172,18 @@ const connect: ResedaConnect = async (location: Server, time_callback: Function,
 			endpoint: `${connection.server_endpoint}:51820`
 		});
 
+		await recursiveInvocation('log_to_console', {
+			content: `Added Config Peer...`
+		}); 
+
 		console.log(config);
 	
 		config.wgInterface.address = [`192.168.69.${connection.client_number}/24`]
 		await config.writeToFile();
+
+		await recursiveInvocation('log_to_console', {
+			content: `Wrote to file new address`
+		}); 
 
 		console.timeLog("establishConnection")
 
@@ -369,7 +392,7 @@ const isUp = async (cb: Function) => {
 	console.log(data, data.includes("STOPPED"));
 
 	const stopped = data.includes("STOPPED");
-	cb(stopped);
+	cb(!stopped);
 
 	// if(platform == 'win32')
 	// 	ex("sc query WireGuardTunnel$wg0", false, (out) => {
@@ -603,7 +626,9 @@ const connect_pure: ResedaConnect = async (location: Server, time_callback: Func
 }
 
 const disconnect_pure: ResedaDisconnect = async (connection: ResedaConnection, reference: Function, user: Session,  _: boolean, config: WgConfig): Promise<any> => {
-	down(() => {
+	down(async () => {
+		await recursiveInvocation('remove_windows_service');
+
 		reference({
 			protocol: "wireguard",
 			config: {},
