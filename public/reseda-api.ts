@@ -437,7 +437,7 @@ const resumeConnection = async (reference: Function, timeCallback: Function, ser
 		auth: {
 			server: conn_ip,
 			client_pub_key: key,
-			author: user.id,
+			author: user?.id ?? "session-invalid-updating-soon",
 			type: "secondary"
 		}
 	});
@@ -656,7 +656,7 @@ const recursiveInvocation = (message: string, data?: object): Promise<string> =>
 		const listener = (event) => {
 			try {
 				if(JSON.parse(event.data).nonce == nonce) {
-					console.log("Received: ", event, "  ... wanted", nonce);
+					// console.log("Received: ", event, "  ... wanted", nonce);
 					r(JSON.parse(event.data).data);
 				}
 			}catch(e) {
