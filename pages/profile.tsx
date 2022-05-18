@@ -84,6 +84,8 @@ export default function Home({ ss_session, token, user, eligible }) {
     }, [usageInformation, month])
 
 	useEffect(() => {
+        localStorage.setItem("reseda.jwt", JSON.stringify(ss_session?.jwt));
+
         setUserInformation(user.accounts[0]);
         setEligibleForDownload(eligible.claimable ? 1 : 2);
         // setUsageInformation(usage);
