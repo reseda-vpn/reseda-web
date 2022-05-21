@@ -6,23 +6,40 @@ import Button from './un-ui/button';
 
 export const LinearChart = ({ data, month }) => {
     const [ thisMonthData, setThisMonthData ] = useState([]);
+    const [ sortBy, setSortBy ] = useState("connStart");
+    const [ sortForward, setSortForward ] = useState(true);
 
     useEffect(() => {
         const new_data: any[] = data.filter(e => new Date(e.connStart).getMonth() == month);
 
-        new_data.sort((a, b) => { return new Date(b.connStart).getTime() - new Date(a.connStart).getTime()  })
+        new_data.sort((a, b) => { 
+            switch (sortBy) {
+                case "id":
+                    return ('' + a.id).localeCompare(b.id); 
+                case "connStart":
+                    return new Date(b.connStart).getTime() - new Date(a.connStart).getTime()  
+                case "dur":
+                    return (new Date(b.connEnd).getTime() - new Date(b.connStart).getTime()) - (new Date(a.connEnd).getTime() - new Date(a.connStart).getTime())
+                case "up":
+                    return b.up - a.up
+                case "down":
+                    return b.down - a.down
+                default:
+                    break;
+            }
+        })
 
         setThisMonthData(new_data);
-    }, [data, month])
+    }, [data, month, sortBy])
 
     return (
         <div className="flex flex-col w-full">
             <div className="grid grid-cols-5 text-slate-500 px-4">
-                <p>Server</p>
-                <p>Start</p>
-                <p>Duration</p>
-                <p>Up</p>
-                <p>Down</p>
+                <p onClick={() => setSortBy("id")}>Server</p>
+                <p onClick={() => setSortBy("connStart")}>Start</p>
+                <p onClick={() => setSortBy("dur")}>Duration</p>
+                <p onClick={() => setSortBy("up")}>Up</p>
+                <p onClick={() => setSortBy("down")}>Down</p>
             </div>
 
             <br />
