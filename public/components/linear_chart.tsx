@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useMediaQuery from './media_query';
 import Button from './un-ui/button';
+import { ArrowDown, ChevronDown, ChevronUp } from "react-feather"
 
 export const LinearChart = ({ data, month }) => {
     const [ thisMonthData, setThisMonthData ] = useState([]);
@@ -15,31 +16,47 @@ export const LinearChart = ({ data, month }) => {
         new_data.sort((a, b) => { 
             switch (sortBy) {
                 case "id":
-                    return ('' + a.id).localeCompare(b.id); 
+                    return sortForward ? ('' + a.id).localeCompare(b.id) : ('' + b.id).localeCompare(a.id)
                 case "connStart":
-                    return new Date(b.connStart).getTime() - new Date(a.connStart).getTime()  
+                    return sortForward ? new Date(b.connStart).getTime() - new Date(a.connStart).getTime() : new Date(a.connStart).getTime() - new Date(b.connStart).getTime()
                 case "dur":
-                    return (new Date(b.connEnd).getTime() - new Date(b.connStart).getTime()) - (new Date(a.connEnd).getTime() - new Date(a.connStart).getTime())
+                    return sortForward ? (new Date(b.connEnd).getTime() - new Date(b.connStart).getTime()) - (new Date(a.connEnd).getTime() - new Date(a.connStart).getTime()) : (new Date(a.connEnd).getTime() - new Date(a.connStart).getTime()) - (new Date(b.connEnd).getTime() - new Date(b.connStart).getTime())
                 case "up":
-                    return b.up - a.up
+                    return sortForward ? b.up - a.up : a.up - b.up
                 case "down":
-                    return b.down - a.down
+                    return sortForward ? b.down - a.down : a.down - b.down
                 default:
                     break;
             }
         })
 
         setThisMonthData(new_data);
-    }, [data, month, sortBy])
+    }, [data, month, sortBy, sortForward])
 
     return (
         <div className="flex flex-col w-full">
-            <div className="grid grid-cols-5 text-slate-500 px-4">
-                <p onClick={() => setSortBy("id")}>Server</p>
-                <p onClick={() => setSortBy("connStart")}>Start</p>
-                <p onClick={() => setSortBy("dur")}>Duration</p>
-                <p onClick={() => setSortBy("up")}>Up</p>
-                <p onClick={() => setSortBy("down")}>Down</p>
+            <div className="grid grid-cols-5 text-slate-500 px-4 gap-2">
+                {
+                    [["Server", "id"], ["Start", "connStart"], ["Duration", "dur"], ["Up", "up"], ["Down", "down"]].map(e => {
+                        return (
+                            <p key={e[0]} className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 rounded-sm px-1 py-1 select-none" onClick={() => {
+                                if(sortBy !== e[1]) {
+                                    setSortBy(e[1])
+                                }else {
+                                    setSortForward(!sortForward)
+                                }
+                            }}>{e[0]} 
+                                {
+                                    sortForward ? <ChevronDown className={`${sortBy == e[1] ? "flex" : "hidden"}`} /> : <ChevronUp className={`${sortBy == e[1] ? "flex" : "hidden"}`} />
+                                }
+                            </p>
+                        )
+                    })
+                }
+                {/* <p className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 rounded-sm px-1 py-1" onClick={() => setSortBy("connStart")}>Start <ChevronDown className={`${sortBy == "connStart" ? "flex" : "hidden"}`} /></p>
+                <p className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 rounded-sm px-1 py-1" onClick={() => setSortBy("dur")}>Duration <ChevronDown className={`${sortBy == "dur" ? "flex" : "hidden"}`} /></p>
+                <p className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 rounded-sm px-1 py-1" onClick={() => setSortBy("up")}>Up <ChevronDown className={`${sortBy == "up" ? "flex" : "hidden"}`} /></p>
+                <p className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 rounded-sm px-1 py-1" onClick={() => setSortBy("down")}>Down <ChevronDown className={`${sortBy == "down" ? "flex" : "hidden"}`} /></p> */}
             </div>
 
             <br />
