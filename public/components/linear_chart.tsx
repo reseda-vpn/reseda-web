@@ -8,7 +8,9 @@ export const LinearChart = ({ data, month }) => {
     const [ thisMonthData, setThisMonthData ] = useState([]);
 
     useEffect(() => {
-        const new_data = data.filter(e => new Date(e.connStart).getMonth() == month);
+        const new_data: any[] = data.filter(e => new Date(e.connStart).getMonth() == month);
+
+        new_data.sort((a, b) => { return new Date(b.connStart).getTime() - new Date(a.connStart).getTime()  })
 
         setThisMonthData(new_data);
     }, [data, month])
