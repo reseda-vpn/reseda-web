@@ -247,7 +247,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                         </div>
 
                                                         
-                                                        <Button className="text-violet-50 bg-violet-500" icon={<ArrowUpRight size={16}/>}>{ small ? "" : "Download" }</Button>
+                                                        <Button className="text-violet-50 bg-violet-500" href="/download" icon={<ArrowUpRight size={16}/>}>{ small ? "" : "Download" }</Button>
                                                     </div>
                                                     :
                                                     eligibleForDownload == 2 ?
