@@ -92,6 +92,7 @@ export default function Home({ providers }) {
                                     <InputField
                                         placeholder='Email'
                                         type="email"
+                                        noArrow={true}
                                         callback={(email) => {
                                             setAuthInformation({
                                                 ...authInformation,
@@ -106,6 +107,7 @@ export default function Home({ providers }) {
                                     <InputField
                                         type="password"
                                         placeholder='Password'
+                                        noArrow={true}
                                         callback={(password) => {
                                             setAuthInformation({
                                                 ...authInformation,

@@ -3,10 +3,10 @@ import styles from './UnUI.module.css'
 
 import { ArrowRight, Check, CornerDownLeft, Heart, Key, Loader, RefreshCw, Repeat, Triangle } from 'react-feather'
 
-interface Props { callback: Function, children?: React.ReactNode, enterCallback?: Function };
+interface Props { callback: Function, children?: React.ReactNode, enterCallback?: Function, noArrow: boolean };
 declare type NativeAttrs = Omit<React.InputHTMLAttributes<any>, keyof Props>;
 
-const InputField: React.FC<Props & NativeAttrs> = ({ children, callback, enterCallback, ...args }) => {
+const InputField: React.FC<Props & NativeAttrs> = ({ children, callback, enterCallback, noArrow, ...args }) => {
     const input_ref = useRef<HTMLInputElement>(null);
     const [ value, setValue ] = useState("");
 
@@ -34,12 +34,15 @@ const InputField: React.FC<Props & NativeAttrs> = ({ children, callback, enterCa
                 </input>
 
                 {
-                    value == "" ? 
-                    <ArrowRight height={16} color={"#b4b4b4"} />
+                    !noArrow ? 
+                        value == "" ? 
+                            <ArrowRight height={16} color={"#b4b4b4"} />
+                        :
+                            <ArrowRight height={16} color={"#252525"} onClick={() => {
+                                enterCallback(value);
+                            }}/>
                     :
-                    <ArrowRight height={16} color={"#252525"} onClick={() => {
-                        enterCallback(value);
-                    }}/>
+                    <></>
                 }
             </div>
         )  
