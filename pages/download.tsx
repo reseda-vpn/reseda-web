@@ -47,8 +47,11 @@ export default function Home({ releases }) {
         version: null
     })
 
+    const [ releasesCache, setReleasesCache ] = useState(null);
     const [ type, setType ] = useState<"windows" | "mac_os" | "linux">("windows");
     const [ downloaded, setDownloaded ] = useState(false);
+    const [ changeVersion, setChangeVersion ] = useState(false);
+    const [ version, setVersion ] = useState(null);
 
 	useEffect(() => {
         if(navigator.userAgent.match(/Linux/i)) {
@@ -60,11 +63,13 @@ export default function Home({ releases }) {
         }
 
         const releases_ = JSON.parse(releases);
+        setReleasesCache(releases_);
+        
         releases_.sort((a, b) => {
             return new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
         })
 
-        const this_release = releases_[0];
+        const this_release = !version ? releases_[0] : releases_.find(e => { e?.tag_name == version });
         const new_releaseFeatures = {
             windows: null,
             mac_os: null,
@@ -97,6 +102,52 @@ export default function Home({ releases }) {
 	return !isTauri ? 
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<Banner title={"💪 Improvements"} text={"Reseda is currently undergoing a major refactor"} url={"https://twitter.com/UnRealG3/status/1490596150944043012?s=20&t=DNFSbVhA3wkoWyVOkwAvxQ"} />
+
+            {
+                changeVersion ?
+                    <div 
+                        className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-500 bg-opacity-40 items-center content-center justify-center"
+                        onClick={() => { 
+                            setChangeVersion(false);
+                        }}
+                        >
+                        <div 
+                            className="text-base font-normal bg-slate-200 rounded-md px-2 cursor-pointer" 
+                        >
+                            <div 
+                                className="p-6"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <div className="flex flex-col pb-2">
+                                    <p className="flex flex-col text-lg font-altSans font-semibold">Choose from the following available versions</p> 
+                                    <div>
+                                        {
+                                            releasesCache.map(e => {
+                                                return (
+                                                    <div 
+                                                        className="hover:bg-purple-300 hover:text-purple-800 rounded-md px-2 font-semibold "
+                                                        key={e?.tag_name}
+                                                        onClick={() => {
+                                                            if(e?.tag_name) setVersion(e.tag_name)
+
+                                                            setChangeVersion(false);
+                                                        }}
+                                                    >
+                                                        { e?.tag_name?.split("app-")?.[1] }       
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                :
+                    <></>
+            }
 
 			<div className="flex-col flex font-sans min-h-screen w-screen relative">
 				<Header />
@@ -148,7 +199,7 @@ export default function Home({ releases }) {
                     </div>
                     :
                     <div className="flex flex-col gap-2 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative h-full flex-1" id="vpn">
-                        <h1 className="flex text-[2.5rem] font-bold text-slate-800 mb-0 pb-0 font-altSans">Download Reseda <p className="text-base justify-end items-end self-end font-normal">{releaseFeatures?.version?.split("app-")?.[1]}</p></h1>
+                        <h1 className="flex text-[2.5rem] font-bold text-slate-800 mb-0 pb-0 font-altSans">Download Reseda <p className="text-base justify-end items-end self-end font-normal bg-slate-200 rounded-md px-2 cursor-pointer" onClick={() => setChangeVersion(true) }>{releaseFeatures?.version?.split("app-")?.[1]}</p></h1>
 
                         <div className="flex flex-row items-center gap-2 font-altSans">
                             Compatible with 
