@@ -59,7 +59,12 @@ export default function Home({ releases }) {
             setType("mac_os")
         }
 
-        const this_release = JSON.parse(releases)[0];
+        const releases_ = JSON.parse(releases);
+        releases_.sort((a, b) => {
+            return new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+        })
+
+        const this_release = releases_[0];
         const new_releaseFeatures = {
             windows: null,
             mac_os: null,
@@ -238,11 +243,11 @@ export default function Home({ releases }) {
                                     <>
                                         <Button icon={false} href={releaseFeatures?.[type]} onClick={() => {
                                             setDownloaded(true);
-                                        }} className="bg-violet-600 text-slate-50 font-semibold text-[1.1rem] px-5 py-4 h-10 w-32 rounded-2xl font-altSans" >Download app</Button> <p className="text-sm text-slate-400">for {type == "windows" ? "Windows" : type == "linux" ? "Linux" : "MacOS"}</p>
+                                        }} className="bg-violet-600 text-slate-50 font-semibold text-[1.1rem] px-5 py-4 h-10 w-40 rounded-2xl font-altSans" >Download app</Button> <p className="text-sm text-slate-400">for {type == "windows" ? "Windows" : type == "linux" ? "Linux" : "MacOS"}</p>
                                     </>
                                     :
                                     <>
-                                        <Button icon={false} className="bg-violet-300 text-slate-50 font-semibold text-[1.1rem] px-5 py-4 h-10 w-32 rounded-2xl font-altSans" >Download app</Button> <p className="text-sm text-slate-400">for {type == "windows" ? "Windows" : type == "linux" ? "Linux" : "MacOS"}</p> 
+                                        <Button icon={false} style={{ width: '180px' }} className="bg-violet-300 text-slate-50 font-semibold text-[1rem] px-5 py-4 h-10 w-40 rounded-2xl font-altSans" >Download app</Button> <p className="text-sm text-slate-400">for {type == "windows" ? "Windows" : type == "linux" ? "Linux" : "MacOS"}</p> 
                                     </>
                                 }
                             </div>
