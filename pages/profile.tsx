@@ -244,7 +244,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             <h1 className="font-semibold text-violet-900">You are eligible for Reseda { small ? "" : "Pre-Release" }</h1>
                                                             {/* <p className="text-violet-700">You have been selected to join us in pre-release.</p>  */}
                                                         </div>
-
                                                         
                                                         <Button className="text-violet-50 bg-violet-500" href="/download" icon={<ArrowUpRight size={16}/>}>{ small ? "" : "Download" }</Button>
                                                     </div>
