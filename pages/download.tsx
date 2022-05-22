@@ -63,11 +63,12 @@ export default function Home({ releases }) {
         }
 
         const releases_ = JSON.parse(releases);
-        setReleasesCache(releases_);
         
         releases_.sort((a, b) => {
             return new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
-        })
+        });
+
+        setReleasesCache(releases_);
 
         const this_release = !version ? releases_[0] : releases_.find(e => { e?.tag_name == version });
         const new_releaseFeatures = {
@@ -92,6 +93,8 @@ export default function Home({ releases }) {
                 new_releaseFeatures.mac_os = e?.browser_download_url;
             }
         });
+
+        setVersion(releases_?.[0]?.tag_name);
 
         if(this_release.prerelease) new_releaseFeatures.pre_release = true;
         new_releaseFeatures.version = this_release.tag_name;
@@ -286,6 +289,10 @@ export default function Home({ releases }) {
                         }
 
                         <div className="pt-6 pb-6"></div>
+
+                        {
+                            releasesCache?.[0]?.tag_name == version ? <></> : <p className="text-sm font-altSans text-slate-400">This is not the current version.</p>
+                        }
                         
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-row items-center gap-2">
