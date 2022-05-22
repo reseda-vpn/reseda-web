@@ -51,6 +51,14 @@ export default function Home({ releases }) {
     const [ downloaded, setDownloaded ] = useState(false);
 
 	useEffect(() => {
+        if(navigator.userAgent.match(/Linux/i)) {
+            setType("linux")
+        }else if(navigator.userAgent.match(/Windows/i)) {
+            setType("windows")
+        }else if(navigator.userAgent.match(/Mac/i)) {
+            setType("mac_os")
+        }
+
         const this_release = JSON.parse(releases)[0];
         const new_releaseFeatures = {
             windows: null,
@@ -217,14 +225,26 @@ export default function Home({ releases }) {
                                 </div> : <></>
                             }
                         </div>
+                        {
+                            releaseFeatures[type] ? <></> : <p className="text-sm font-altSans text-slate-400">We{'\''}ve detected that you are using an OS that this version does not support</p>
+                        }
 
                         <div className="pt-6 pb-6"></div>
                         
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-row items-center gap-2">
-                                <Button icon={false} href={releaseFeatures?.[type]} onClick={() => {
-                                    setDownloaded(true);
-                                }} className="bg-violet-600 text-slate-50 font-semibold text-[1.1rem] px-5 py-4 h-10 w-32 rounded-2xl font-altSans" >Download app</Button> <p className="text-sm text-slate-400">for {type == "windows" ? "Windows" : type == "linux" ? "Linux" : "MacOS"}</p>
+                                {
+                                    releaseFeatures[type] ?
+                                    <>
+                                        <Button icon={false} href={releaseFeatures?.[type]} onClick={() => {
+                                            setDownloaded(true);
+                                        }} className="bg-violet-600 text-slate-50 font-semibold text-[1.1rem] px-5 py-4 h-10 w-32 rounded-2xl font-altSans" >Download app</Button> <p className="text-sm text-slate-400">for {type == "windows" ? "Windows" : type == "linux" ? "Linux" : "MacOS"}</p>
+                                    </>
+                                    :
+                                    <>
+                                        <Button icon={false} className="bg-violet-300 text-slate-50 font-semibold text-[1.1rem] px-5 py-4 h-10 w-32 rounded-2xl font-altSans" >Download app</Button> <p className="text-sm text-slate-400">for {type == "windows" ? "Windows" : type == "linux" ? "Linux" : "MacOS"}</p> 
+                                    </>
+                                }
                             </div>
                             
                             <p className="text-black flex flex-row items-center text-sm">Don{'\''}t have Reseda? <Button icon={false} href="/signup" className="text-blue-500 text-sm pl-1" >Get Access</Button></p>
