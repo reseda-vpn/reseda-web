@@ -12,7 +12,7 @@ const Button: React.FC<Props & NativeAttrs> = ({ icon, inline, children, classNa
     return (
         <a 
             {...args}
-            className={`${ inline ? styles.inlineButton : "flex items-center justify-center relative h-8 px-3 py-0 rounded-md font-sans hover:cursor-pointer outline-none gap-2 text-sm "+className }`}
+            className={`${ inline ? styles.inlineButton + " " + className : className+" flex items-center justify-center relative h-8 px-3 py-0 rounded-md font-sans hover:cursor-pointer outline-none gap-2 text-sm " }`}
             >
             {
                 loaderOnly ? 

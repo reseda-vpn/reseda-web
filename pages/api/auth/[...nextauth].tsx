@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import nodemailer from "nodemailer"
 import prisma from '@root/lib/prisma';
 import { verifyPassword } from "@root/lib/crpyt";
 
