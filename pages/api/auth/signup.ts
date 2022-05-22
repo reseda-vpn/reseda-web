@@ -1,5 +1,6 @@
 import { hashPassword } from "@root/lib/crpyt";
 import prisma from "@root/lib/prisma";
+import { randomUUID } from "crypto";
 
 async function handler(req, res) {
     if (req.method !== 'POST') return;
@@ -46,7 +47,7 @@ async function handler(req, res) {
                 create: {
                     type: "credentials",
                     provider: "reseda",
-                    providerAccountId: "00001"
+                    providerAccountId: randomUUID()
                 }
             }
         }

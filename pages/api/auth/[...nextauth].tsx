@@ -14,10 +14,10 @@ export default NextAuth({
 	},
 	secret: process.env.SECRET,
 	providers: [
-		GithubProvider({
-		clientId: process.env.GITHUB_ID,
-		clientSecret: process.env.GITHUB_SECRET,
-		}),
+		// GithubProvider({
+		// clientId: process.env.GITHUB_ID,
+		// clientSecret: process.env.GITHUB_SECRET,
+		// }),
 		CredentialsProvider({
 			name: "credentials",
 			credentials: {
