@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Gradient } from '@components/gradient'
-import { supabase } from '@root/client';
 import { useRouter } from 'next/router';
 import styles from '@styles/Home.module.css'
 import Header from '@components/header';
