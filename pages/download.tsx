@@ -42,6 +42,7 @@ export default function Home({ releases }) {
     const [ downloaded, setDownloaded ] = useState(false);
     const [ changeVersion, setChangeVersion ] = useState(false);
     const [ version, setVersion ] = useState(null);
+    const [ ft, setFt ] = useState(true);
 
 	useEffect(() => {
         if(navigator.userAgent.match(/Linux/i)) {
@@ -90,12 +91,12 @@ export default function Home({ releases }) {
             }
         });
 
-        // setVersion(releases_?.[0]?.tag_name);
-
         if(this_release?.prerelease) new_releaseFeatures.pre_release = true;
         new_releaseFeatures.version = this_release?.tag_name;
 
         setReleaseFeatures(new_releaseFeatures);
+        if(ft) setVersion(releases_?.[0]?.tag_name);
+        setFt(false);
 	}, [releases, version]);
 
 	return (
