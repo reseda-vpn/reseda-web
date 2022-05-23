@@ -165,7 +165,9 @@ export default function Home({ ss_session, token, user, eligible }) {
 
                                 <div className="flex flex-col gap-2">
                                     <p className="uppercase text-xs text-slate-500 not-italic">New Username</p>
-                                    <InputField enterCallback={(username) => {
+                                    <InputField 
+                                        noArrow={false}
+                                        enterCallback={(username) => {
                                         fetch('/api/user/username', {
                                             body: JSON.stringify({ 
                                                 username: username,
