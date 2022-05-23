@@ -1,20 +1,11 @@
-import styles from '@styles/Home.module.css'
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@components/header';
 import Banner from '@components/banner';
 import Button from '@components/un-ui/button';
-import Input from '@components/un-ui/input';
-import { Gradient } from '@components/gradient'
 
-import Image from 'next/image';
 import Footer from '@components/footer';
-import { ArrowUpRight, Check, Circle, Download, Link } from 'react-feather';
-import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
-import useMediaQuery from '@components/media_query';
-import { cardVariants, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
-import Waitlist from '@components/waitlist';
-import { FaApple, FaDownload, FaLinux, FaWindows } from "react-icons/fa"
-
+import { Check} from 'react-feather';
+import { FaApple, FaExclamation, FaLinux, FaWindows } from "react-icons/fa"
 
 export async function getStaticProps() {
 	const metaTags = {
@@ -32,13 +23,12 @@ export async function getStaticProps() {
 	  props: {
 		metaTags,
         releases
-	  }
+	  },
+      revalidate: 60 * 5
 	}
 }
 
 export default function Home({ releases }) {
-	const small = useMediaQuery(640);
-	const [ isTauri, setIsTauri ] = useState(false);
     const [ releaseFeatures, setReleaseFeatures ] = useState({
         windows: null,
         mac_os: null,
@@ -62,15 +52,19 @@ export default function Home({ releases }) {
             setType("mac_os")
         }
 
-        const releases_ = JSON.parse(releases);
+        const releases_: any[] = JSON.parse(releases);
         
         releases_.sort((a, b) => {
             return new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
         });
 
+        releases_.filter(a => {
+            return !a.draft
+        });
+
         setReleasesCache(releases_);
 
-        const this_release = !version ? releases_[0] : releases_.find(e => { e?.tag_name == version });
+        const this_release = !version ? releases_[0] : releases_.find(e => e?.tag_name == version);
         const new_releaseFeatures = {
             windows: null,
             mac_os: null,
@@ -80,7 +74,9 @@ export default function Home({ releases }) {
             version: null
         }
 
-        this_release.assets.map((e: { name: string, browser_download_url: string }) => {
+        console.log(this_release, version);
+
+        this_release?.assets?.map((e: { name: string, browser_download_url: string }) => {
             if(e.name.endsWith("_x64_en-US.msi")) {
                 new_releaseFeatures.windows = e?.browser_download_url;
             }
@@ -94,15 +90,15 @@ export default function Home({ releases }) {
             }
         });
 
-        setVersion(releases_?.[0]?.tag_name);
+        // setVersion(releases_?.[0]?.tag_name);
 
-        if(this_release.prerelease) new_releaseFeatures.pre_release = true;
-        new_releaseFeatures.version = this_release.tag_name;
+        if(this_release?.prerelease) new_releaseFeatures.pre_release = true;
+        new_releaseFeatures.version = this_release?.tag_name;
 
         setReleaseFeatures(new_releaseFeatures);
-	}, [releases]);
+	}, [releases, version]);
 
-	return !isTauri ? 
+	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<Banner title={"💪 Improvements"} text={"Reseda is currently undergoing a major refactor"} url={"https://twitter.com/UnRealG3/status/1490596150944043012?s=20&t=DNFSbVhA3wkoWyVOkwAvxQ"} />
 
@@ -115,20 +111,20 @@ export default function Home({ releases }) {
                         }}
                         >
                         <div 
-                            className="text-base font-normal bg-slate-200 rounded-md px-2 cursor-pointer" 
+                            className="text-base font-normal bg-white rounded-md px-2 cursor-pointer" 
                         >
                             <div 
                                 className="p-6"
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <div className="flex flex-col pb-2">
-                                    <p className="flex flex-col text-lg font-altSans font-semibold">Choose from the following available versions</p> 
-                                    <div>
+                                <div className="flex flex-col pb-2 gap-4">
+                                    <p className="flex flex-col font-altSans font-semibold text-xl">Choose from the <br /> following available versions</p> 
+                                    <div className="rounded-md bg-white gap-2 flex flex-col">
                                         {
                                             releasesCache.map(e => {
                                                 return (
                                                     <div 
-                                                        className="hover:bg-purple-300 hover:text-purple-800 rounded-md px-2 font-semibold "
+                                                        className={`cursor-pointer rounded-md px-2 font-semibold flex flex-row gap-2 items-center justify-between ${e.tag_name == version ? "border-2 border-purple-500 bg-purple-50" : "border-2 border-transparent"}`}
                                                         key={e?.tag_name}
                                                         onClick={() => {
                                                             if(e?.tag_name) setVersion(e.tag_name)
@@ -136,7 +132,8 @@ export default function Home({ releases }) {
                                                             setChangeVersion(false);
                                                         }}
                                                     >
-                                                        { e?.tag_name?.split("app-")?.[1] }       
+                                                        <p className="font-bold text-lg">{ e?.tag_name?.split("app-")?.[1] }</p>
+                                                        <p className="text-sm">{ e?.prerelease ? "pre-release" : "" }</p>
                                                     </div>
                                                 )
                                             })
@@ -202,7 +199,19 @@ export default function Home({ releases }) {
                     </div>
                     :
                     <div className="flex flex-col gap-2 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative h-full flex-1" id="vpn">
-                        <h1 className="flex text-[2.5rem] font-bold text-slate-800 mb-0 pb-0 font-altSans">Download Reseda <p className="text-base justify-end items-end self-end font-normal bg-slate-200 rounded-md px-2 cursor-pointer" onClick={() => setChangeVersion(true) }>{releaseFeatures?.version?.split("app-")?.[1]}</p></h1>
+                        <h1 className="flex text-[2.5rem] font-bold text-slate-800 mb-0 pb-0 font-altSans">Download Reseda 
+                            {
+                                releasesCache?.[0]?.tag_name == version ? 
+                                    <p className="text-base justify-end items-end self-end font-normal bg-slate-200 rounded-md px-2 cursor-pointer" onClick={() => setChangeVersion(true) }>
+                                        { releaseFeatures?.version?.split("app-")?.[1] }
+                                    </p>
+                                    : 
+                                    <p className="text-base flex flex-row items-center justify-end gap-1 self-end font-normal bg-orange-200 rounded-md px-2 cursor-pointer" onClick={() => setChangeVersion(true) }>
+                                        { releaseFeatures?.version?.split("app-")?.[1] }
+                                        <b>!</b>
+                                    </p>
+                            }
+                        </h1>
 
                         <div className="flex flex-row items-center gap-2 font-altSans">
                             Compatible with 
@@ -290,9 +299,19 @@ export default function Home({ releases }) {
 
                         <div className="pt-6 pb-6"></div>
 
+                        
                         {
-                            releasesCache?.[0]?.tag_name == version ? <></> : <p className="text-sm font-altSans text-slate-400">This is not the current version.</p>
+                            releasesCache?.[0]?.tag_name == version ? 
+                                <></> 
+                            : 
+                                <div className="text-sm font-altSans flex flex-row items-center gap-2 bg-orange-100 w-fit px-2 rounded-md pl-0">
+                                    <p className="flex flex-row items-center gap-1 bg-orange-200 rounded-md px-2 w-fit cursor-pointer" onClick={() => setChangeVersion(true) }>
+                                        <b>!</b>
+                                    </p>
+                                    <p>This is not the current version</p>
+                                </div>
                         }
+                        
                         
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-row items-center gap-2">
@@ -321,6 +340,5 @@ export default function Home({ releases }) {
 				<Footer />
 			</div>
 		</div>
-		:
-		<></>
+	)
 }
