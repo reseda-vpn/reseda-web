@@ -8,7 +8,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
     const result = await prisma.account.findMany({
         where: {
-            id: userId.toString()
+            userId: userId.toString()
         }
     });
 
