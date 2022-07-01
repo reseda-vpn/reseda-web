@@ -14,8 +14,10 @@ type Server = {
 // POST /server/register
 // Required fields in body: id, location, country, hostname, flag
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-    console.log(req.body);
-    const { override, ...json }: Server = await JSON.parse(req.body);
+    const k = req.body;
+    console.log(k);
+
+    const { override, ...json }: Server = k;
     const server_exists = await prisma.server.findFirst({
         where: {
             OR: [
