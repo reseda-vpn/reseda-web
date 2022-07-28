@@ -1,7 +1,15 @@
 import { verifyPassword } from "@root/lib/crpyt";
 import prisma from "@root/lib/prisma";
+import NextCors from 'nextjs-cors';
 
 async function handler(req, res) {
+    await NextCors(req, res, {
+        // Options
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+        origin: '*',
+        optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+     });
+     
     if (req.method !== 'POST') res.status(404).json({ message: "Invalid Method, expected POST" });
 
     const { email, password } = req.body;
