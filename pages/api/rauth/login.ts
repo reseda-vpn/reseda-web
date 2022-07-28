@@ -12,7 +12,17 @@ async function handler(req, res) {
      
     if (req.method !== 'POST') res.status(404).json({ message: "Invalid Method, expected POST" });
 
-    const { email, password } = req.body;
+    if(!req.body) {
+        res.status(422).json({
+            message: "Invalid Input - body field is empty"
+        })
+    }
+
+    const { email, password } = (typeof req.body == "string") 
+        ?
+        JSON.parse(req.body)
+        :
+        req.body;
 
     if (
         !email ||
