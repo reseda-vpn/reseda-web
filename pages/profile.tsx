@@ -278,7 +278,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                         }}>Change Username</p>
                                                         <p className="text-violet-400 hover:cursor-pointer" onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
-                                                            router.push(data.url);
+                                                            // router.push(data.url);
                                                         }}>Log Out</p>
                                                         <p onClick={(e) => {
                                                             e.preventDefault();
