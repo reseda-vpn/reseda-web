@@ -22,6 +22,7 @@
     "moment": "^2.29.2",
     "next": "12.0.8",
     "next-auth": "^4.1.2",
+    "nextjs-cors": "^2.1.1",
     "nprogress": "^0.2.0",
     "public-ip": "^5.0.0",
     "react": "17.0.2",
