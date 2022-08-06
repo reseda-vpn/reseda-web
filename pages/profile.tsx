@@ -221,19 +221,19 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <div className="flex flex-row sm:items-center sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
                                                         {
                                                             user.accounts[0].type == "credentials" ?
-                                                            <a href="" className="text-violet-200 line-through">Change Password</a>
+                                                            <p className="text-violet-200 line-through">Change Password</p>
                                                             :
                                                             <></>
                                                         }
-                                                        <a href="" className="text-violet-400" onClick={(e) => {
+                                                        <p className="text-violet-400" onClick={(e) => {
                                                             e.preventDefault();
                                                             setChangingUsername(true)
-                                                        }}>Change Username</a>
-                                                        <a href="" className="text-violet-400" onClick={async () => {
+                                                        }}>Change Username</p>
+                                                        <p className="text-violet-400" onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
                                                             router.push(data.url);
-                                                        }}>Log Out</a>
-                                                        <a href="" className="text-red-400 flex-1 flex- justify-self-end">Delete Account</a>
+                                                        }}>Log Out</p>
+                                                        <p className="text-red-400 flex-1 flex- justify-self-end">Delete Account</p>
                                                     </div>
                                                 </div>
                                                 

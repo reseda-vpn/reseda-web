@@ -47,9 +47,10 @@ async function handler(req, res) {
                 create: {
                     type: "credentials",
                     provider: "reseda",
-                    providerAccountId: randomUUID()
+                    providerAccountId: randomUUID(),
+                    tier: "SUPPORTER"
                 }
-            }
+            }   
         }
     });
 
