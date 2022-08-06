@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import useMediaQuery from './media_query';
 import Button from './un-ui/button';
 
@@ -6,13 +7,17 @@ export const Header = () => {
 	const small = useMediaQuery(640);
     const router = useRouter();
 
-    console.log()
+    const [ prof, setProf ] = useState(false);
+
+    useEffect(() => {
+        if(window.location.href.includes("profile")) setProf(true);
+    }, [])
 
     return (
         <div className="flex flex-row z-40 sm:bg-white bg-opacity-80 sm:backdrop-blur-md">
             <div className="flex flex-row py-2 px-4 justify-between max-w-screen-lg w-full my-0 mx-auto z-40">
                 <div className="flex flex-row items-center gap-4">
-                    <div className={`font-bold font-altSans text-lg  ${window.location.href.includes("profile") ? "text-slate-800" : "text-slate-100" } sm:text-slate-800 hover:cursor-pointer`} onClick={() => router.push('../')}>RESEDA</div>   
+                    <div className={`font-bold font-altSans text-lg  ${prof ? "text-slate-800" : "text-slate-100" } sm:text-slate-800 hover:cursor-pointer`} onClick={() => router.push('../')}>RESEDA</div>   
 
                     <div className="flex flex-row items-center gap-4">
                         <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800" onClick={() => window.location.href = ""} >VPN</Button>
