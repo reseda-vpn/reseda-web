@@ -57,9 +57,9 @@ export default function Home() {
 			<div className="flex-col flex font-sans min-h-screen w-screen relative">
 				<Header />
 
-				<canvas id="gradient-canvas" className="md:top-0" style={{ height: small ? '450px' : '100vh' }} data-transition-in></canvas>
+				<canvas id="gradient-canvas" className="md:top-0" style={{ height: small ? '450px' : '70vh' }} data-transition-in></canvas>
 
-				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : 'calc(100vh - 48px)' }}>
+				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : 'calc(70vh - 48px)' }}>
 					<div className="h-fit flex flex-col gap-16 md:gap-8 items-start">
 						<div className="z-50 relative flex flex-col gap-2">
 							<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={titleControl} className="text-4xl md:text-5xl font-extrabold m-0 text-slate-100 text-left z-50 flex flex-row flex-wrap gap-4 gap-y-0">

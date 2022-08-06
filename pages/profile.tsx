@@ -15,6 +15,7 @@ import prisma from "@root/lib/prisma"
 import LinearChart from '@components/linear_chart';
 import Input from '@components/un-ui/input';
 import InputField from '@components/un-ui/input_field';
+import { FaExclamationTriangle } from 'react-icons/fa';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -75,6 +76,8 @@ export default function Home({ ss_session, token, user, eligible }) {
 
     const [ thisMonthData, setThisMonthData ] = useState([]);
     const [ changingUsername, setChangingUsername ] = useState(false);
+    const [ deletingAccount, setDeletingAccount ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
         const new_data = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
@@ -89,28 +92,23 @@ export default function Home({ ss_session, token, user, eligible }) {
         setEligibleForDownload(eligible.claimable ? 1 : 2);
         // setUsageInformation(usage);
 
-        // Create your instance
-        const gradient = new Gradient()
+        if(!small) {
+            // Create your instance
+            const gradient = new Gradient()
+
+            try {
+                // //@ts-expect-error
+                gradient.el = document.querySelector('#gradient-canvas');
+                gradient.connect();
+            }
+            catch {
+                console.log("Unable to initialize gradient, possibly mobile.")
+            }
+        }
 
         if(session.status !== "authenticated") router.push('./login');
 
-        //@ts-expect-error
-        gradient.initGradient('#gradient-canvas');
-
         const as = async () => {
-            // if(!userInformation) 
-            //     fetch(`/api/user/${session?.data?.user?.email}`).then(async e => {
-            //         const data = await e.json();
-            //         setUserInformation(data.accounts[0]);
-            //     });
-            
-            // if(eligibleForDownload == 0) 
-            //     fetch(`/api/lead/email/${session?.data?.user?.email}`).then(async e => {
-            //         const data = await e.json();
-
-            //         setEligibleForDownload(data.type == "eligible" ? 1 : 2);
-            //     });
-
             fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
                     const data = await e.json();
                     setUsageInformation(data);
@@ -132,19 +130,9 @@ export default function Home({ ss_session, token, user, eligible }) {
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<div className="flex-col flex font-sans min-h-screen w-screen relative overflow-hidden">
-                {
-                    small ? 
-                    <div className="overflow-hidden relative">
-                        <Header />
-                        <canvas id="gradient-canvas" className="top-0 sm:h-64 h-12" data-transition-in></canvas> {/*  style={{ height: small ? '50px !important' : '250px !important' }} */}
-                    </div>
-                    :
-                    <>
-                        <Header />
-                        <canvas id="gradient-canvas" className="top-0 sm:h-64 h-12" data-transition-in></canvas> {/*  style={{ height: small ? '50px !important' : '250px !important' }} */}
-                    </>
-                }
-                
+                <Header />
+                <canvas id="gradient-canvas" className={`top-0 sm:h-64 h-12 ${small ? "opacity-0" : ""}`} data-transition-in></canvas> {/*  style={{ height: small ? '50px !important' : '250px !important' }} */}
+        
                 {
                     changingUsername ?
                     <div 
@@ -193,9 +181,68 @@ export default function Home({ ss_session, token, user, eligible }) {
                     <></>
                 }
 
+                {
+                    deletingAccount ?
+                    <div 
+                        className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 items-center content-center justify-center"
+                        onClick={() => { 
+                            if(!loading) setDeletingAccount(false);
+                        }}
+                        >
+                        <div 
+                            className={"p-6 bg-white text-slate-800 border-1 border-slate-400 rounded-lg " + styles.border}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex flex-col justify-between pb-2 gap-y-4">
+                                <div>
+                                    <div className="flex flex-row items-center justify-between">
+                                        <h2 className="font-bold text-xl">Delete Account</h2>
+                                        <FaExclamationTriangle color={"#EF4444"} size={24} />
+                                    </div>
+                                    
+                                    <p className="text-sm text-red-500 not-italic font-light">Warning: This action is <strong className="font-bold text-red-500">irreversible</strong>.</p>
+                                    <p className="text-sm text-slate-500 not-italic font-light"> Are you sure you want to delete your account?</p>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <p className="uppercase text-xs text-slate-500 not-italic">Enter Password to Confirm Deletion</p>
+                                    <InputField 
+                                        noArrow={loading}
+                                        enterCallback={(psw) => {
+                                            setLoading(true);
+                                            fetch('/api/auth/delete', {
+                                                body: JSON.stringify({ 
+                                                    email: session.data.user.email,
+                                                    password: psw
+                                                }),
+                                                method: 'POST'
+                                            })
+                                                .then(async e => {
+                                                    if(e.ok) {
+                                                        session
+                                                        setLoading(false);
+                                                        const event = new Event("visibilitychange");
+                                                        document.dispatchEvent(event);
+                                                        // window.location.reload();
+                                                        setDeletingAccount(false);
+
+                                                        await signOut();
+
+                                                        router.push("/");
+                                                    }
+                                                })
+                                    }} callback={() => {}} placeholder="Password" type={"password"} customValue={<div className="flex flex-row items-center justify-between w-full"><p>Deleting Account...</p><Loader color="#000" height={20}></Loader></div>}></InputField>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    <></>
+                }   
+
                 <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-40 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-start justify-between sm:w-32 w-full">
-                        <div className="flex flex-row sm:flex-col gap-2 w-full">
+                        <div className="flex flex-row justify-between gap-5 sm:justify-start sm:flex-col sm:gap-2 w-full">
                             {/* <p className="font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Account</p> */}
                             <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "account" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("account")} >{ <UserIcon size={16}/>  } Account</p>
                             <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "usage" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("usage")}>{ <Activity size={16}/>  } Usage</p>
@@ -218,22 +265,27 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <h1 className="font-bold text-xl ">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
                                                     <p className="text-slate-700">{ session?.data?.user?.email }</p>
 
-                                                    <div className="flex flex-row sm:items-center sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
                                                         {
                                                             user.accounts[0].type == "credentials" ?
-                                                            <a href="" className="text-violet-200 line-through">Change Password</a>
+                                                            <p className="text-violet-200 line-through hover:cursor-pointer">Change Password</p>
                                                             :
                                                             <></>
                                                         }
-                                                        <a href="" className="text-violet-400" onClick={(e) => {
+                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={(e) => {
                                                             e.preventDefault();
                                                             setChangingUsername(true)
-                                                        }}>Change Username</a>
-                                                        <a href="" className="text-violet-400" onClick={async () => {
+                                                        }}>Change Username</p>
+                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
                                                             router.push(data.url);
-                                                        }}>Log Out</a>
-                                                        <a href="" className="text-red-400 flex-1 flex- justify-self-end">Delete Account</a>
+                                                        }}>Log Out</p>
+                                                        <p onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setDeletingAccount(true)
+                                                        }} className="text-red-400 flex-1 flex- justify-self-end hover:cursor-pointer">
+                                                            Delete Account
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 

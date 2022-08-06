@@ -8,11 +8,6 @@ import { Gradient } from '@components/gradient'
 
 import Image from 'next/image';
 import Footer from '@components/footer';
-import { Check, GitHub } from 'react-feather';
-import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
-import useMediaQuery from '@components/media_query';
-import { cardVariants, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
-import Waitlist from '@components/waitlist';
 
 export async function getStaticProps() {
 	const metaTags = {
@@ -29,8 +24,6 @@ export async function getStaticProps() {
 }
 
 export default function Home() {
-	const small = useMediaQuery(640);
-
 	useEffect(() => {
           // Create your instance
           const gradient = new Gradient()
