@@ -171,7 +171,7 @@ export default function Home({ providers }) {
                                 >
                                     {
                                         awaitingReply ?
-                                            "Loading"
+                                            "Signing up..."
                                         :
                                             authSuccess == "logged_in" ?
                                             "Success"

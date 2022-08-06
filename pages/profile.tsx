@@ -15,6 +15,7 @@ import prisma from "@root/lib/prisma"
 import LinearChart from '@components/linear_chart';
 import Input from '@components/un-ui/input';
 import InputField from '@components/un-ui/input_field';
+import { FaExclamationTriangle } from 'react-icons/fa';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -75,6 +76,8 @@ export default function Home({ ss_session, token, user, eligible }) {
 
     const [ thisMonthData, setThisMonthData ] = useState([]);
     const [ changingUsername, setChangingUsername ] = useState(false);
+    const [ deletingAccount, setDeletingAccount ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
         const new_data = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
@@ -193,6 +196,65 @@ export default function Home({ ss_session, token, user, eligible }) {
                     <></>
                 }
 
+                {
+                    deletingAccount ?
+                    <div 
+                        className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 items-center content-center justify-center"
+                        onClick={() => { 
+                            if(!loading) setDeletingAccount(false);
+                        }}
+                        >
+                        <div 
+                            className={"p-6 bg-white text-slate-800 border-1 border-slate-400 rounded-lg " + styles.border}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex flex-col justify-between pb-2 gap-y-4">
+                                <div>
+                                    <div className="flex flex-row items-center justify-between">
+                                        <h2 className="font-bold text-xl">Delete Account</h2>
+                                        <FaExclamationTriangle color={"#EF4444"} size={24} />
+                                    </div>
+                                    
+                                    <p className="text-sm text-red-500 not-italic font-light">Warning: This action is <strong className="font-bold text-red-500">irreversible</strong>.</p>
+                                    <p className="text-sm text-slate-500 not-italic font-light"> Are you sure you want to delete your account?</p>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <p className="uppercase text-xs text-slate-500 not-italic">Enter Password to Confirm Deletion</p>
+                                    <InputField 
+                                        noArrow={loading}
+                                        enterCallback={(psw) => {
+                                            setLoading(true);
+                                            fetch('/api/auth/delete', {
+                                                body: JSON.stringify({ 
+                                                    email: session.data.user.email,
+                                                    password: psw
+                                                }),
+                                                method: 'POST'
+                                            })
+                                                .then(async e => {
+                                                    if(e.ok) {
+                                                        session
+                                                        setLoading(false);
+                                                        const event = new Event("visibilitychange");
+                                                        document.dispatchEvent(event);
+                                                        // window.location.reload();
+                                                        setDeletingAccount(false);
+
+                                                        await signOut();
+
+                                                        router.push("/");
+                                                    }
+                                                })
+                                    }} callback={() => {}} placeholder="Password" type={"password"} customValue={<div className="flex flex-row items-center justify-between w-full"><p>Deleting Account...</p><Loader color="#000" height={20}></Loader></div>}></InputField>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    <></>
+                }   
+
                 <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-40 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-start justify-between sm:w-32 w-full">
                         <div className="flex flex-row sm:flex-col gap-2 w-full">
@@ -221,19 +283,24 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <div className="flex flex-row sm:items-center sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
                                                         {
                                                             user.accounts[0].type == "credentials" ?
-                                                            <p className="text-violet-200 line-through">Change Password</p>
+                                                            <p className="text-violet-200 line-through hover:cursor-pointer">Change Password</p>
                                                             :
                                                             <></>
                                                         }
-                                                        <p className="text-violet-400" onClick={(e) => {
+                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={(e) => {
                                                             e.preventDefault();
                                                             setChangingUsername(true)
                                                         }}>Change Username</p>
-                                                        <p className="text-violet-400" onClick={async () => {
+                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
                                                             router.push(data.url);
                                                         }}>Log Out</p>
-                                                        <p className="text-red-400 flex-1 flex- justify-self-end">Delete Account</p>
+                                                        <p onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setDeletingAccount(true)
+                                                        }} className="text-red-400 flex-1 flex- justify-self-end hover:cursor-pointer">
+                                                            Delete Account
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 
