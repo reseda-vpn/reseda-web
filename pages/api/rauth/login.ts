@@ -14,7 +14,7 @@ async function handler(req, res) {
 
     if(!req.body) {
         res.status(422).json({
-            message: "Invalid Input - body field is empty"
+            message: "Body field is empty"
         })
     }
 
@@ -32,7 +32,7 @@ async function handler(req, res) {
     ) {
         res.status(422).json({
         message:
-            'Invalid input - password should also be at least 7 characters long.',
+            'Password should also be at least 7 characters long.',
         });
         return;
     }
@@ -47,10 +47,12 @@ async function handler(req, res) {
         console.log(existingUser);
 
         res.status(404).json({
-            message: "Invalid User - User does not exist."
+            message: "User does not exist."
         })
         return;
     }
+
+    console.log("Matching", password, existingUser.password);
 
     // Hash password, and do same on signup end for identical comparison.
     const truePass = await verifyPassword(password, existingUser.password);

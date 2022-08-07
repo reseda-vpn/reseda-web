@@ -1,7 +1,7 @@
 import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import styles from './UnUI.module.css'
 
-import { ArrowRight, Check, CornerDownLeft, Heart, Key, Loader, RefreshCw, Repeat, Triangle } from 'react-feather'
+import { ArrowRight, Check, CornerDownLeft, Eye, EyeOff, Heart, Key, Loader, RefreshCw, Repeat, Triangle } from 'react-feather'
 
 interface Props { callback: Function, children?: React.ReactNode, enterCallback?: Function, noArrow: boolean, customValue?: React.ReactNode };
 declare type NativeAttrs = Omit<React.InputHTMLAttributes<any>, keyof Props>;
@@ -9,6 +9,9 @@ declare type NativeAttrs = Omit<React.InputHTMLAttributes<any>, keyof Props>;
 const InputField: React.FC<Props & NativeAttrs> = ({ children, callback, enterCallback, noArrow, customValue, ...args }) => {
     const input_ref = useRef<HTMLInputElement>(null);
     const [ value, setValue ] = useState("");
+
+    const [ isPasswordField, setIsPasswordField ] = useState(args["type"] == "password");
+    const [ showPass, setShowPass ] = useState(false);
 
     return (
             <div 
@@ -32,7 +35,8 @@ const InputField: React.FC<Props & NativeAttrs> = ({ children, callback, enterCa
                                 setValue(input_ref.current.value);
                             }}
                             ref={input_ref}
-                            {...args}>
+                            {...args}
+                            type={isPasswordField && showPass ? "text" : args.type}>
                             {
                                 children ?? children
                             }
@@ -46,6 +50,16 @@ const InputField: React.FC<Props & NativeAttrs> = ({ children, callback, enterCa
                                     <ArrowRight height={16} color={"#252525"} onClick={() => {
                                         enterCallback(value);
                                     }}/>
+                            :
+                            <></>
+                        }
+
+                        {
+                            isPasswordField ?
+                                !showPass ?
+                                <Eye onClick={() => { setShowPass(!showPass) }} size={18} opacity={0.8} />
+                                :
+                                <EyeOff onClick={() => { setShowPass(!showPass) }} size={18} opacity={0.8} />
                             :
                             <></>
                         }

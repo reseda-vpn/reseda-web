@@ -3,7 +3,7 @@ import { Gradient } from '@components/gradient'
 import { useRouter } from 'next/router';
 import styles from '@styles/Home.module.css'
 import Header from '@components/header';
-import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, LogOut, Settings, Trash, User as UserIcon } from 'react-feather';
+import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
 
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
 import { Account, Usage, User } from '@prisma/client';
@@ -77,6 +77,17 @@ export default function Home({ ss_session, token, user, eligible }) {
     const [ thisMonthData, setThisMonthData ] = useState([]);
     const [ changingUsername, setChangingUsername ] = useState(false);
     const [ deletingAccount, setDeletingAccount ] = useState(false);
+    const [ changingPassword, setChangingPassword ] = useState<{
+        state: 0 | 1 | 2 | 3,
+        password: string,
+        pass_correct: boolean,
+        fetch_message: string | null,
+    }>({
+        state: 0,
+        pass_correct: false,
+        password: "",
+        fetch_message: null
+    });
     const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
@@ -240,6 +251,196 @@ export default function Home({ ss_session, token, user, eligible }) {
                     <></>
                 }   
 
+                {
+                    changingPassword.state !== 0 ?
+                    <div 
+                        className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 items-center content-center justify-center"
+                        onClick={() => { 
+                            if(!loading) setChangingPassword({
+                                ...changingPassword,
+                                state: 0,
+                                fetch_message: null
+                            });
+                        }}
+                        >
+                        <div 
+                            className={"p-6 bg-white text-slate-800 border-1 border-slate-400 rounded-lg " + styles.border}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex flex-col justify-between pb-2 gap-y-4">
+                                {
+                                    changingPassword.state == 2 ? 
+                                    <>
+                                        <div>
+                                            <div className="flex flex-row items-center justify-between">
+                                                <h2 className="font-bold text-xl">Choose New Password</h2>
+                                            </div>
+
+                                            <p className="text-sm text-slate-500 not-italic font-light">Please enter your new password.</p>
+                                        </div>
+
+                                        {
+                                            !changingPassword.fetch_message ?   
+                                                <></>
+                                            :
+                                                <div className="flex flex-row items-center justify-between w-full">
+                                                    <X color="#EF4444" height={20}></X>
+                                                    <p className="text-red-400">{changingPassword.fetch_message}</p>
+                                                </div>
+                                        }
+
+                                        <div className="flex flex-col gap-2">
+                                            <p className="uppercase text-xs text-slate-500 not-italic">Enter New Password</p>
+                                            <InputField 
+                                                noArrow={loading}
+                                                enterCallback={(psw) => {
+                                                    setLoading(true);
+                                                    fetch('/api/auth/change_pass', {
+                                                        body: JSON.stringify({ 
+                                                            email: session.data.user.email,
+                                                            new_password: psw,
+                                                            old_password: changingPassword.password
+                                                        }),
+                                                        method: 'POST'
+                                                    })
+                                                        .then(async e => {
+                                                            if(e.ok) {
+                                                                console.log(e);
+                                                                setLoading(false);
+                                                                setChangingPassword({
+                                                                    ...changingPassword,
+                                                                    state: 3,
+                                                                    password: psw,
+                                                                    pass_correct: true,
+                                                                    fetch_message: null
+                                                                });
+                                                            }else {
+                                                                const k = await e.json();
+                                                                setLoading(false);
+                                                                setChangingPassword({
+                                                                    ...changingPassword,
+                                                                    fetch_message: k.message
+                                                                })
+                                                            }
+                                                        })
+                                            }} callback={() => {}} placeholder="Password" type={"password"} customValue={
+                                                <div className="flex flex-row items-center justify-between w-full">
+                                                    <p>Verifying Password...</p>
+                                                    <Loader color="#000" height={20}></Loader>
+                                                </div>
+                                            }></InputField>
+                                        </div>
+                                    </>
+                                    :
+                                    changingPassword.state == 3 ?
+                                    <>
+                                        <div>
+                                            <div className="flex flex-row items-center justify-between">
+                                                <h2 className="font-bold text-xl">Password Changed</h2>
+                                            </div>
+
+                                            <p className="text-sm text-slate-500 not-italic font-light">Well Done!</p>
+
+                                            
+                                        </div>
+
+                                        <div className="flex flex-col gap-2">
+                                            <p className="uppercase text-xs text-slate-500 not-italic">NEW PASSWORD</p>
+                                            <InputField 
+                                                noArrow={true}
+                                                enterCallback={(psw) => {
+                                                    setLoading(true);
+                                                    fetch('/api/rauth/login', {
+                                                        body: JSON.stringify({ 
+                                                            email: session.data.user.email,
+                                                            password: psw
+                                                        }),
+                                                        method: 'POST'
+                                                    })
+                                                        .then(async e => {
+                                                            if(e.ok) {
+                                                                console.log(e);
+                                                                setLoading(false);
+                                                                setChangingPassword({
+                                                                    ...changingPassword,
+                                                                    state: 2,
+                                                                    password: psw,
+                                                                    pass_correct: true
+                                                                });
+                                                            }
+                                                        })
+                                            }} callback={() => {}} placeholder="Password" value={changingPassword.password} readOnly={true} type={"password"}></InputField>
+                                        </div>
+                                    </>
+                                    :
+                                    <>
+                                        <div>
+                                            <div className="flex flex-row items-center justify-between">
+                                                <h2 className="font-bold text-xl">Change Password</h2>
+                                            </div>
+
+                                            <p className="text-sm text-slate-500 not-italic font-light"> Changing password, enter your old password to continue</p>
+                                        </div>
+
+                                        {
+                                            !changingPassword.fetch_message ?   
+                                                <></>
+                                            :
+                                                <div className="flex flex-row items-center justify-between w-full">
+                                                    <X color="#EF4444" height={20}></X>
+                                                    <p className="text-red-400">{changingPassword.fetch_message}</p>
+                                                </div>
+                                        }
+
+                                        <div className="flex flex-col gap-2">
+                                            <p className="uppercase text-xs text-slate-500 not-italic">Enter Old Password</p>
+                                            <InputField 
+                                                noArrow={loading}
+                                                enterCallback={(psw) => {
+                                                    setLoading(true);
+                                                    fetch('/api/rauth/login', {
+                                                        body: JSON.stringify({ 
+                                                            email: session.data.user.email,
+                                                            password: psw
+                                                        }),
+                                                        method: 'POST'
+                                                    })
+                                                        .then(async e => {
+                                                            if(e.ok) {
+                                                                console.log(e);
+                                                                setLoading(false);
+                                                                setChangingPassword({
+                                                                    ...changingPassword,
+                                                                    state: 2,
+                                                                    password: psw,
+                                                                    pass_correct: true,
+                                                                    fetch_message: null
+                                                                });
+                                                            }else {
+                                                                const k = await e.json();
+                                                                setLoading(false);
+                                                                setChangingPassword({
+                                                                    ...changingPassword,
+                                                                    fetch_message: k.message
+                                                                })
+                                                            }
+                                                        })
+                                            }} callback={() => {}} placeholder="Password" type={"password"} customValue={
+                                                <div className="flex flex-row items-center justify-between w-full">
+                                                    <p>Verifying Password...</p>
+                                                    <Loader color="#000" height={20}></Loader>
+                                                </div>
+                                            }></InputField>
+                                        </div>
+                                    </>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    <></>
+                }   
+
                 <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-40 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-start justify-between sm:w-32 w-full">
                         <div className="flex flex-row justify-between gap-5 sm:justify-start sm:flex-col sm:gap-2 w-full">
@@ -268,7 +469,13 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
                                                         {
                                                             user.accounts[0].type == "credentials" ?
-                                                            <p className="text-violet-200 line-through hover:cursor-pointer">Change Password</p>
+                                                            <p className="text-violet-400 hover:cursor-pointer" onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setChangingPassword({
+                                                                    ...changingPassword,
+                                                                    state: 1,
+                                                                })
+                                                            }}>Change Password</p>
                                                             :
                                                             <></>
                                                         }
@@ -278,7 +485,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                         }}>Change Username</p>
                                                         <p className="text-violet-400 hover:cursor-pointer" onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
-                                                            router.push(data.url);
+                                                            // router.push(data.url);
                                                         }}>Log Out</p>
                                                         <p onClick={(e) => {
                                                             e.preventDefault();
@@ -329,7 +536,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
                                                                             
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center">
                                                                                     <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">5GB/mo Free</div>
@@ -350,7 +557,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
 
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center ">
                                                                                     <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">First 5GB/mo Free</div>
@@ -375,7 +582,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
 
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center ">
                                                                                     <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">First 5GB/mo Free</div>
@@ -400,7 +607,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
 
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center">
                                                                                     <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">50GB Free</div>
@@ -439,7 +646,9 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <div className="flex flex-row items-center gap-6">
                                                         <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
                                                             <div className="bg-violet-300 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
-                                                                Up
+                                                                {
+                                                                    small ? "I" : "Up"
+                                                                }
                                                                 <ArrowUp size={16} color={"#fff"}/>
                                                             </div>
                                                             
@@ -451,7 +660,9 @@ export default function Home({ ss_session, token, user, eligible }) {
 
                                                         <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
                                                             <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
-                                                                Down
+                                                                {
+                                                                    small ? "I" : "Down"
+                                                                }
                                                                 <ArrowDown size={16} color={"#fff"}/>
                                                             </div>
 

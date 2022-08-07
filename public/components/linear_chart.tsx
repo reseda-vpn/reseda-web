@@ -35,9 +35,9 @@ export const LinearChart = ({ data, month }) => {
 
     return (
         <div className="flex flex-col w-full">
-            <div className="grid grid-cols-5 text-slate-500 px-4 gap-2">
+            <div className="grid grid-cols-4 text-slate-500 px-4 gap-2">
                 {
-                    [["Server", "id"], ["Start", "connStart"], ["Duration", "dur"], ["Up", "up"], ["Down", "down"]].map(e => {
+                    [["Start", "connStart"], ["Duration", "dur"], ["Up", "up"], ["Down", "down"]].map(e => {
                         return (
                             <p key={e[0]} className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 rounded-sm px-1 py-1 select-none" onClick={() => {
                                 if(sortBy !== e[1]) {
@@ -64,8 +64,8 @@ export const LinearChart = ({ data, month }) => {
             {
                 thisMonthData.map((e, indx) => {
                     return (
-                        <div key={e.id} className={`grid grid-cols-5 hover:bg-violet-100 ${indx % 2 == 0 ? "bg-violet-50 bg-opacity-80" : "bg-white"} py-4 rounded-md px-4`}>
-                            <p className="">{e.serverId}</p>
+                        <div key={e.id} className={`grid grid-cols-4 hover:bg-violet-100 ${indx % 2 == 0 ? "bg-violet-50 bg-opacity-80" : "bg-white"} py-4 rounded-md px-4`}>
+                            {/* <p className="">{e.serverId}</p> */}
                             <p>{moment(e.connStart).format("MMM Do")}</p>
                             <p>{ moment.duration(moment(e.connStart).diff(moment(e.connEnd))).humanize()}</p>
                             <p>{getSize(e.up)}</p>
