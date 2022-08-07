@@ -536,7 +536,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
                                                                             
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center">
                                                                                     <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">5GB/mo Free</div>
@@ -557,7 +557,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
 
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center ">
                                                                                     <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">First 5GB/mo Free</div>
@@ -582,7 +582,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
 
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center ">
                                                                                     <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">First 5GB/mo Free</div>
@@ -607,7 +607,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
 
-                                                                            <div className="flex sm:flex-row flex-col flex-1 justify-around">	
+                                                                            <div className="flex flex-col flex-1 justify-around">	
                                                                                 <div className="flex flex-row gap-2 items-center">
                                                                                     <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
                                                                                     <div className="text-base text-slate-700">50GB Free</div>
@@ -646,7 +646,9 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <div className="flex flex-row items-center gap-6">
                                                         <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
                                                             <div className="bg-violet-300 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
-                                                                Up
+                                                                {
+                                                                    small ? "I" : "Up"
+                                                                }
                                                                 <ArrowUp size={16} color={"#fff"}/>
                                                             </div>
                                                             
@@ -658,7 +660,9 @@ export default function Home({ ss_session, token, user, eligible }) {
 
                                                         <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
                                                             <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
-                                                                Down
+                                                                {
+                                                                    small ? "I" : "Down"
+                                                                }
                                                                 <ArrowDown size={16} color={"#fff"}/>
                                                             </div>
 
