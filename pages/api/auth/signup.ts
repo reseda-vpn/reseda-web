@@ -1,6 +1,7 @@
 import { hashPassword } from "@root/lib/crpyt";
 import prisma from "@root/lib/prisma";
 import { randomUUID } from "crypto";
+import Stripe from "stripe"
 
 async function handler(req, res) {
     if (req.method !== 'POST') return;
@@ -38,6 +39,17 @@ async function handler(req, res) {
     // Hash password, and do same on signup end for identical comparison.
     const hashedPassword = await hashPassword(password);
 
+    const stripe = new Stripe('sk_test_51KHl5DFIoTGPd6E4mnIhFWzGz1jMles82MHAZVUUrhY08sA9uJvsqhvtrJKam6ZiOA8HVg6VxdCvkkEe7XBbkrfQ00P1AKNTAk', {
+        apiVersion: '2022-08-01'
+    });
+
+    const params: Stripe.CustomerCreateParams = {
+        email: email,
+        description: name,
+    };
+
+    const customer: Stripe.Customer = await stripe.customers.create(params);
+
     await prisma.user.create({
         data: {
             email, 
@@ -48,7 +60,8 @@ async function handler(req, res) {
                     type: "credentials",
                     provider: "reseda",
                     providerAccountId: randomUUID(),
-                    tier: "SUPPORTER"
+                    tier: "SUPPORTER",
+                    // billing_id: customer.id
                 }
             }   
         }

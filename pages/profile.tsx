@@ -5,6 +5,7 @@ import styles from '@styles/Home.module.css'
 import Header from '@components/header';
 import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
 
+import {loadStripe} from '@stripe/stripe-js';
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
 import { Account, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
@@ -124,19 +125,16 @@ export default function Home({ ss_session, token, user, eligible }) {
                     const data = await e.json();
                     setUsageInformation(data);
                 });
+            
+            const stripe = await loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
+            console.log(stripe);
         }
+
 
         if(session.status == "authenticated") as();    
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [session, router]);
 
-    const data = usageInformation?.map(e => {
-        return {
-            key: new Date(e.connEnd),
-            first: parseInt(e.up),
-            second: parseInt(e.down)
-        }
-    }) ?? []
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
