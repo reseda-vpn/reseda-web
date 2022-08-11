@@ -61,7 +61,7 @@ async function handler(req, res) {
                     provider: "reseda",
                     providerAccountId: randomUUID(),
                     tier: "SUPPORTER",
-                    // billing_id: customer.id
+                    billing_id: customer.id
                 }
             }   
         }
