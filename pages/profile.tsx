@@ -17,6 +17,8 @@ import LinearChart from '@components/linear_chart';
 import Input from '@components/un-ui/input';
 import InputField from '@components/un-ui/input_field';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import Billing from '@components/billing';
+import { isBuffer } from 'util';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -75,7 +77,10 @@ export default function Home({ ss_session, token, user, eligible }) {
     const router = useRouter();
     const [ month, setMonth ] = useState(new Date().getMonth());
 
-    const [ thisMonthData, setThisMonthData ] = useState([]);
+    const [ thisMonthData, setThisMonthData ] = useState<{
+        up: number,
+        down: number
+    }>();
     const [ changingUsername, setChangingUsername ] = useState(false);
     const [ deletingAccount, setDeletingAccount ] = useState(false);
     const [ changingPassword, setChangingPassword ] = useState<{
@@ -92,9 +97,19 @@ export default function Home({ ss_session, token, user, eligible }) {
     const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
-        const new_data = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
+        const new_data: Usage[] = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
 
-        setThisMonthData(new_data);
+        let down = 0;
+        let up = 0;
+
+        new_data?.forEach(e => {
+            down+= parseInt(e.down);
+            up+= parseInt(e.up);
+        });
+
+        setThisMonthData({
+            up, down
+        });
     }, [usageInformation, month])
 
 	useEffect(() => {
@@ -121,23 +136,23 @@ export default function Home({ ss_session, token, user, eligible }) {
         if(session.status !== "authenticated") router.push('./login');
 
         const as = async () => {
-            fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
+            if(!usageInformation || usageInformation.length !== 0) {
+                fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
                     const data = await e.json();
                     setUsageInformation(data);
                 });
-
-            fetch(`/api/user/customer/${user.email}`).then(async e => {
-                    console.log(e);
-                });
-            
+        
+                fetch(`/api/user/customer/${user.email}`).then(async e => {
+                        console.log(e);
+                    });
+            }
             // const stripe = await loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
             // console.log(stripe);
         }
 
-
         if(session.status == "authenticated") as();    
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [session, router]);
+	}, [session]);
 
 
 	return (
@@ -585,7 +600,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             </div>
                                                             
                                                             <p className="px-4">
-                                                                { thisMonthData ? getSize(thisMonthData?.reduce((a, b) => a + (parseInt(b.up) || 0), 0)) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.up) : "..." }
                                                             </p>
                                                             
                                                         </div>
@@ -599,7 +614,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             </div>
 
                                                             <p className="px-4">
-                                                                { thisMonthData ? getSize(thisMonthData?.reduce((a, b) => a + (parseInt(b.down) || 0), 0)) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.down) : "..." }
                                                             </p>
                                                         </div>
                                                     </div>
@@ -625,6 +640,8 @@ export default function Home({ ss_session, token, user, eligible }) {
                                         return (
                                             <div className="flex flex-col items-start">
                                                 <h1 className="font-bold text-xl">Billing</h1>
+
+                                                <Billing data={thisMonthData} data_rates={userInformation} />
 
                                                 <div className="flex flex-row gap-16">
                                                     {
@@ -729,7 +746,9 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             }
                                                         })()
                                                     }
-                                                    </div>
+                                                </div>
+
+                                                <p className="text-violet-400 hover:cursor-pointer">Change Plan</p>
                                             </div>
                                         )
                                     default:

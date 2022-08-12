@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import useMediaQuery from './media_query';
 import Button from './un-ui/button';
 import { ArrowDown, ChevronDown, ChevronUp } from "react-feather"
+import { Usage } from '@prisma/client';
 
 export const LinearChart = ({ data, month }) => {
     const [ thisMonthData, setThisMonthData ] = useState([]);
@@ -11,7 +12,9 @@ export const LinearChart = ({ data, month }) => {
     const [ sortForward, setSortForward ] = useState(true);
 
     useEffect(() => {
-        const new_data: any[] = data.filter(e => new Date(e.connStart).getMonth() == month);
+        console.log("Sorting through data again!");
+
+        const new_data: Usage[] = data.filter(e => new Date(e.connStart).getMonth() == month);
 
         new_data.sort((a, b) => { 
             switch (sortBy) {
@@ -22,9 +25,9 @@ export const LinearChart = ({ data, month }) => {
                 case "dur":
                     return sortForward ? (new Date(b.connEnd).getTime() - new Date(b.connStart).getTime()) - (new Date(a.connEnd).getTime() - new Date(a.connStart).getTime()) : (new Date(a.connEnd).getTime() - new Date(a.connStart).getTime()) - (new Date(b.connEnd).getTime() - new Date(b.connStart).getTime())
                 case "up":
-                    return sortForward ? b.up - a.up : a.up - b.up
+                    return sortForward ? parseInt(b.up) - parseInt(a.up) : parseInt(a.up) - parseInt(b.up)
                 case "down":
-                    return sortForward ? b.down - a.down : a.down - b.down
+                    return sortForward ? parseInt(b.down) - parseInt(a.down) : parseInt(a.down) - parseInt(b.down)
                 default:
                     break;
             }
@@ -67,7 +70,7 @@ export const LinearChart = ({ data, month }) => {
                         <div key={e.id} className={`grid grid-cols-4 hover:bg-violet-100 ${indx % 2 == 0 ? "bg-violet-50 bg-opacity-80" : "bg-white"} py-4 rounded-md px-4`}>
                             {/* <p className="">{e.serverId}</p> */}
                             <p>{moment(e.connStart).format("MMM Do")}</p>
-                            <p>{ moment.duration(moment(e.connStart).diff(moment(e.connEnd))).humanize()}</p>
+                            <p>{moment.duration(moment(e.connStart).diff(moment(e.connEnd))).humanize()}</p>
                             <p>{getSize(e.up)}</p>
                             <p>{getSize(e.down)}</p>
                         </div>
