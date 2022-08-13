@@ -4,17 +4,17 @@ import { ArrowUpRight, ChevronDown, ChevronUp } from "react-feather"
 import { Account, Usage } from '@prisma/client';
 import Button from './un-ui/button';
 
-export const Billing = ({ data, account, changeView }: { data: {up: number, down: number}, account: Account, changeView: Function }) => {
+export const Billing = ({ data, tier, usage, changeView }: { data: {up: number, down: number}, tier: string, usage: boolean, changeView: Function }) => {
     const [ thisMonthData, setThisMonthData ] = useState<{
         down: number,
         up: number
     }>(data);
 
-    const [ usageMetrics, setUsageMetrics ] = useState(getUsage(thisMonthData, account));
+    const [ usageMetrics, setUsageMetrics ] = useState(getUsage(thisMonthData, tier));
 
     useEffect(() => {
         setThisMonthData(data)
-        setUsageMetrics(getUsage(data, account?.tier))
+        setUsageMetrics(getUsage(data, tier))
     }, [data])
 
     return (
@@ -32,10 +32,13 @@ export const Billing = ({ data, account, changeView }: { data: {up: number, down
                             usageMetrics.net_50_usage < 0 ?
                             <p className="text-gray-500">Used <strong className="text-gray-900">{getSize(data.down)}</strong> of free 50GB ({((data.down / 50000000000) * 100).toFixed(2)}%)</p>
                             :
-                            <p className="text-gray-500">Paying for <strong className="text-gray-900">{getSize(usageMetrics.net_50_usage)}</strong> over 50GB free at ${(usageMetrics.data_rate).toFixed(3)} per GB. ({getSize(data.down)} Total)</p>
+                            <p className="text-gray-500">Used all free data allowance, overflowed <strong className="text-gray-900">{getSize(usageMetrics.net_50_usage)}</strong></p>
                         :
                         usageMetrics.net_5_usage < 0 ?
                             <p className="text-gray-500">Used <strong className="text-gray-900">{getSize(data.down)}</strong> of free 5GB ({((data.down / 5000000000) * 100).toFixed(2)}%)</p>
+                            :
+                            usageMetrics.plan == "FREE" ?
+                            <p className="text-gray-500">Used all free data allowance, overflowed <strong className="text-gray-900">{getSize(usageMetrics.net_5_usage)}</strong></p>
                             :
                             <p className="text-gray-500">Paying for <strong className="text-gray-900">{getSize(usageMetrics.net_5_usage)}</strong> over 5GB free at ${(usageMetrics.data_rate).toFixed(3)} per GB. ({getSize(data.down)} Total)</p>
 
@@ -45,9 +48,14 @@ export const Billing = ({ data, account, changeView }: { data: {up: number, down
             </div>
 
             <div className="flex flex-col flex-end items-center gap-2">
-                <Button onClick={() => {
-                    changeView("usage")
-                }} icon={<ArrowUpRight size={16} />} className="h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Usage Breakdown</Button>
+                {
+                    usage ? 
+                    <Button onClick={() => {
+                        changeView("usage")
+                    }} icon={<ArrowUpRight size={16} />} className="h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Usage Breakdown</Button>
+                    :
+                    <></>
+                }
             </div>
             
             {/* <div className="flex flex-col flex-1">

@@ -604,7 +604,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                             <div className="flex flex-col items-start">
                                                 <h1 className="font-bold text-xl">Billing</h1>
 
-                                                <Billing data={thisMonthData} account={userInformation} changeView={setMenu} />
+                                                <Billing data={thisMonthData} tier={userInformation?.tier} changeView={setMenu} usage />
 
                                                 <br />
 

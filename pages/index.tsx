@@ -13,6 +13,8 @@ import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion
 import useMediaQuery from '@components/media_query';
 import { cardVariants, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
 import Waitlist from '@components/waitlist';
+import Billing from '@components/billing';
+import BillingCalculator from '@components/calculator';
 
 export async function getStaticProps() {
 	const metaTags = {
@@ -222,6 +224,8 @@ export default function Home() {
 								</div>
 							</div>				
 						</div>
+
+						<BillingCalculator />
 					</div>
 
 					<div className="flex flex-col gap-16 max-w-screen-lg w-full my-0 mx-auto py-2 px-4 relative" id="prerelease">
