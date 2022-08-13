@@ -5,6 +5,7 @@ import useMediaQuery from './media_query';
 import Button from './un-ui/button';
 import { ArrowDown, ChevronDown, ChevronUp } from "react-feather"
 import { Usage } from '@prisma/client';
+import { getSize } from './billing';
 
 export const LinearChart = ({ data, month }) => {
     const [ thisMonthData, setThisMonthData ] = useState([]);
@@ -79,18 +80,6 @@ export const LinearChart = ({ data, month }) => {
             }
         </div>
     )
-}
-
-export function getSize(size) {
-    var sizes = [' Bytes', ' KB', ' MB', ' GB', 
-                 ' TB', ' PB', ' EB', ' ZB', ' YB'];
-    
-    for (var i = 1; i < sizes.length; i++) {
-        if (size < Math.pow(1024, i)) 
-          return (Math.round((size / Math.pow(
-            1024, i - 1)) * 100) / 100) + sizes[i - 1];
-    }
-    return size;
 }
 
 export default LinearChart;

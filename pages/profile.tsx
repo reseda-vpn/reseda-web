@@ -17,7 +17,7 @@ import LinearChart from '@components/linear_chart';
 import Input from '@components/un-ui/input';
 import InputField from '@components/un-ui/input_field';
 import { FaExclamationTriangle } from 'react-icons/fa';
-import Billing from '@components/billing';
+import Billing, { getSize } from '@components/billing';
 import { isBuffer } from 'util';
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -541,44 +541,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <></>
                                                 }
                                                 
-                                                <div className="flex flex-col gap-2 rounded-lg px-0 py-2 w-full">
-                                                    <p className="font-bold text-xl">Plan</p>
-
-                                                    {
-                                                        (() => {
-                                                            switch(userInformation?.tier) {
-                                                                case "FREE":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                case "BASIC":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                case "PRO":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                case "SUPPORTER":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                default:
-                                                                    return (
-                                                                        <></>
-                                                                    )
-                                                            }
-                                                        })()
-                                                    }
-                                                </div>
+                                                
                                             </div>
                                         )
                                     case "usage":
@@ -641,9 +604,13 @@ export default function Home({ ss_session, token, user, eligible }) {
                                             <div className="flex flex-col items-start">
                                                 <h1 className="font-bold text-xl">Billing</h1>
 
-                                                <Billing data={thisMonthData} data_rates={userInformation} />
+                                                <Billing data={thisMonthData} account={userInformation} changeView={setMenu} />
 
-                                                <div className="flex flex-row gap-16">
+                                                <br />
+
+                                                <div className="flex flex-col gap-2 rounded-lg px-0 py-2 w-full">
+                                                    <p className="font-bold text-xl">Plan</p>
+
                                                     {
                                                         (() => {
                                                             switch(userInformation?.tier) {
@@ -651,92 +618,24 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                                     return (
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
-                                                                            <br />
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">5GB/mo Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700"><strong className="text-orange-300 rounded-sm py-0 px-1" >50MB/s</strong> Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">1 Device Max</div>
-                                                                                </div>
-                                                                            </div>
                                                                         </>
                                                                     )
                                                                 case "BASIC":
                                                                     return (
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
-                                                                            <br />
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">First 5GB/mo Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Data Cap</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700"><strong className="text-orange-400 rounded-sm py-0 px-1" >500MB/s</strong> Max Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">5 Device Max <i className="not-italic text-sm text-slate-400">(at the same time)</i> </div>
-                                                                                </div>
-                                                                            </div>
                                                                         </>
                                                                     )
                                                                 case "PRO":
                                                                     return (
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
-                                                                            <br />
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">First 5GB/mo Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Data Cap</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Up to <strong className="text-orange-500 rounded-sm py-0 px-1" >1GB/s</strong> Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Devices <i className="not-italic text-sm text-slate-400">(concurrent)</i> </div>
-                                                                                </div>
-                                                                            </div>
                                                                         </>
                                                                     )
                                                                 case "SUPPORTER":
                                                                     return (
                                                                         <>
                                                                             <h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
-                                                                            <br />
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center">
-                                                                                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">50GB Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Up to <strong className="bg-gradient-to-tr text-transparent bg-clip-text rounded-sm py-0 px-1" >1GB/s</strong> Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Devices <i className="not-italic text-sm text-slate-400">(concurrent)</i> </div>
-                                                                                </div>
-                                                                            </div>
                                                                         </>
                                                                     )
                                                                 default:
@@ -765,16 +664,4 @@ export default function Home({ ss_session, token, user, eligible }) {
             </div>
 		</div>
 	)
-}
-
-export function getSize(size) {
-    var sizes = [' Bytes', ' KB', ' MB', ' GB', 
-                 ' TB', ' PB', ' EB', ' ZB', ' YB'];
-    
-    for (var i = 1; i < sizes.length; i++) {
-        if (size < Math.pow(1024, i)) 
-          return (Math.round((size / Math.pow(
-            1024, i - 1)) * 100) / 100) + sizes[i - 1];
-    }
-    return size;
 }
