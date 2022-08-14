@@ -268,7 +268,7 @@ export default function Home() {
 							<div className="flex flex-col flex-1 max-w-xl text-justify gap-4">
 								<p className="text-slate-600">Joining in pre-release gives you access to the reseda <strong className="bg-gradient-to-tr text-transparent bg-clip-text rounded-sm py-0 px-1" >supporter</strong> tier. Whilst in development, as a supporter - you can reap 50GB free data, and an uncapped data transfer rate. Supporting as many devices as you want at the same time. All for the low cost of $0.00. <i className="text-slate-400 not-italic text-sm">*Requires Waitlist Acceptance (Multi-Accounts not permitted)</i></p>
 
-								<Button onClick={() => {
+								<Button className="h-10 w-fit border-2 border-gray-300 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900" onClick={() => {
 									document.getElementById("waitlistInput").focus();
 								}}>
 									Get Reseda

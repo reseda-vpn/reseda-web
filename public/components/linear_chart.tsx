@@ -68,7 +68,7 @@ export const LinearChart = ({ data, month }) => {
             {
                 thisMonthData.map((e, indx) => {
                     return (
-                        <div key={e.id} className={`grid grid-cols-4 hover:bg-violet-100 ${indx % 2 == 0 ? "bg-violet-50 bg-opacity-80" : "bg-white"} py-4 rounded-md px-4`}>
+                        <div key={e.id} className={`grid grid-cols-4 hover:bg-[#efedeb] ${indx % 2 == 0 ? "bg-[#F8F7F6]" : "bg-white"} py-4 rounded-md px-4`}>
                             {/* <p className="">{e.serverId}</p> */}
                             <p>{moment(e.connStart).format("MMM Do")}</p>
                             <p>{moment.duration(moment(e.connStart).diff(moment(e.connEnd))).humanize()}</p>

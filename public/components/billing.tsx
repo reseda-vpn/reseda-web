@@ -15,10 +15,11 @@ export const Billing = ({ data, tier, usage, changeView }: { data: {up: number, 
     useEffect(() => {
         setThisMonthData(data)
         setUsageMetrics(getUsage(data, tier))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data])
 
     return (
-        <div className="flex flex-row w-full rounded-lg overflow-hidden p-5 bg-[#F8F7F6] min-h-72 justify-between">
+        <div className="flex sm:flex-row flex-col w-full rounded-lg overflow-hidden p-5 bg-[#F8F7F6] min-h-72 justify-between">
             <div className="flex flex-col">
                 <div className="flex flex-row items-end">
                     <p className="text-xl">$</p>
@@ -47,12 +48,13 @@ export const Billing = ({ data, tier, usage, changeView }: { data: {up: number, 
                 
             </div>
 
-            <div className="flex flex-col flex-end items-center gap-2">
+            <div className="flex-col flex-end items-center gap-2 hidden sm:flex">
                 {
                     usage ? 
                     <Button onClick={() => {
                         changeView("usage")
-                    }} icon={<ArrowUpRight size={16} />} className="h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Usage Breakdown</Button>
+                        // icon={<ArrowUpRight size={16} />}
+                    }} icon={<ArrowUpRight size={16} />} className="h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Detailed Usage</Button>
                     :
                     <></>
                 }

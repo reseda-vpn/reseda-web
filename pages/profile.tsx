@@ -3,7 +3,7 @@ import { Gradient } from '@components/gradient'
 import { useRouter } from 'next/router';
 import styles from '@styles/Home.module.css'
 import Header from '@components/header';
-import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
+import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, Eye, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
 
 import {loadStripe} from '@stripe/stripe-js';
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
@@ -19,6 +19,7 @@ import InputField from '@components/un-ui/input_field';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import Billing, { getSize } from '@components/billing';
 import { isBuffer } from 'util';
+import CurrentPlan from '@components/current_plan';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -479,37 +480,36 @@ export default function Home({ ss_session, token, user, eligible }) {
                                     case "account":
                                         return (
                                             <div className="flex flex-col items-start w-full gap-8">
-                                                <div className="w-full sm:w-fit flex flex-col flex-1">
-                                                    <h1 className="font-bold text-xl ">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
-                                                    <p className="text-slate-700">{ session?.data?.user?.email }</p>
+                                                <div className="w-full sm:w-fit flex flex-col flex-1 gap-2">
+                                                    <div>
+                                                        <h1 className="font-bold text-xl ">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
+                                                        <p className="text-slate-700">{ session?.data?.user?.email }</p>
+                                                    </div>
 
-                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full flex-1 sm:flex-grow-0">
                                                         {
                                                             user.accounts[0].type == "credentials" ?
-                                                            <p className="text-violet-400 hover:cursor-pointer" onClick={(e) => {
-                                                                e.preventDefault();
+                                                            <Button onClick={() => {
                                                                 setChangingPassword({
                                                                     ...changingPassword,
                                                                     state: 1,
                                                                 })
-                                                            }}>Change Password</p>
+                                                            }} icon={<></>} className="h-8 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Change Password</Button>
                                                             :
                                                             <></>
                                                         }
-                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={(e) => {
-                                                            e.preventDefault();
+
+                                                        <Button onClick={() => {
                                                             setChangingUsername(true)
-                                                        }}>Change Username</p>
-                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={async () => {
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Change Username</Button>
+                                                        
+                                                        <Button onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
-                                                            // router.push(data.url);
-                                                        }}>Log Out</p>
-                                                        <p onClick={(e) => {
-                                                            e.preventDefault();
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Log Out</Button>
+                                                        
+                                                        <Button onClick={async () => {
                                                             setDeletingAccount(true)
-                                                        }} className="text-red-400 flex-1 flex- justify-self-end hover:cursor-pointer">
-                                                            Delete Account
-                                                        </p>
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-red-200/60 text-red-900 hover:bg-red-200 hover:text-red-900">Delete Account</Button>
                                                     </div>
                                                 </div>
                                                 
@@ -554,29 +554,29 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     </div>
 
                                                     <div className="flex flex-row items-center gap-6">
-                                                        <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
-                                                            <div className="bg-violet-300 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] rounded-md">
+                                                            <div className="bg-[#efedeb] px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
                                                                 {
-                                                                    small ? "I" : "Up"
+                                                                    small ? <div style={{ height: "24px", width: "0px" }}></div> : "Up"
                                                                 }
-                                                                <ArrowUp size={16} color={"#fff"}/>
+                                                                <ArrowUp size={16} color={"#000"}/>
                                                             </div>
                                                             
-                                                            <p className="px-4">
+                                                            <p className="px-4 font-semibold">
                                                                 { thisMonthData ? getSize(thisMonthData?.up) : "..." }
                                                             </p>
                                                             
                                                         </div>
 
-                                                        <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
-                                                            <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] rounded-md">
+                                                            <div className="bg-[#efedeb] px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
                                                                 {
-                                                                    small ? "I" : "Down"
+                                                                    small ? <div style={{ height: "24px", width: "0px" }}></div> : "Down"
                                                                 }
-                                                                <ArrowDown size={16} color={"#fff"}/>
+                                                                <ArrowDown size={16} color={"#000"}/>
                                                             </div>
 
-                                                            <p className="px-4">
+                                                            <p className="px-4 font-semibold">
                                                                 { thisMonthData ? getSize(thisMonthData?.down) : "..." }
                                                             </p>
                                                         </div>
@@ -601,53 +601,11 @@ export default function Home({ ss_session, token, user, eligible }) {
                                         )
                                     case "billing":
                                         return (
-                                            <div className="flex flex-col items-start">
+                                            <div className="flex flex-col items-start gap-2">
                                                 <h1 className="font-bold text-xl">Billing</h1>
 
                                                 <Billing data={thisMonthData} tier={userInformation?.tier} changeView={setMenu} usage />
-
-                                                <br />
-
-                                                <div className="flex flex-col gap-2 rounded-lg px-0 py-2 w-full">
-                                                    <p className="font-bold text-xl">Plan</p>
-
-                                                    {
-                                                        (() => {
-                                                            switch(userInformation?.tier) {
-                                                                case "FREE":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                case "BASIC":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                case "PRO":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                case "SUPPORTER":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
-                                                                        </>
-                                                                    )
-                                                                default:
-                                                                    return (
-                                                                        <></>
-                                                                    )
-                                                            }
-                                                        })()
-                                                    }
-                                                </div>
-
-                                                <p className="text-violet-400 hover:cursor-pointer">Change Plan</p>
+                                                <CurrentPlan tier={userInformation.tier} />
                                             </div>
                                         )
                                     default:
