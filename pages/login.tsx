@@ -136,7 +136,7 @@ export default function Home({ providers }) {
                             
                             <div className="flex flex-row justify-between">
                                 <Button 
-                                    className=" bg-violet-600 text-slate-50 w-fit font-semibold"
+                                    className=" bg-violet-600 text-slate-50 w-fit font-semibold text-sm"
                                     loaderOnly={awaitingReply}
                                     icon={authSuccess == "logged_in" ? <Check size={16}/> : <ArrowRight size={16} />}
                                     onClick={() => signIn()}
@@ -155,7 +155,7 @@ export default function Home({ providers }) {
                                     }
                                 </Button>
                                 <div className="flex flex-row items-center text-sm text-slate-700">
-                                    No Account?<Button icon={false} className="bg-transparent text-violet-500 w-fit font-semibold" onClick={() => {
+                                    No Account?<Button icon={false} className="bg-transparent text-violet-500 w-fit font-semibold text-sm" onClick={() => {
                                         router.replace('./signup')
                                     }}> Sign Up</Button>
                                 </div>
