@@ -3,8 +3,9 @@ import { Gradient } from '@components/gradient'
 import { useRouter } from 'next/router';
 import styles from '@styles/Home.module.css'
 import Header from '@components/header';
-import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
+import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, Eye, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
 
+import {loadStripe} from '@stripe/stripe-js';
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
 import { Account, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
@@ -16,6 +17,9 @@ import LinearChart from '@components/linear_chart';
 import Input from '@components/un-ui/input';
 import InputField from '@components/un-ui/input_field';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import Billing, { getSize } from '@components/billing';
+import { isBuffer } from 'util';
+import CurrentPlan from '@components/current_plan';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -74,7 +78,10 @@ export default function Home({ ss_session, token, user, eligible }) {
     const router = useRouter();
     const [ month, setMonth ] = useState(new Date().getMonth());
 
-    const [ thisMonthData, setThisMonthData ] = useState([]);
+    const [ thisMonthData, setThisMonthData ] = useState<{
+        up: number,
+        down: number
+    }>();
     const [ changingUsername, setChangingUsername ] = useState(false);
     const [ deletingAccount, setDeletingAccount ] = useState(false);
     const [ changingPassword, setChangingPassword ] = useState<{
@@ -91,9 +98,19 @@ export default function Home({ ss_session, token, user, eligible }) {
     const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
-        const new_data = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
+        const new_data: Usage[] = usageInformation?.filter(e => new Date(e.connStart).getMonth() == month);
 
-        setThisMonthData(new_data);
+        let down = 0;
+        let up = 0;
+
+        new_data?.forEach(e => {
+            down+= parseInt(e.down);
+            up+= parseInt(e.up);
+        });
+
+        setThisMonthData({
+            up, down
+        });
     }, [usageInformation, month])
 
 	useEffect(() => {
@@ -120,23 +137,24 @@ export default function Home({ ss_session, token, user, eligible }) {
         if(session.status !== "authenticated") router.push('./login');
 
         const as = async () => {
-            fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
+            if(!usageInformation || usageInformation.length !== 0) {
+                fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
                     const data = await e.json();
                     setUsageInformation(data);
                 });
+        
+                fetch(`/api/user/customer/${user.email}`).then(async e => {
+                        console.log(e);
+                    });
+            }
+            // const stripe = await loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
+            // console.log(stripe);
         }
 
         if(session.status == "authenticated") as();    
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [session, router]);
+	}, [session]);
 
-    const data = usageInformation?.map(e => {
-        return {
-            key: new Date(e.connEnd),
-            first: parseInt(e.up),
-            second: parseInt(e.down)
-        }
-    }) ?? []
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -462,37 +480,36 @@ export default function Home({ ss_session, token, user, eligible }) {
                                     case "account":
                                         return (
                                             <div className="flex flex-col items-start w-full gap-8">
-                                                <div className="w-full sm:w-fit flex flex-col flex-1">
-                                                    <h1 className="font-bold text-xl ">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
-                                                    <p className="text-slate-700">{ session?.data?.user?.email }</p>
+                                                <div className="w-full sm:w-fit flex flex-col flex-1 gap-2">
+                                                    <div>
+                                                        <h1 className="font-bold text-xl ">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
+                                                        <p className="text-slate-700">{ session?.data?.user?.email }</p>
+                                                    </div>
 
-                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 justify-between w-full flex-1 sm:flex-grow-0">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full flex-1 sm:flex-grow-0">
                                                         {
                                                             user.accounts[0].type == "credentials" ?
-                                                            <p className="text-violet-400 hover:cursor-pointer" onClick={(e) => {
-                                                                e.preventDefault();
+                                                            <Button onClick={() => {
                                                                 setChangingPassword({
                                                                     ...changingPassword,
                                                                     state: 1,
                                                                 })
-                                                            }}>Change Password</p>
+                                                            }} icon={<></>} className="h-8 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Change Password</Button>
                                                             :
                                                             <></>
                                                         }
-                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={(e) => {
-                                                            e.preventDefault();
+
+                                                        <Button onClick={() => {
                                                             setChangingUsername(true)
-                                                        }}>Change Username</p>
-                                                        <p className="text-violet-400 hover:cursor-pointer" onClick={async () => {
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Change Username</Button>
+                                                        
+                                                        <Button onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
-                                                            // router.push(data.url);
-                                                        }}>Log Out</p>
-                                                        <p onClick={(e) => {
-                                                            e.preventDefault();
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Log Out</Button>
+                                                        
+                                                        <Button onClick={async () => {
                                                             setDeletingAccount(true)
-                                                        }} className="text-red-400 flex-1 flex- justify-self-end hover:cursor-pointer">
-                                                            Delete Account
-                                                        </p>
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-red-200/60 text-red-900 hover:bg-red-200 hover:text-red-900">Delete Account</Button>
                                                     </div>
                                                 </div>
                                                 
@@ -506,7 +523,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             {/* <p className="text-violet-700">You have been selected to join us in pre-release.</p>  */}
                                                         </div>
                                                         
-                                                        <Button className="text-violet-50 bg-violet-500" href="/download" icon={<ArrowUpRight size={16}/>}>{ small ? "" : "Download" }</Button>
+                                                        <Button className="text-sm text-violet-50 bg-violet-500" href="/download" icon={<ArrowUpRight size={16}/>}>{ small ? "" : "Download" }</Button>
                                                     </div>
                                                     :
                                                     eligibleForDownload == 2 ?
@@ -524,114 +541,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     <></>
                                                 }
                                                 
-                                                <div className="flex flex-col gap-2 rounded-lg px-0 py-2 w-full">
-                                                    <p className="font-bold text-xl">Plan</p>
-
-                                                    <div className="flex flex-row gap-16">
-                                                    {
-                                                        (() => {
-                                                            switch(userInformation?.tier) {
-                                                                case "FREE":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
-                                                                            
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">5GB/mo Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700"><strong className="text-orange-300 rounded-sm py-0 px-1" >50MB/s</strong> Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">1 Device Max</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </>
-                                                                    )
-                                                                case "BASIC":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
-
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">First 5GB/mo Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Data Cap</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700"><strong className="text-orange-400 rounded-sm py-0 px-1" >500MB/s</strong> Max Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">5 Device Max <i className="not-italic text-sm text-slate-400">(at the same time)</i> </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </>
-                                                                    )
-                                                                case "PRO":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
-
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">First 5GB/mo Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Data Cap</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Up to <strong className="text-orange-500 rounded-sm py-0 px-1" >1GB/s</strong> Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Devices <i className="not-italic text-sm text-slate-400">(concurrent)</i> </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </>
-                                                                    )
-                                                                case "SUPPORTER":
-                                                                    return (
-                                                                        <>
-                                                                            <h2 className="text-xl relative after:content-['SUPPORTER'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300 after:bg-gradient-to-tr after:text-transparent after:bg-clip-text">Reseda</h2>
-
-                                                                            <div className="flex flex-col flex-1 justify-around">	
-                                                                                <div className="flex flex-row gap-2 items-center">
-                                                                                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">50GB Free</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Up to <strong className="bg-gradient-to-tr text-transparent bg-clip-text rounded-sm py-0 px-1" >1GB/s</strong> Transfer</div>
-                                                                                </div>
-                                                                                <div className="flex flex-row gap-2 items-center ">
-                                                                                    <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                                                    <div className="text-base text-slate-700">Unlimited Devices <i className="not-italic text-sm text-slate-400">(concurrent)</i> </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </>
-                                                                    )
-                                                                default:
-                                                                    return (
-                                                                        <></>
-                                                                    )
-                                                            }
-                                                        })()
-                                                    }
-                                                    </div>
-                                                </div>
+                                                
                                             </div>
                                         )
                                     case "usage":
@@ -644,30 +554,30 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     </div>
 
                                                     <div className="flex flex-row items-center gap-6">
-                                                        <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
-                                                            <div className="bg-violet-300 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] rounded-md">
+                                                            <div className="bg-[#efedeb] px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
                                                                 {
-                                                                    small ? "I" : "Up"
+                                                                    small ? <div style={{ height: "24px", width: "0px" }}></div> : "Up"
                                                                 }
-                                                                <ArrowUp size={16} color={"#fff"}/>
+                                                                <ArrowUp size={16} color={"#000"}/>
                                                             </div>
                                                             
-                                                            <p className="px-4">
-                                                                { thisMonthData ? getSize(thisMonthData?.reduce((a, b) => a + (parseInt(b.up) || 0), 0)) : "..." }
+                                                            <p className="px-4 font-semibold">
+                                                                { thisMonthData ? getSize(thisMonthData?.up) : "..." }
                                                             </p>
                                                             
                                                         </div>
 
-                                                        <div className="flex flex-row gap-2 items-center bg-violet-100 rounded-md">
-                                                            <div className="bg-violet-500 px-2 py-1 rounded-md flex flex-row items-center gap-4 text-white">
+                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] rounded-md">
+                                                            <div className="bg-[#efedeb] px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
                                                                 {
-                                                                    small ? "I" : "Down"
+                                                                    small ? <div style={{ height: "24px", width: "0px" }}></div> : "Down"
                                                                 }
-                                                                <ArrowDown size={16} color={"#fff"}/>
+                                                                <ArrowDown size={16} color={"#000"}/>
                                                             </div>
 
-                                                            <p className="px-4">
-                                                                { thisMonthData ? getSize(thisMonthData?.reduce((a, b) => a + (parseInt(b.down) || 0), 0)) : "..." }
+                                                            <p className="px-4 font-semibold">
+                                                                { thisMonthData ? getSize(thisMonthData?.down) : "..." }
                                                             </p>
                                                         </div>
                                                     </div>
@@ -691,8 +601,11 @@ export default function Home({ ss_session, token, user, eligible }) {
                                         )
                                     case "billing":
                                         return (
-                                            <div className="flex flex-col items-start">
+                                            <div className="flex flex-col items-start gap-2">
                                                 <h1 className="font-bold text-xl">Billing</h1>
+
+                                                <Billing data={thisMonthData} tier={userInformation?.tier} changeView={setMenu} usage />
+                                                <CurrentPlan tier={userInformation.tier} />
                                             </div>
                                         )
                                     default:
@@ -709,16 +622,4 @@ export default function Home({ ss_session, token, user, eligible }) {
             </div>
 		</div>
 	)
-}
-
-export function getSize(size) {
-    var sizes = [' Bytes', ' KB', ' MB', ' GB', 
-                 ' TB', ' PB', ' EB', ' ZB', ' YB'];
-    
-    for (var i = 1; i < sizes.length; i++) {
-        if (size < Math.pow(1024, i)) 
-          return (Math.round((size / Math.pow(
-            1024, i - 1)) * 100) / 100) + sizes[i - 1];
-    }
-    return size;
 }

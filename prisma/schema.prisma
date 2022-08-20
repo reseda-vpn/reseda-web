@@ -4,6 +4,7 @@
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
@@ -61,9 +62,8 @@ model Account {
   session_state            String?
   oauth_token_secret       String?
   oauth_token              String?
+  billing_id               String   @default("")
   lcs                      String?
-  maxUp                    String   @default("5368709120")
-  maxDown                  String   @default("5368709120")
   tier                     String   @default("FREE")
   user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 

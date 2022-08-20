@@ -29,7 +29,7 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
             <div className={styles.input} style={{ backgroundColor: 'rgb(219 255 228)', color: 'green' }}>
                 <p>Keep an eye on your inbox!</p>
 
-                <Check size={20 } />
+                <Check size={20} />
             </div>
         ) 
         :
@@ -64,7 +64,8 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
                     }}
                     onKeyPress={(e) => {
                         if(e.key == "Enter") {
-                            sendAway();
+                            if(input_ref?.current.value.trim().match(mail_format)) sendAway();
+                            else {}
                         }
                     }}
                     ref={input_ref}

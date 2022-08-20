@@ -33,8 +33,8 @@ export const Header = () => {
                         </>
                         :
                         <>
-                            <Button icon={false} onClick={() => router.push('../../login')} className="text-slate-100 sm:text-slate-600">Login</Button>
-                            <Button icon={false} onClick={() => document.getElementById("waitlistInput").focus()} className="bg-violet-600 text-slate-50 w-fit font-semibold" >Get Reseda</Button>
+                            <Button icon={false} onClick={() => router.push('../../login')} className="text-slate-100 sm:text-slate-600 text-sm">Login</Button>
+                            <Button icon={false} onClick={() => document.getElementById("waitlistInput").focus()} className="bg-violet-600 text-slate-50 w-fit font-semibold text-sm" >Get Reseda</Button>
                             {/* style={{ background: "linear-gradient(-45deg, rgba(99,85,164,0.6) 0%, rgba(232,154,62,.6) 100%)", color: 'rgb(255,255,255)', fontWeight: '600', display: small ? "none" : "flex" }} */}
                         </>
                     }
