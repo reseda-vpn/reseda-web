@@ -1,5 +1,6 @@
-import { getSize } from "@root/pages/profile";
+
 import { useEffect, useRef, useState } from "react";
+import { getSize } from "./billing";
 
 const Chart: React.FC<{ data: any[], month: number }> = ({ data, month }) => {
     const now = new Date();
