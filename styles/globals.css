@@ -81,6 +81,23 @@ h1::before {
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  th {
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0;
+    padding: 8px 16px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    background-color: #fafafa;
+  }
+  td {
+    text-align: left;
+    padding: 16px;
+    border-bottom-width: 1px;
+  }
+}
+
 @font-face {
   font-family: "Public Sans";
   src: url('../public/fonts/public_sans/PublicSans-VariableFont_wght.ttf');
