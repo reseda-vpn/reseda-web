@@ -25,17 +25,17 @@ export const BillingCalculator = () => {
                 </div>
 
                 <div className="flex flex-row items-center gap-4">
-                    <div className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "FREE" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"} hover:bg-orange-100 `}>
-                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer" onClick={() => setTier("FREE")}>FREE</h2>
+                    <div onClick={() => setTier("FREE")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "FREE" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"} hover:bg-orange-100 `}>
+                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer" >FREE</h2>
                     </div>
-                    <div className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "SUPPORTER" ? "bg-violet-100 border-2 border-violet-200" : "bg-violet-100/60"} hover:bg-violet-100`}>
-                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer bg-gradient-to-tr text-transparent bg-clip-text" onClick={() => setTier("SUPPORTER")}>SUPPORTER</h2>
+                    <div onClick={() => setTier("SUPPORTER")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "SUPPORTER" ? "bg-violet-100 border-2 border-violet-200" : "bg-violet-100/60"} hover:bg-violet-100`}>
+                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer bg-gradient-to-tr text-transparent bg-clip-text" >SUPPORTER</h2>
                     </div>
-                    <div className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "BASIC" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"}  hover:bg-orange-100`}>
-                        <h2 className="text-sm font-semibold text-orange-400 cursor-pointer" onClick={() => setTier("BASIC")}>BASIC</h2>
+                    <div onClick={() => setTier("BASIC")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "BASIC" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"}  hover:bg-orange-100`}>
+                        <h2 className="text-sm font-semibold text-orange-400 cursor-pointer" >BASIC</h2>
                     </div>
-                    <div className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "PRO" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"}  hover:bg-orange-100`}>
-                        <h2 className="text-sm font-semibold text-orange-500 cursor-pointer" onClick={() => setTier("PRO")}>PRO</h2>
+                    <div onClick={() => setTier("PRO")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "PRO" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"}  hover:bg-orange-100`}>
+                        <h2 className="text-sm font-semibold text-orange-500 cursor-pointer" >PRO</h2>
                     </div>
                 </div>
             </div>

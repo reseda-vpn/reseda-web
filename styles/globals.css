@@ -87,14 +87,22 @@ h1::before {
     font-size: 12px;
     letter-spacing: 0;
     padding: 8px 16px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
+
     background-color: #fafafa;
   }
+
   td {
     text-align: left;
     padding: 16px;
     border-bottom-width: 1px;
+  }
+
+  th:nth-child(1) {
+    border-radius: 5px 0px 0px 0px;
+  }
+
+  th:nth-last-child(1) {
+      border-radius: 0px 5px 0px 0px;
   }
 }
 
@@ -111,6 +119,11 @@ h1::before {
   font-style: italic;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url('../public/fonts/inter/Inter-VariableFont_slnt\,wght.ttf');
+  font-weight: 1 999;
+}
 
 /* Loader/Spinner */
 :root {
