@@ -5,7 +5,6 @@ import styles from '@styles/Home.module.css'
 import Header from '@components/header';
 import { Activity, ArrowDown, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, Eye, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
 
-import {loadStripe} from '@stripe/stripe-js';
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
 import { Account, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
