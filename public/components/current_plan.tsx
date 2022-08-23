@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react';
 import { ArrowUpRight, Check, ChevronDown, ChevronUp } from "react-feather"
 import { Account, Usage } from '@prisma/client';
 import Button from './un-ui/button';
+import { useRouter } from 'next/router';
 
 export const CurrentPlan = ({ tier }: {tier: string }) => {
+    const router = useRouter();
+
     return (
         <div className="flex flex-col sm:flex-row w-full rounded-lg overflow-hidden p-5 gap-2 sm:gap-16 bg-white border-1 border-gray-200 min-h-72 justify-between border border-gray-300/60 shadow-lg shadow-transparent hover:shadow-gray-100/80 transition-shadow duration-450 ease-in-out">
             <div className="flex flex-col">
@@ -137,6 +140,7 @@ export const CurrentPlan = ({ tier }: {tier: string }) => {
 
             <div className="flex flex-col gap-2">
                 <Button onClick={() => {
+                    router.push("/billing/plan")
                 }} icon={<></>} className="h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-violet-200/60 text-violet-900 hover:bg-violet-200 hover:text-violet-900">Change Plan</Button>
             </div>
         </div>

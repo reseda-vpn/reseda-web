@@ -7,9 +7,10 @@ module.exports = {
     ],
     theme: {
         fontFamily: {
-            sans: ["Public Sans", "DM Sans", "Roboto", "sans-serif"],
+            sans: ["Public Sans", "Inter", "DM Sans", "Roboto", "sans-serif"],
             serif: ["DM Serif", "serif"],
-            altSans: ["GT Walsheim Pro"]
+            altSans: ["GT Walsheim Pro"],
+            inter: ["Inter"]
         },
         extend: {},
     },
