@@ -10,14 +10,11 @@ import { Account, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
 import Loader from '@components/un-ui/loader';
-import Chart from '@components/chart';
 import prisma from "@root/lib/prisma"
 import LinearChart from '@components/linear_chart';
-import Input from '@components/un-ui/input';
 import InputField from '@components/un-ui/input_field';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import Billing, { getSize } from '@components/billing';
-import { isBuffer } from 'util';
 import CurrentPlan from '@components/current_plan';
 
 export const getServerSideProps = async ({ req, res }) => {

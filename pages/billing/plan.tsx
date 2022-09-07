@@ -9,7 +9,9 @@ import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
 import prisma from "@root/lib/prisma"
 import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
-import { FaCcStripe, FaStripe } from 'react-icons/fa';
+import { FaCcStripe, FaInfo, FaStripe } from 'react-icons/fa';
+import { HiLockClosed } from "react-icons/hi"
+import BillingInput from '@components/billing_input';
 
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -339,7 +341,14 @@ export default function Home({ ss_session, token, user, eligible }) {
 
                                                 <div className="flex flex-col">
                                                     <p>Could my speeds be lower than advertised?</p>
-                                                    <p className="text-gray-500 text-sm">Your speeds are made from numerous factors such as your personal internet speed, distance from server, ISP throttling, and the load of the server. Thats why our speeds are advertised as a maximum!</p>
+                                                    <p className="text-gray-500 text-sm">Quite possibly, yes. Your speeds are made from numerous factors such as your personal internet speed, distance from server, ISP throttling, and the load of the server. Thats why our speeds are advertised as a maximum.</p>
+                                                </div>
+                                                
+                                                <br />
+                                                
+                                                <div className="flex flex-col">
+                                                    <p>Can I change my plan later?</p>
+                                                    <p className="text-gray-500 text-sm">Absolutely! You can change your plan anytime. If you change a paid plan to a free one before using your first 5GB you wont have to pay a thing.</p>
                                                 </div>
                                             </div>
                                         </>
@@ -356,12 +365,13 @@ export default function Home({ ss_session, token, user, eligible }) {
                                             </div>
 
                                             <div>
-
+                                                <BillingInput />
                                             </div>
 
                                             <div className="flex flex-row items-center gap-2 bg-violet-100 rounded-md px-3 py-2">
-                                                <FaCcStripe size={28} className="text-violet-800"></FaCcStripe>
-                                                <p>Your information is stored securely with stripe.</p>
+                                                {/* <FaCcStripe size={28} className="text-violet-800"></FaCcStripe> */}
+                                                <HiLockClosed color='#5B21B6'></HiLockClosed>
+                                                <p className="text-violet-800">Your information is stored securely with stripe.</p>
                                             </div>
                                         </>
                                     )
