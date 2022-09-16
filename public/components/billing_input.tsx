@@ -1,13 +1,18 @@
 import validate from "card-validator"
+import { useRef } from "react";
 
 const BillingInput: React.FC<{}> = () => {
+    const card_number = useRef<HTMLInputElement>();
+
     return (
         <div className="flex flex-col items-center max-w-[400px]">
             <h2 className="flex flex-1 w-full text-left font-semibold mb-1 text-gray-700 text-sm">Card Details</h2>
             <div className="rounded-md outline-none flex flex-col" style={{ boxShadow: "rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 12%) 0px 1px 1px 0px, rgb(60 66 87 / 16%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 8%) 0px 2px 5px 0px" }}>
                 <div className="flex py-0 px-3 h-10">
-                    <input className="overflow-hidden outline-none w-full flex-1" type="text" placeholder="Card number" onChange={(val) => {
+                    <input className="overflow-hidden outline-none w-full flex-1" type="text" placeholder="Card number" ref={card_number} onChange={(val) => {
                         const card = validate.number(val.target.value);
+                        const new_card = val.target.value.replace(/[^0-9]/g, "").replace(/\W/gi, '').replace(/(.{4})/g, '$1 ').trim();
+                        card_number.current.value = new_card;
 
                         console.log(card);
                     }} />
