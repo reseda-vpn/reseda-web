@@ -70,10 +70,26 @@ export default function Home({ ss_session, token, user, eligible }) {
 
     const [ location, setLocation ] = useState<{
         page: 0 | 1 | 2 | 3,
-        plan: "FREE" | "PRO" | "BASIC"
+        plan: "FREE" | "PRO" | "BASIC",
+        billing: {
+            card_number: string,
+            card_date: string,
+            cvv: string,
+
+            billing_address: string,
+            zip_code: string
+        }
     }>({
         page: 0,
-        plan: null
+        plan: null,
+        billing: {
+            card_number: null,
+            card_date: null,
+            cvv: null,
+
+            billing_address: null,
+            zip_code: null
+        }
     });
 
 	useEffect(() => {
@@ -115,6 +131,13 @@ export default function Home({ ss_session, token, user, eligible }) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [session]);
 
+    const updateBilling = (billing_info) => {
+        setLocation({
+            ...location,
+            billing: billing_info,
+            page: 2
+        })
+    }
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen bg-white" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
@@ -145,7 +168,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                             });
                         }
                     }}>
-                        <div className={`border-[3px] transition-all ${location.page > 0 ? "hover:border-violet-400 hover:text-violet-700" : "hover:border-transparent"} ${location.page == 0 ? "border-violet-800 bg-violet-100 text-violet-800" : "border-violet-200 bg-white text-violet-400"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl `}>1</div>
+                        <div className={`border-[3px] transition-all ${location.page > 0 ? "hover:border-violet-400 hover:text-violet-700" : "hover:border-transparent"} ${location.page == 0 ? "border-violet-800 bg-violet-100 text-violet-800" : "border-violet-200 bg-white text-violet-400"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl `}>{ location.page > 0 ? <Check /> : 1}</div>
                         <p className={`${location.page == 0 ? "text-violet-400" : "text-violet-300"}`}>Choose A Plan</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 1 ? "cursor-pointer" : "cursor-default"} `} onClick={() => {
@@ -156,7 +179,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                             });
                         }
                     }}>
-                        <div className={`border-[3px] transition-all ${location.page == 1 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>2</div>
+                        <div className={`border-[3px] transition-all ${location.page == 1 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 1 ? <Check /> : 2}</div>
                         <p className={`${location.page == 1 ? "text-violet-400" : "text-violet-300"}`}>Billing Information</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 2 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
@@ -167,7 +190,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                             });
                         }
                     }}>
-                        <div className={`border-[3px] transition-all ${location.page == 2 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>3</div>
+                        <div className={`border-[3px] transition-all ${location.page == 2 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 2 ? <Check /> : 3}</div>
                         <p className={`${location.page == 2 ? "text-violet-400" : "text-violet-300"}`}>Usage Limits</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 2 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
@@ -178,7 +201,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                             });
                         }
                     }}>
-                        <div className={`border-[3px] transition-all ${location.page == 3 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>4</div>
+                        <div className={`border-[3px] transition-all ${location.page == 3 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 3 ? <Check /> : 4}</div>
                         <p className={`${location.page == 3 ? "text-violet-400" : "text-violet-300"}`}>Finish Setup</p>
                     </div>
                 </div>
@@ -236,6 +259,7 @@ export default function Home({ ss_session, token, user, eligible }) {
 
                                                         <Button icon={<></>} onClick={() => {
                                                             setLocation({
+                                                                ...location,
                                                                 plan: "FREE",
                                                                 page: 3
                                                             })
@@ -278,6 +302,7 @@ export default function Home({ ss_session, token, user, eligible }) {
 
                                                         <Button className="bg-violet-700 text-white text-sm font-semibold py-[18px]" onClick={() => {
                                                             setLocation({
+                                                                ...location,
                                                                 plan: "BASIC",
                                                                 page: 1
                                                             })
@@ -320,6 +345,7 @@ export default function Home({ ss_session, token, user, eligible }) {
 
                                                         <Button icon={<></>} className="bg-white text-violet-700 text-sm font-semibold py-[18px]" onClick={() => {
                                                             setLocation({
+                                                                ...location,
                                                                 plan: "PRO",
                                                                 page: 1
                                                             })
@@ -365,7 +391,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                             </div>
 
                                             <div>
-                                                <BillingInput />
+                                                <BillingInput autofill={location.billing} locationCallback={updateBilling} />
                                             </div>
 
                                             <div className="flex flex-row items-center gap-2 bg-violet-100 rounded-md px-3 py-2">
@@ -377,6 +403,8 @@ export default function Home({ ss_session, token, user, eligible }) {
                                     )
                                 case 2:
                                     return <>C</>
+                                case 3:
+                                    return <></>
                             }
                         })()
                     }
