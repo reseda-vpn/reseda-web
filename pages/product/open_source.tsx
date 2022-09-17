@@ -60,7 +60,7 @@ export default function Home() {
                         <div className="flex flex-row items-center gap-2">
                             <GitHub size={16}/> 
                             <p>
-                                You can find the reseda client source code <a className="text-violet-500" href="https://github.com/bennjii/reseda">here</a>.
+                                You can find the reseda client source code <a className="text-violet-500" href="https://github.com/reseda-vpn">here</a>.
                             </p>
                         </div>
 

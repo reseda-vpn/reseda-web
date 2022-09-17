@@ -11,7 +11,7 @@ import Footer from '@components/footer';
 import { Check } from 'react-feather';
 import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion"
 import useMediaQuery from '@components/media_query';
-import { cardVariants, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
+import { cardVariants, cardVariantsRight, subTitleControl, titleControl, titleVariants } from '@components/framer_constants';
 import Waitlist from '@components/waitlist';
 import Billing from '@components/billing';
 import BillingCalculator from '@components/calculator';
@@ -106,29 +106,29 @@ export default function Home() {
 							<div className="absolute w-full h-full bg-violet-50 z-0 bg-opacity-80 blur-3xl"></div>
 							
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 items-center justify-center z-20">
-								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+								<motion.div initial="offscreen" whileInView="onscreen" custom={0} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
 									<Image src={"/assets/duotone/rocket_purple.svg"} alt={"1GB/s Speeds"} height={45} width={45} className={styles.dtsvg}/>
 									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Blazing 1GB/s Speeds</h1> {/* before:h-full before:bg-violet-500 before:absolute relative before:-left-2 md:before:bg-white */}
 									<p className="text-sm text-slate-700 text-left">With real world speeds up to <strong className="text-violet-500 rounded-sm py-0 px-1" >1GB/s</strong>, Reseda can handle any task from fast-updates to streaming</p>
-								</div>
+								</motion.div>
 
-								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+								<motion.div initial="offscreen" whileInView="onscreen" custom={1} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
 									<Image src={"/assets/duotone/time_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
 									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Incredibly low wait times</h1>
 									<p className="text-sm text-slate-900">Connect to in under <strong className="text-violet-500 rounded-sm py-0 px-1" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
-								</div>
+								</motion.div>
 								
-								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+								<motion.div initial="offscreen" whileInView="onscreen" custom={2} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
 									<Image src={"/assets/duotone/no_location_purple.svg"} alt={"<2s Connection"} quality={100}  height={45} width={45} className={styles.dtsvg}/>
 									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Keep your location private</h1>
 									<p className="text-sm text-slate-900 text-left">With a strict, no-tracing policy, be comfortable in knowing Reseda is secure, keeping your location <strong className="text-violet-500 rounded-sm py-0 px-1" >hidden</strong>, and traffic <strong className="text-violet-500 rounded-sm py-0 px-1" >private</strong> </p>
-								</div>
+								</motion.div>
 
-								<div className="flex flex-col items-start max-w-xs gap-2 md:h-40">
+								<motion.div initial="offscreen" whileInView="onscreen" custom={3} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
 									<Image src={"/assets/duotone/component_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
 									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Component-Based Backend</h1>
 									<p className="text-sm text-slate-900 text-left">Reseda implements safeguards to ensure your connection remains open whilst the server is up.</p>
-								</div>
+								</motion.div>
 							</div>
 						</motion.div>
 					</div>

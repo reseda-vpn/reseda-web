@@ -13,12 +13,11 @@ import { FaCcStripe, FaInfo, FaStripe } from 'react-icons/fa';
 import { HiLockClosed } from "react-icons/hi"
 import BillingInput from '@components/billing_input';
 
-
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
     const csrfToken = await getCsrfToken({ req: req });
 
-    if (!session) return { props: {}, redirect: { destination: '/login', permanent: false } }
+    if (!session) return { props: {}, redirect: { destination: '/login?goto=\"billing\/plan\"', permanent: false } }
 
     const exists = prisma.lead.findUnique({
 		where: { email: session.user.email }
@@ -112,7 +111,9 @@ export default function Home({ ss_session, token, user, eligible }) {
             }
         }
 
-        if(session.status !== "authenticated") router.push('/login');
+        console.log(session);
+
+        // if(session.status !== "authenticated") router.push('/login?goto=\"billing\/plan\"');
 
         const as = async () => {
             if(!usageInformation || usageInformation.length !== 0) {
@@ -122,8 +123,8 @@ export default function Home({ ss_session, token, user, eligible }) {
                 });
         
                 fetch(`/api/user/customer/${user.email}`).then(async e => {
-                        console.log(e);
-                    });
+                    console.log(e);
+                });
             }
         }
 
@@ -144,22 +145,23 @@ export default function Home({ ss_session, token, user, eligible }) {
             <div 
                 className="fixed left-0 top-0 p-4 flex flex-row items-center gap-2 cursor-pointer text-violet-800"
                 onClick={() => {
-                    if(location.page >= 0 && location.page <= 3) {
+                    if(location.page > 0 && location.page <= 3) {
                         setLocation({ 
                             ...location,
                             //@ts-ignore
                             page: location.page - 1
                         })
                     }else {
-                        router.push("/profile")
+                        window.history.go(-1);
+                        // router.push("/profile")
                     }
                 }}
             >
                 <ArrowLeft strokeWidth={1}></ArrowLeft>
                 <p>Go Back</p>
             </div>
-            <div className="flex flex-col items-center py-28 gap-24 mx-auto w-full max-w-6xl">
-                <div className="flex flex-row items-center gap-12">
+            <div className="flex flex-col items-center sm:py-28 py-20 sm:gap-24 gap-12 mx-auto w-full max-w-6xl">
+                <div className="flex flex-row items-center sm:gap-12 gap-8">
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 0 ? "cursor-pointer" : "cursor-default"} `} onClick={() => {
                         if(location.page >= 0) {
                             setLocation({
@@ -169,7 +171,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                         }
                     }}>
                         <div className={`border-[3px] transition-all ${location.page > 0 ? "hover:border-violet-400 hover:text-violet-700" : "hover:border-transparent"} ${location.page == 0 ? "border-violet-800 bg-violet-100 text-violet-800" : "border-violet-200 bg-white text-violet-400"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl `}>{ location.page > 0 ? <Check /> : 1}</div>
-                        <p className={`${location.page == 0 ? "text-violet-400" : "text-violet-300"}`}>Choose A Plan</p>
+                        <p className={`${location.page == 0 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Choose A Plan</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 1 ? "cursor-pointer" : "cursor-default"} `} onClick={() => {
                         if(location.page >= 1) {
@@ -180,7 +182,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                         }
                     }}>
                         <div className={`border-[3px] transition-all ${location.page == 1 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 1 ? <Check /> : 2}</div>
-                        <p className={`${location.page == 1 ? "text-violet-400" : "text-violet-300"}`}>Billing Information</p>
+                        <p className={`${location.page == 1 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Billing Information</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 2 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
                         if(location.page >= 2) {
@@ -191,7 +193,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                         }
                     }}>
                         <div className={`border-[3px] transition-all ${location.page == 2 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 2 ? <Check /> : 3}</div>
-                        <p className={`${location.page == 2 ? "text-violet-400" : "text-violet-300"}`}>Usage Limits</p>
+                        <p className={`${location.page == 2 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Usage Limits</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 2 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
                         if(location.page >= 3) {
@@ -202,7 +204,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                         }
                     }}>
                         <div className={`border-[3px] transition-all ${location.page == 3 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 3 ? <Check /> : 4}</div>
-                        <p className={`${location.page == 3 ? "text-violet-400" : "text-violet-300"}`}>Finish Setup</p>
+                        <p className={`${location.page == 3 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Finish Setup</p>
                     </div>
                 </div>
 
@@ -214,142 +216,161 @@ export default function Home({ ss_session, token, user, eligible }) {
                                     return (
                                         <>
                                             <div className="flex flex-col items-center gap-2">
-                                                <h1 className="font-bold text-5xl text-violet-800">Simple Pricing, no commitment</h1>
+                                                {
+                                                    small ? 
+                                                    <h1 className="font-bold text-4xl text-gray-800 text-center">Simple Pricing <br/>no commitment</h1>
+                                                    :
+                                                    <h1 className="font-bold text-5xl text-gray-800">Simple Pricing, no commitment</h1>
+                                                }
 
-                                                <div className="flex flex-row items-center gap-1">
-                                                    <p className="text-violet-400">If you don{'\''}t exceed 5GB usage in a month, you don{'\''}t pay a thing!</p>
-                                                </div>
+                                                {
+                                                    small ?
+                                                    <></>
+                                                    :
+                                                    <div className="flex flex-row items-center gap-1">
+                                                        <p className="text-gray-800 text-opacity-50">If you don{'\''}t exceed 5GB usage in a month, you don{'\''}t pay a thing!</p>
+                                                    </div>
+                                                }
+
                                             </div>
                                             
-                                            <div className="flex flex-row items-center font-inter">
-                                                <div className="py-5">
-                                                    <div className="bg-violet-600 flex flex-col gap-4 rounded-lg rounded-r-none p-6 text-white min-w-[350px]">
-                                                        <div className="flex flex-col gap-1">
-                                                            <h2 className="font-medium text-base">Free</h2>
+                                            <div className="flex md:flex-row flex-col items-center font-inter gap-8">
+                                                <div className="bg-white rounded-xl border-[1px] border-gray-200" style={{ boxShadow: "rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 1px 1px 0px, rgb(60 66 87 / 0%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 6%) 0px 2px 5px 0px" }}>
+                                                    <div className="flex-1 h-full min-h-full">
+                                                        <div className="bg-white flex flex-col gap-4 rounded-xl p-6 text-gray-800 min-w-[350px]">
+                                                            <div className="flex flex-col gap-1">
+                                                                <h2 className="font-medium text-base">Free</h2>
 
-                                                            <div className='flex flex-row items-center gap-4'>
-                                                                <p className="font-bold text-4xl font-sans">$0.00</p>
-                                                                <div className="flex flex-col items-start flex-1">
-                                                                    <p className="font-normal text-sm">NZD/ mo</p>
-                                                                    <p className="font-normal text-sm text-gray-200 text-opacity-80">$0.00 per GB</p>
+                                                                <div className='flex flex-row items-center gap-4'>
+                                                                    <p className="font-bold text-4xl font-sans">$0.00</p>
+                                                                    <div className="flex flex-col items-start flex-1">
+                                                                        <p className="font-normal text-sm">NZD/ mo</p>
+                                                                        <p className="font-normal text-sm text-gray-800 text-opacity-80">$0.00 per GB</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <p className="font-normal text-sm text-gray-800 text-opacity-80">Enjoy what reseda has to offer free, forever</p>
+                                                            </div>
+
+                                                            <div className="flex flex-col gap-1">
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">5GB/month</p>
+                                                                </div>
+
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">50MB/s Maximum</p>
+                                                                </div>
+
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">1 Device at a time</p>
                                                                 </div>
                                                             </div>
 
-                                                            <p className="font-normal text-sm text-gray-200 text-opacity-80">Enjoy what reseda has to offer free, forever</p>
+                                                            {/* Check if it is a free tier and block access to the middle two elements! */}
+
+                                                            <Button icon={<></>} onClick={() => {
+                                                                setLocation({
+                                                                    ...location,
+                                                                    plan: "FREE",
+                                                                    page: 3
+                                                                })
+                                                            }} className="bg-violet-100 text-violet-800 text-sm font-semibold py-[18px] hover:bg-violet-200">Go Free</Button>
                                                         </div>
-
-                                                        <div className="flex flex-col gap-1">
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#fff"} /></div>
-                                                                <p className="font-light">5GB/month</p>
-                                                            </div>
-
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#fff"} /></div>
-                                                                <p className="font-light">50MB/s Maximum</p>
-                                                            </div>
-
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#fff"} /></div>
-                                                                <p className="font-light">1 Device at a time</p>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Check if it is a free tier and block access to the middle two elements! */}
-
-                                                        <Button icon={<></>} onClick={() => {
-                                                            setLocation({
-                                                                ...location,
-                                                                plan: "FREE",
-                                                                page: 3
-                                                            })
-                                                        }} className="bg-white text-violet-800 text-sm font-semibold py-[18px]">Go Free</Button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div className="bg-white rounded-lg border-[3px] border-violet-600">
-                                                    <div className="bg-white flex flex-col gap-4 rounded-lg flex-1 h-full min-h-full p-6 text-violet-800 w-full min-w-[350px]">
-                                                        <div className="flex flex-col gap-1">
-                                                            <h2 className="font-medium text-base">Basic</h2>
-
-                                                            <div className='flex flex-row items-center gap-4'>
-                                                                <p className="font-bold text-4xl font-sans">$2.00</p>
-                                                                <div className="flex flex-col items-start flex-1 text-gray-800">
-                                                                    <p className="font-normal text-sm">NZD/ 100GB</p>
-                                                                    <p className="font-normal text-sm text-opacity-80">$0.02 per GB</p>
-                                                                </div>
-                                                            </div>
-
-                                                            <p className="text-gray-500">Get the first 5GB free, and enjoy the benefits of a high speed VPN</p>
-                                                        </div>
-
-                                                        <div className="flex flex-col gap-1 text-gray-800">
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
-                                                                <p className="font-medium">Uncapped Usage</p>
-                                                            </div>
-
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
-                                                                <p className="font-medium">500MB/s Maximum</p>
-                                                            </div>
-
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
-                                                                <p className="font-medium">3 Device at a time</p>
-                                                            </div>
-                                                        </div>
-
-                                                        <Button className="bg-violet-700 text-white text-sm font-semibold py-[18px]" onClick={() => {
-                                                            setLocation({
-                                                                ...location,
-                                                                plan: "BASIC",
-                                                                page: 1
-                                                            })
-                                                        }}>Get Started</Button>
                                                     </div>
                                                 </div>
 
-                                                <div className="py-5">
-                                                    <div className="bg-violet-600 flex flex-col gap-4 rounded-lg rounded-l-none p-6 text-white min-w-[350px]">
-                                                        <div className="flex flex-col gap-1">
-                                                            <h2 className="font-medium text-base">Pro</h2>
+                                                <div className="bg-white rounded-xl border-[1px] border-gray-200 relative" style={{ boxShadow: "rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 1px 1px 0px, rgb(60 66 87 / 0%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 6%) 0px 2px 5px 0px" }}>
+                                                    <div className="absolute left-10 -top-4 flex items-center justify-center rounded-full bg-violet-600 px-4 py-[5px] text-sm text-white font-inter font-medium">Most Popular</div>
+                                                    <div className="flex-1 h-full min-h-full">
+                                                        
+                                                        <div className="bg-white flex flex-col gap-6 rounded-xl flex-1 h-full min-h-full p-6 pt-8 text-gray-800 sm:w-full min-w-[350px]">
+                                                            <div className="flex flex-col gap-2">
+                                                                <h2 className="font-medium text-base">Basic</h2>
 
-                                                            <div className='flex flex-row items-center gap-4'>
-                                                                <p className="font-bold text-4xl font-sans">$2.40</p>
-                                                                <div className="flex flex-col items-start flex-1">
-                                                                    <p className="font-normal text-sm">NZD/ 100GB</p>
-                                                                    <p className="font-normal text-sm text-gray-200 text-opacity-80">$0.024 per GB</p>
+                                                                <div className='flex flex-row items-center gap-4'>
+                                                                    <p className="font-bold text-4xl font-sans">$2.00</p>
+                                                                    <div className="flex flex-col items-start flex-1 text-gray-800">
+                                                                        <p className="font-normal text-sm">NZD/ 100GB</p>
+                                                                        <p className="font-normal text-sm text-opacity-80">$0.02 per GB</p>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <p className="font-normal text-sm text-gray-800 text-opacity-80">Get the first 5GB free, and enjoy the benefits of a high speed VPN</p>
+                                                            </div>
+
+                                                            <div className="flex flex-col gap-1 text-gray-800">
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">Uncapped Usage</p>
+                                                                </div>
+
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">500MB/s Maximum</p>
+                                                                </div>
+
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">3 Device at a time</p>
                                                                 </div>
                                                             </div>
 
-                                                            <p className="font-normal text-sm text-gray-200 text-opacity-80">Enjoy 1GB/s speeds and your first 5GB free</p>
+                                                            <Button className="bg-violet-700 text-white text-sm font-semibold py-[18px]" onClick={() => {
+                                                                setLocation({
+                                                                    ...location,
+                                                                    plan: "BASIC",
+                                                                    page: 1
+                                                                })
+                                                            }}>Get Started</Button>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                                        
+                                                <div className="bg-white rounded-xl border-[1px] border-gray-200" style={{ boxShadow: "rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 1px 1px 0px, rgb(60 66 87 / 0%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 6%) 0px 2px 5px 0px" }}>
+                                                   <div className="flex-1 h-full min-h-full">
+                                                        <div className="bg-white flex flex-col gap-4 rounded-xl p-6 text-gray-800 min-w-[350px]">
+                                                            <div className="flex flex-col gap-1">
+                                                                <h2 className="font-medium text-base">Pro</h2>
 
-                                                        <div className="flex flex-col gap-1">
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#fff"} /></div>
-                                                                <p className="font-light">Uncapped Usage</p>
+                                                                <div className='flex flex-row items-center gap-4'>
+                                                                    <p className="font-bold text-4xl font-sans">$2.40</p>
+                                                                    <div className="flex flex-col items-start flex-1">
+                                                                        <p className="font-normal text-sm">NZD/ 100GB</p>
+                                                                        <p className="font-normal text-sm text-gray-800 text-opacity-80">$0.024 per GB</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <p className="font-normal text-sm text-gray-800 text-opacity-80">Enjoy 1GB/s speeds and your first 5GB free</p>
                                                             </div>
 
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#fff"} /></div>
-                                                                <p className="font-light">1GB/s Maximum</p>
+                                                            <div className="flex flex-col gap-1">
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">Uncapped Usage</p>
+                                                                </div>
+
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">1GB/s Maximum</p>
+                                                                </div>
+
+                                                                <div className='flex flex-row items-center font-sans'>
+                                                                    <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#5B21B6"} /></div>
+                                                                    <p className="text-gray-800 text-opacity-80">Unlimited Device at a time</p>
+                                                                </div>
                                                             </div>
 
-                                                            <div className='flex flex-row items-center font-sans'>
-                                                                <div className="h-8 w-8 rounded-full flex items-center justify-center"><Check size={18} color={"#fff"} /></div>
-                                                                <p className="font-light">Unlimited Device at a time</p>
-                                                            </div>
+                                                            <Button icon={<></>} className="bg-violet-100 text-violet-700 text-sm font-semibold py-[18px] hover:bg-violet-200" onClick={() => {
+                                                                setLocation({
+                                                                    ...location,
+                                                                    plan: "PRO",
+                                                                    page: 1
+                                                                })
+                                                            }}>Go Pro</Button>
                                                         </div>
-
-                                                        <Button icon={<></>} className="bg-white text-violet-700 text-sm font-semibold py-[18px]" onClick={() => {
-                                                            setLocation({
-                                                                ...location,
-                                                                plan: "PRO",
-                                                                page: 1
-                                                            })
-                                                        }}>Go Pro</Button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -383,11 +404,21 @@ export default function Home({ ss_session, token, user, eligible }) {
                                     return (
                                         <>
                                             <div className="flex flex-col items-center gap-2">
-                                                <h1 className="font-bold text-5xl text-violet-800">Billing</h1>
+                                                {
+                                                    small ? 
+                                                    <h1 className="font-bold text-4xl text-gray-800 text-center">Billing</h1>
+                                                    :
+                                                    <h1 className="font-bold text-5xl text-gray-800">Billing</h1>
+                                                }
 
-                                                <div className="flex flex-row items-center gap-1">
-                                                    <p className="text-violet-400">For paid plans, we require credit card information.</p>
-                                                </div>
+                                                {
+                                                    small ?
+                                                    <></>
+                                                    :
+                                                    <div className="flex flex-row items-center gap-1">
+                                                        <p className="text-gray-800 text-opacity-50">For paid plans, we require credit card information.</p>
+                                                    </div>
+                                                }
                                             </div>
 
                                             <div>

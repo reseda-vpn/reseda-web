@@ -66,7 +66,7 @@ export default function Home({ providers }) {
                 if(window.__TAURI_METADATA__) {
                     router.replace('./app');
                 }else {
-                    router.replace('./profile');
+                    // router.replace('./profile');
                 }
             }
         }
@@ -183,6 +183,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     //@ts-expect-error
     const redirect_url = context.req.socket.parser.incoming.url.includes("t=1") ? "/app" : "/profile"
+
+    const rdr = context.req.url.split("goto=");
+    if(rdr.length > 1) {
+        console.log(decodeURIComponent(rdr[1]));
+        // return { redirect: { permanent: false, destination: `../${decodeURIComponent(rdr[1]).replaceAll("\"", "")}` } };
+    }
   
     if (session) {
       return { redirect: { permanent: false, destination: redirect_url } };

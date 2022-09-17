@@ -61,3 +61,21 @@ export const cardVariants: Variants = {
         }
     }
 };
+
+export const cardVariantsRight: Variants = {
+    offscreen: (custom) => ({
+        opacity: 0,
+        transition: { delay: custom * 0.2 },
+        x: -20
+    }),
+    onscreen: (custom) => ({
+        opacity: 1,
+        transition: { 
+            delay: custom * 0.2,
+            type: "tween",
+            ease: "easeOut",
+            duration: 0.4,
+        },
+        x: 0
+    })
+};

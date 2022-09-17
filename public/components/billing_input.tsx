@@ -12,8 +12,64 @@ const BillingInput: React.FC<{ autofill, locationCallback }> = ({ autofill, loca
         zip_code: null
     });
     const [ invalidKeys, setInvalidKeys ] = useState([]);
+
+    const calculateValidity = (callbackFn) => {
+        let invalid_keys: { item: string, reason: string }[] = [];
+
+        console.log(billingInfo);
+
+        // Check for any null entities
+        for (let [key, value] of Object.entries(billingInfo)) {
+            if(value == null) {
+                invalid_keys.push({
+                    item: key,
+                    reason: "Value is null"
+                })
+            }
+        }
+
+        const mock_card = validate.number(billingInfo.card_number);
+        if(!mock_card.isValid) {
+            invalid_keys.push({
+                item: "card_number",
+                reason: "Not a valid card"
+            });
+        }
+
+        const mock_cvv = validate.cvv(billingInfo.cvv);
+        if(!mock_cvv.isValid) {
+            invalid_keys.push({
+                item: "cvv",
+                reason: "Not a valid CVV number"
+            });
+        }
+
+        const mock_date = validate.expirationDate(billingInfo.card_date);
+        if(!mock_date.isValid) {
+            invalid_keys.push({
+                item: "card_date",
+                reason: "Not a valid expiration date"
+            });
+        }
+
+        callbackFn(invalid_keys);
+    }
+
+    useEffect(() => {
+        calculateValidity((invalid_keys) => {
+            if(invalid_keys.length !== 0) {
+                console.log(invalid_keys);
+                setInvalidKeys(invalid_keys);
+            }else {
+                setInvalidKeys([]);
+            }
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [billingInfo])
+
     const card_number = useRef<HTMLInputElement>();
     const card_date = useRef<HTMLInputElement>();
+    const card_cvv = useRef<HTMLInputElement>();
 
     useEffect(() => {
         console.log("Updated billing information")
@@ -65,7 +121,12 @@ const BillingInput: React.FC<{ autofill, locationCallback }> = ({ autofill, loca
                         }}
                     />
                     <div className="h-full w-[1px] bg-[#e5e7eb]"></div>
-                    <input value={billingInfo.cvv} type="text" placeholder="CVV" className={`overflow-hidden outline-none w-full flex-1 `} onChange={(val) => {
+                    <input value={billingInfo.cvv} ref={card_cvv} type="text" placeholder="CVV" className={`overflow-hidden outline-none w-full flex-1 `} onChange={(val) => {
+                        let new_card = val.target.value
+                            .substring(0, 4);
+
+                        card_cvv.current.value = new_card;
+
                         setBillingInfo({
                             ...billingInfo,
                             cvv: val.target.value
@@ -101,48 +162,21 @@ const BillingInput: React.FC<{ autofill, locationCallback }> = ({ autofill, loca
 
             <br />
 
-            <Button icon={<></>} className="w-full bg-violet-700 text-white text-sm font-semibold py-[18px]" onClick={() => {
-                let invalid_keys: { item: string, reason: string }[] = [];
+            {/* <div className="flex flex-row items-center gap-2 bg-red-100 rounded-md px-3 py-2">
+                <HiExclamation color='#db5959'></HiExclamation>
+                <p className="text-red-800">Incomplete card details</p>
+            </div> */}
 
-                // Check for any null entities
-                for (let [key, value] of Object.entries(billingInfo)) {
-                    if(value == null) {
-                        invalid_keys.push({
-                            item: key,
-                            reason: "Value is null"
-                        })
+            <br />
+
+            <Button icon={<></>} className={`w-full ${invalidKeys.length > 0 ? "bg-violet-200" : "bg-violet-600"} text-white text-sm font-semibold py-[18px]`} onClick={() => {
+                calculateValidity((invalid_keys) => {
+                    if(invalid_keys.length == 0) locationCallback(billingInfo)
+                    else {
+                        console.log(invalid_keys);
+                        setInvalidKeys(invalid_keys);
                     }
-                }
-
-                const mock_card = validate.number(billingInfo.card_number);
-                if(!mock_card.isValid) {
-                    invalid_keys.push({
-                        item: "card_number",
-                        reason: "Not a valid card"
-                    });
-                }
-
-                const mock_cvv = validate.cvv(billingInfo.cvv);
-                if(!mock_cvv.isValid) {
-                    invalid_keys.push({
-                        item: "cvv",
-                        reason: "Not a valid CVV number"
-                    });
-                }
-
-                const mock_date = validate.expirationDate(billingInfo.cvv);
-                if(!mock_date.isValid) {
-                    invalid_keys.push({
-                        item: "card_date",
-                        reason: "Not a valid expiration date"
-                    });
-                }
-
-                if(invalid_keys.length == 0) locationCallback(billingInfo)
-                else {
-                    console.log(invalid_keys);
-                    setInvalidKeys(invalid_keys);
-                }
+                })
             }}>Continue</Button>
         </div>
     )

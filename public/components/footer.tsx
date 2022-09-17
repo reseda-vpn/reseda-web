@@ -13,7 +13,7 @@ export const Footer = () => {
                         <div className="flex flex-1 flex-row gap-2 sm:gap-16 w-full justify-between md:justify-start">
                             <div className="flex flex-col">
                                 <p className="font-semibold text-base text-slate-100">Product</p>
-                                <a className="font-light text-slate-50 text-sm text-opacity-60" href="../#pricing">Pricing</a>
+                                <a className="font-light text-slate-50 text-sm text-opacity-60" href="billing/plan">Pricing</a>
                                 <Link href="/product/open_source" passHref={true}><p className="hover:cursor-pointer font-light text-slate-50 text-sm text-opacity-60">Open-Source</p></Link> 
                                 <Link href="/product/server_locations" passHref={true}><p className="hover:cursor-pointer z font-light text-slate-50 text-sm text-opacity-60" >Server Locations</p></Link>
                                 <Link href="https://dnsleaktest.com/" passHref={true}><p className="hover:cursor-pointer z font-light text-slate-50 text-sm text-opacity-60" >Security Tools</p></Link>
