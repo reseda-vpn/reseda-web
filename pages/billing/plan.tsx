@@ -12,6 +12,7 @@ import { motion, useAnimation, useViewportScroll, Variants } from "framer-motion
 import { FaCcStripe, FaInfo, FaStripe } from 'react-icons/fa';
 import { HiLockClosed } from "react-icons/hi"
 import BillingInput from '@components/billing_input';
+import Input from '@components/un-ui/input';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -181,7 +182,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                             });
                         }
                     }}>
-                        <div className={`border-[3px] transition-all ${location.page == 1 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 1 ? <Check /> : 2}</div>
+                        <div className={`border-[3px] transition-all ${location.page == 1 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} ${location.page > 1 ? "hover:border-violet-400 hover:text-violet-700" : ""} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 1 ? <Check /> : 2}</div>
                         <p className={`${location.page == 1 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Billing Information</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 2 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
@@ -192,10 +193,10 @@ export default function Home({ ss_session, token, user, eligible }) {
                             });
                         }
                     }}>
-                        <div className={`border-[3px] transition-all ${location.page == 2 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 2 ? <Check /> : 3}</div>
+                        <div className={`border-[3px] transition-all ${location.page == 2 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} ${location.page > 2 ? "hover:border-violet-400 hover:text-violet-700" : ""} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 2 ? <Check /> : 3}</div>
                         <p className={`${location.page == 2 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Usage Limits</p>
                     </div>
-                    <div className={`flex flex-col items-center gap-2 ${location.page >= 2 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
+                    <div className={`flex flex-col items-center gap-2 ${location.page >= 3 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
                         if(location.page >= 3) {
                             setLocation({
                                 ...location,
@@ -433,7 +434,38 @@ export default function Home({ ss_session, token, user, eligible }) {
                                         </>
                                     )
                                 case 2:
-                                    return <>C</>
+                                    return (
+                                        <div className="flex flex-col items-center gap-2">
+                                            {
+                                                small ? 
+                                                <h1 className="font-bold text-4xl text-gray-800 text-center">Usage Limits</h1>
+                                                :
+                                                <h1 className="font-bold text-5xl text-gray-800">Usage Limits</h1>
+                                            }
+
+                                            {
+                                                small ?
+                                                <></>
+                                                :
+                                                <div className="flex flex-row items-center gap-1">
+                                                    <p className="text-gray-800 text-opacity-50">Set usage limits so you never use more than you intend to</p>
+                                                </div>
+                                            }
+
+                                            <br />
+
+                                            <div className="w-full">
+                                                <div className='w-full min-w-full h-6'>
+                                                    <div className="w-4 h-6 bg-violet-600 rounded-b-full rounded-t-md"></div>
+                                                </div>
+                                                <div className="w-full min-w-full h-8 rounded-lg overflow-hidden flex flex-row items-center">
+                                                    <div className="bg-gray-200 w-full h-full border-1 rounded-lg rounded-r-none border-gray-700"></div>
+                                                    <div className="bg-white w-[1px] h-full rounded-none"></div>
+                                                    <div className="bg-violet-500 w-[50%] h-full border-1 rounded-lg rounded-l-none border-violet-700"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
                                 case 3:
                                     return <></>
                             }

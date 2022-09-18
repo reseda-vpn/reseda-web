@@ -79,18 +79,6 @@ export default function Home() {
 						</div>
 					</div>
 
-					{/* <div className={styles.resedaFancyConnection}>
-						<div>
-							<span className={styles.connectedToServerOuter}>
-								<span className={styles.connectedToServerInner}>
-									<span style={{ backgroundSize: '400%', animationDuration: '10s' }} >
-										R
-									</span>
-								</span>
-							</span>
-						</div>
-					</div> */}
-
 					<div className='gap-4'></div>
 				</div>
 				
@@ -144,7 +132,7 @@ export default function Home() {
 						<div className="absolute w-full h-full bg-orange-50 z-0 bg-opacity-80 blur-3xl"></div>
 						
 						<div className="flex flex-row flex-wrap z-20 justify-start sm:justify-around gap-8 sm:gap-0">
-							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
+							<motion.div initial="offscreen" whileInView="onscreen" custom={0} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
 								<div>
 									<h2 className="text-xl relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
 									<h1 className="text-4xl font-semibold">$0.00 <i className="text-base not-italic text-orange-300">/month</i></h1>
@@ -166,9 +154,9 @@ export default function Home() {
 										<div className="text-base text-slate-700">1 Device Max <i className="not-italic text-sm text-slate-400">(at the same time)</i> </div>
 									</div>
 								</div>
-							</div>
+							</motion.div>
 
-							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
+							<motion.div initial="offscreen" whileInView="onscreen" custom={1} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
 								<div>
 									<h2 className="text-xl relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
 									<h1 className="text-4xl font-semibold relative">$2.00 <i className="text-base not-italic text-orange-400 no-underline">/100GB</i></h1> {/* after:content-['*'] after:opacity-50 */}
@@ -194,9 +182,9 @@ export default function Home() {
 										<div className="text-base text-slate-700">5 Device Max <i className="not-italic text-sm text-slate-400">(at the same time)</i> </div>
 									</div>
 								</div>
-							</div>
+							</motion.div>
 
-							<div className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
+							<motion.div initial="offscreen" whileInView="onscreen" custom={2} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
 								<div>
 									<h2 className="text-xl relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
 									<h1 className="text-4xl font-semibold relative ">$2.40 <i className="text-base not-italic text-orange-500">/100GB</i></h1> {/* after:content-['*'] after:opacity-50 */}
@@ -222,7 +210,7 @@ export default function Home() {
 										<div className="text-base text-slate-700">Unlimited Devices <i className="not-italic text-sm text-slate-400">(concurrent)</i> </div>
 									</div>
 								</div>
-							</div>				
+							</motion.div>				
 						</div>
 
 						<BillingCalculator />
@@ -273,22 +261,6 @@ export default function Home() {
 								}}>
 									Get Reseda
 								</Button>
-
-								{/* <div className="hidden md:flex flex-col gap-4">
-									<h2 className="uppercase text-sm text-slate-700 font-semibold">Join the waitlist</h2>
-
-									<Input  
-										placeholder='Email'
-										callback={(email, ui_callback) => {
-											fetch('/api/create_lead', {
-												body: email,
-												method: 'POST'
-											})
-												.then(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); })
-												.catch(async (e) => { const j = await e.json(); ui_callback(j); console.log(j); });
-										}}>	
-									</Input>
-								</div> */}
 							</div>
 						</div>
 					</div>
