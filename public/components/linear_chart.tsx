@@ -1,13 +1,10 @@
 import moment from 'moment';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import useMediaQuery from './media_query';
-import Button from './un-ui/button';
-import { ArrowDown, ChevronDown, ChevronUp } from "react-feather"
+import { ChevronDown, ChevronUp } from "react-feather"
 import { Usage } from '@prisma/client';
 import { getSize } from './billing';
 
-export const LinearChart = ({ data, month }) => {
+export const LinearChart = ({ data, month }: { data: Usage[], month: number }) => {
     const [ thisMonthData, setThisMonthData ] = useState([]);
     const [ sortBy, setSortBy ] = useState("connStart");
     const [ sortForward, setSortForward ] = useState(true);
@@ -15,7 +12,7 @@ export const LinearChart = ({ data, month }) => {
     useEffect(() => {
         console.log("Sorting through data again!");
 
-        const new_data: Usage[] = data.filter(e => new Date(e.connStart).getMonth() == month);
+        const new_data: Usage[] = data.filter(e => new Date(e.connStart).getMonth() == month).filter(e => parseInt(e.down) !== 0);
 
         new_data.sort((a, b) => { 
             switch (sortBy) {

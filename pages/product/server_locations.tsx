@@ -48,7 +48,7 @@ export default function Home() {
                 setFetching(false);
             })
             .catch(e => {
-                console.log(e)
+                console.error(e)
             })
 	}, []);
 
@@ -62,12 +62,11 @@ export default function Home() {
             })
                 .then(async e => {
                     const json = await e.json();
-                    console.log(json);
                     setServerCurrent(json);
 
                 })
                 .catch(e => {
-                    console.log(e)
+                    console.error(e)
                 })
 	}, [reqServer]);
 

@@ -143,8 +143,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                         console.log(e);
                     });
             }
-            // const stripe = await loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
-            // console.log(stripe);
         }
 
         if(session.status == "authenticated") as();    
@@ -319,7 +317,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     })
                                                         .then(async e => {
                                                             if(e.ok) {
-                                                                console.log(e);
                                                                 setLoading(false);
                                                                 setChangingPassword({
                                                                     ...changingPassword,
@@ -373,7 +370,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     })
                                                         .then(async e => {
                                                             if(e.ok) {
-                                                                console.log(e);
                                                                 setLoading(false);
                                                                 setChangingPassword({
                                                                     ...changingPassword,
@@ -421,7 +417,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     })
                                                         .then(async e => {
                                                             if(e.ok) {
-                                                                console.log(e);
                                                                 setLoading(false);
                                                                 setChangingPassword({
                                                                     ...changingPassword,

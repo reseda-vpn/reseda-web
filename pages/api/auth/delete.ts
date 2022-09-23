@@ -6,8 +6,6 @@ async function handler(req, res) {
 
     const { email, password } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
 
-    console.log(req.body);
-
     if (
         !email ||
         !email.includes('@') ||
@@ -24,8 +22,6 @@ async function handler(req, res) {
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if(!existingUser) {
-        console.log(existingUser);
-
         res.status(404).json({
             message: "User does not exist."
         })
@@ -34,8 +30,6 @@ async function handler(req, res) {
 
     // Hash password, and do same on signup end for identical comparison.
     const truePass = await verifyPassword(password, existingUser.password);
-
-    console.log(truePass);
 
     if(!truePass) {
         res.status(422).json({
