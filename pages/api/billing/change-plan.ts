@@ -12,8 +12,6 @@ const stripe = new Stripe(process.env.STRIPE_SEC, {
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
     const { newPlan, userId, subscriptionId } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
 
-    console.log(req.body);
-
     if(!env.SUPPORTER_TIER && newPlan == "SUPPORTER") {
         res.status(422).send({ message: `The SUPPORTER tier is no longer recognized. Please try using the FREE tier instead.` });
         return;
@@ -25,7 +23,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         // This is not restricted as the DEFAULT tier is SUPPORTER currently. 
         // In the future, no upgrades to SUPPORTER will be supported, as set above by the environment variable.
 
-        const tier = await prisma.account.update({
+        await prisma.account.update({
             where: {
                 id: userId
             },
@@ -34,12 +32,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             }
         });
 
-        console.log(tier);
+        // Check if update worked, if not, retry.
     }else if(newPlan == "PRO" || newPlan == "BASIC") {
         // Check they are paying for it!
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-
-        console.log(subscription);
 
         const user = await prisma.account.findUnique({
             where: {
@@ -53,7 +49,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                 // 1. A Billing Identifier which matches the customers subscription customer (stripe's subscription matches stored user)
                 // 2. A new plan they wish to be set to which the website has requested, which is EQUAL to that which the user is subscribed for (i.e. no over/under charging)
 
-                const tier_change = await prisma.account.update({
+                await prisma.account.update({
                     where: {
                         id: userId
                     },
@@ -61,8 +57,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                         tier: newPlan
                     }
                 });
-
-                console.log(tier_change);
             }else {
                 res.status(422).send({ message: `API was sent to update to the ${newPlan} plan, user is signed up for ${subscription.metadata.tier}` });
                 return;

@@ -153,7 +153,9 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                 billing_details: {
                     name: session.data.user.name
                 },
-            }
+            },
+            receipt_email: session?.data?.user?.email ? session.data.user.email : null,
+            setup_future_usage: 'off_session'
         }).then(async e => {
             console.log(e.paymentIntent);
 
@@ -202,17 +204,28 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
             <div 
                 className="fixed left-2 p-4 flex flex-row items-center gap-2 cursor-pointer text-violet-800 z-50 bg-white rounded-lg px-4 py-2 top-2"
-                onClick={() => {
-                    if(location.page > 0 && location.page <= 3 && !location.paid) {
-                        setLocation({ 
-                            ...location,
-                            //@ts-ignore
-                            page: location.page - 1
-                        })
-                    }else if(!location.paid) {
-                        window.history.go(-1);
-                        // router.push("/profile")
-                    }
+                onClick={async () => {
+                    const newPlan = await fetch("/api/billing/get-payment-methods", {
+                        body: JSON.stringify({ 
+                            customerId: userInformation.billing_id,
+                        }),
+                        method: 'POST'
+                    }).then(async e => {
+                        return await e.json();
+                    });
+
+                    console.log(newPlan);
+
+                    // if(location.page > 0 && location.page <= 3 && !location.paid) {
+                    //     setLocation({ 
+                    //         ...location,
+                    //         //@ts-ignore
+                    //         page: location.page - 1
+                    //     })
+                    // }else if(!location.paid) {
+                    //     window.history.go(-1);
+                    //     // router.push("/profile")
+                    // }
                 }}
             >
                 <ArrowLeft strokeWidth={1}></ArrowLeft>

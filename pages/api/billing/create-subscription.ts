@@ -17,13 +17,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             items: [{
                 price: priceId,
             }],
-            payment_behavior: 'default_incomplete',
+            payment_behavior: 'allow_incomplete',
             // payment_settings: { save_default_payment_method: 'on_subscription' },
             expand: ['latest_invoice.payment_intent'],
             metadata: {
                 tier: tier
+            },
+            payment_settings: {
+                save_default_payment_method: 'on_subscription'
             }
         });
+
+        console.log("Latest Invoice from Subscription: ", subscription.latest_invoice);
 
         const pInt = await stripe.paymentIntents.create({
             amount: 100,
