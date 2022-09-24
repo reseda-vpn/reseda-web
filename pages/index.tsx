@@ -15,6 +15,7 @@ import { cardVariants, cardVariantsRight, subTitleControl, titleControl, titleVa
 import Waitlist from '@components/waitlist';
 import Billing from '@components/billing';
 import BillingCalculator from '@components/calculator';
+import { useSession } from 'next-auth/react';
 
 export async function getStaticProps() {
 	const metaTags = {
@@ -33,6 +34,7 @@ export async function getStaticProps() {
 export default function Home() {
 	const small = useMediaQuery(640);
 	const [ isTauri, setIsTauri ] = useState(false);
+
 
 	useEffect(() => {
 		let tauri = false;

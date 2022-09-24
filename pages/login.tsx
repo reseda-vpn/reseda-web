@@ -65,7 +65,7 @@ export default function Home({ providers }) {
                 if(window.__TAURI_METADATA__) {
                     router.replace('./app');
                 }else {
-                    // router.replace('./profile');
+                    router.replace('./profile');
                 }
             }
         }

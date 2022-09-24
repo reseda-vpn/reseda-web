@@ -12,13 +12,9 @@ import { HiExclamation, HiLockClosed } from "react-icons/hi"
 import BillingInput from '@components/billing_input';
 import { loadStripe } from '@stripe/stripe-js';
 import {
-    CardElement,
-    Elements,
     useStripe,
     useElements,
     CardNumberElement,
-    CardExpiryElement,
-    CardCvcElement,
   } from '@stripe/react-stripe-js';
 
 const stripePromise = loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
@@ -33,9 +29,12 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
     const [ userInformation, setUserInformation ] = useState<Account>(null);
     const [ usageInformation, setUsageInformation ] = useState<Usage[]>(null);
 
+    const [ processing, setProcessing ] = useState(false);
+
     const [ location, setLocation ] = useState<{
         page: 0 | 1 | 2 | 3,
         plan: "FREE" | "PRO" | "BASIC",
+        paid: boolean,
         billing: {
             card_number: string,
             card_date: string,
@@ -47,6 +46,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
     }>({
         page: 0,
         plan: null,
+        paid: false,
         billing: {
             card_number: null,
             card_date: null,
@@ -114,8 +114,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         
         const price_id = (() => {
             switch(location.plan) {
-                case "PRO": 
-                    return 'price_1KMpemFIoTGPd6E4LCnLVyDL' // Test Mode
+                case "PRO":     
+                    return 'price_1LlJ1MFIoTGPd6E49kkFeEoN' // Test Mode
                     // return 'price_1LU24tFIoTGPd6E4Pnx9I5be' // Live Mode
                 case "BASIC":
                     return 'price_1KMV6HFIoTGPd6E45NAZsPCy' // Test Mode
@@ -125,54 +125,54 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
         console.log("Requesting Subscription Object");
 
-        const subscription: void | { subscriptionId: string, clientSecret: string } = await fetch('/api/billing/create-subscription', {
+        const subscription: void | { subscriptionId: string, clientSecret: string, invoiceId: string } = await fetch('/api/billing/create-subscription', {
             body: JSON.stringify({ 
                 customerId: userInformation.billing_id,
                 priceId: price_id
             }),
             method: 'POST'
         }).then(async e => {
-            console.log("SUBSCRIPTION", await e.json());
+            return await e.json();
         });
 
         if(!subscription) {
-            console.error("Unable to create stripe subscription.");
+            console.error("Unable to create stripe subscription.", subscription);
             return;
         }
 
-        console.log("Subscription: ", subscription);
+        console.log("Subscription: ", subscription)
+
+        console.log(elements)
 
         stripe.confirmCardPayment(subscription.clientSecret, {
             payment_method: {
                 card: elements.getElement(CardNumberElement),
                 billing_details: {
                     name: session.data.user.name
-                }
+                },
             }
-        }).then(e => {
+        }).then(async e => {
+            console.log(e);
 
-        })
+            const newPlan = await fetch("/api/billing/change-plan", {
+                body: JSON.stringify({ 
+                    newPlan: location.plan,
+                    userId: userInformation.id,
+                    subscriptionId: subscription.subscriptionId
+                }),
+                method: 'POST'
+            }).then(async e => {
+                return await e.json();
+            });
 
-        const { error } = await stripe.confirmPayment({
-            //`Elements` instance that was used to create the Payment Element
-            elements,
-            confirmParams: {
-              return_url: `https://reseda.app/order/${subscription.subscriptionId}/complete`
-            }
-        });
+            console.log("Reseda API returned: ", newPlan);
 
-        if (error) {
-            // Show error to your customer (for example, payment details incomplete)
-            console.log(error.message);
-        } else {
-            // Your customer will be redirected to your `return_url`. For some payment
-            // methods like iDEAL, your customer will be redirected to an intermediate
-            // site first to authorize the payment, then redirected to the `return_url`.
             setLocation({
                 ...location,
-                page: 3
+                page: 3,
+                paid: true
             })
-        }
+        })
     }
 
 	return (
@@ -180,13 +180,13 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             <div 
                 className="fixed left-0 top-0 p-4 flex flex-row items-center gap-2 cursor-pointer text-violet-800"
                 onClick={() => {
-                    if(location.page > 0 && location.page <= 3) {
+                    if(location.page > 0 && location.page <= 3 && !location.paid) {
                         setLocation({ 
                             ...location,
                             //@ts-ignore
                             page: location.page - 1
                         })
-                    }else {
+                    }else if(!location.paid) {
                         window.history.go(-1);
                         // router.push("/profile")
                     }
@@ -198,7 +198,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             <div className="flex flex-col items-center sm:py-28 py-20 sm:gap-24 gap-12 mx-auto w-full max-w-6xl">
                 <div className="flex flex-row items-center sm:gap-12 gap-8">
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 0 ? "cursor-pointer" : "cursor-default"} `} onClick={() => {
-                        if(location.page >= 0) {
+                        if(location.page >= 0 && !location.paid) {
                             setLocation({
                                 ...location,
                                 page: 0
@@ -209,7 +209,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                         <p className={`${location.page == 0 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Choose A Plan</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 1 ? "cursor-pointer" : "cursor-default"} `} onClick={() => {
-                        if(location.page >= 1) {
+                        if(location.page >= 1 && location.plan !== "FREE" && !location.paid) {
                             setLocation({
                                 ...location,
                                 page: 1
@@ -220,7 +220,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                         <p className={`${location.page == 1 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Usage Limits</p>
                     </div>
                     <div className={`flex flex-col items-center gap-2 ${location.page >= 2 ? "cursor-pointer" : "cursor-default"}`} onClick={() => {
-                        if(location.page >= 2) {
+                        if(location.page >= 2 && location.plan !== "FREE" && !location.paid) {
                             setLocation({
                                 ...location,
                                 page: 2
@@ -239,7 +239,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                         }
                     }}>
                         <div className={`border-[3px] transition-all ${location.page == 3 ? "border-violet-800 bg-violet-100" : "border-violet-200 bg-white"} rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl text-violet-800`}>{ location.page > 3 ? <Check /> : 4}</div>
-                        <p className={`${location.page == 3 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Finish Setup</p>
+                        <p className={`${location.page == 3 ? "text-violet-400" : "text-violet-300"} hidden sm:block`}>Completed</p>
                     </div>
                 </div>
 
@@ -311,7 +311,22 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                                     ...location,
                                                                     plan: "FREE",
                                                                     page: 3
-                                                                })
+                                                                });
+
+                                                                setProcessing(true);
+                                                                
+                                                                const newPlan = fetch("/api/billing/change-plan", {
+                                                                    body: JSON.stringify({ 
+                                                                        newPlan: "FREE",
+                                                                        userId: userInformation.id,
+                                                                        subscriptionId: "N/A"
+                                                                    }),
+                                                                    method: 'POST'
+                                                                }).then(async e => {
+                                                                    return await e.json();
+                                                                });
+
+                                                                console.log(newPlan);
                                                             }} className="bg-violet-100 text-violet-800 text-sm font-semibold py-[18px] hover:bg-violet-200">Go Free</Button>
                                                         </div>
                                                     </div>
@@ -507,19 +522,20 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                         <p className="text-gray-800 text-opacity-50">For paid plans, we require credit card information.</p>
                                                     </div>
                                                 }
+
+                                                <p>Subscribing to <strong className="text-orange-600">{location.plan}</strong></p>
                                             </div>
+
+                                            {/* <p onClick={() => {
+                                                setLocation({
+                                                    ...location,
+                                                    page: 3,
+                                                    paid: true
+                                                })
+                                            }}>next</p> */}
                                             
                                             <div className="flex flex-col gap-6">
-                                                <Elements stripe={stripePromise} options={{
-                                                    appearance: {
-                                                        theme: "stripe",
-                                                        variables: {
-                                                            fontFamily: "Public Sans"
-                                                        }
-                                                    }
-                                                }}>
-                                                    <BillingInput locationCallback={updateBilling} />
-                                                </Elements>
+                                                <BillingInput locationCallback={updateBilling} />
                                             </div>
 
                                             <div className="flex flex-row items-center gap-2 bg-violet-100 rounded-md px-3 py-2">
@@ -530,7 +546,65 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                         </>
                                     )
                                 case 3:
-                                    return <></>
+                                    return (
+                                        <>
+                                            <div className="flex flex-col items-center gap-2">
+                                                {
+                                                    small ? 
+                                                    <h1 className="font-bold text-4xl text-gray-800 text-center">Thank You!</h1>
+                                                    :
+                                                    <h1 className="font-bold text-5xl text-gray-800">Thank You!</h1>
+                                                }
+
+                                                {
+                                                    small ?
+                                                    <></>
+                                                    :
+                                                    <div className="flex flex-row items-center gap-1">
+                                                        <p className="text-gray-800 text-opacity-50">You are subscribed to <strong className="text-orange-600">{location.plan}</strong></p>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <div className="flex flex-col items-baseline gap-6 justify-start">
+                                                <h2 className="text-gray-800">You now have access everything the {location.plan} tier offers!</h2>
+                                                <h2 className="text-gray-500">Begin by doing the following</h2>
+
+                                                <div className="flex flex-row items-center gap-6">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                        1
+                                                    </div>
+
+                                                    <div>
+                                                        <p className="font-bold">Download</p>
+                                                        <p>Haven{'\''}t downloaded reseda? download it <a href="../download" className="text-violet-700">here</a></p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex flex-row items-center gap-6">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                        2
+                                                    </div>
+
+                                                    <div>
+                                                        <p className="font-bold">Set Limits</p>
+                                                        <p>If you didn{'\''}t previously, you can set limits <a href="../profile" className="text-violet-700">here</a></p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex flex-row items-center gap-6">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                        3
+                                                    </div>
+
+                                                    <div>
+                                                        <p className="font-bold">View your usage</p>
+                                                        <p>You can track your usage to monitor your billing <a href="../profile" className="text-violet-700">here</a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )
                             }
                         })()
                     }

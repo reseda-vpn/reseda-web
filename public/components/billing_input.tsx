@@ -3,7 +3,6 @@ import { useRef, useState, useEffect } from "react";
 import Button from "./un-ui/button";
 
 import {
-    useElements,
     useStripe,
     CardNumberElement,
     CardExpiryElement,
@@ -45,9 +44,6 @@ const BillingInput: React.FC<{ locationCallback }> = ({ locationCallback }) => {
     const [ invalidKeys, setInvalidKeys ] = useState([]);
     
     const stripe = useStripe();
-    const elements = useElements();
-
-    const cardNumber = useRef();
 
     return (
         <div className="flex flex-col items-center max-w-[400px]">
@@ -164,7 +160,7 @@ const BillingInput: React.FC<{ locationCallback }> = ({ locationCallback }) => {
                 <></>
             }
 
-            <Button icon={<></>} className={`w-full ${!stripe || !elements || !(billingInfoAccurate.card && billingInfoAccurate.cvv && billingInfoAccurate.expiry) ? "bg-violet-200" : "bg-violet-600"} text-white text-sm font-semibold py-[18px]`} onClick={() => {
+            <Button icon={<></>} className={`w-full ${!stripe || !(billingInfoAccurate.card && billingInfoAccurate.cvv && billingInfoAccurate.expiry) ? "bg-violet-200" : "bg-violet-600"} text-white text-sm font-semibold py-[18px]`} onClick={() => {
                 if((billingInfoAccurate.card && billingInfoAccurate.cvv && billingInfoAccurate.expiry)) {
                     locationCallback()
                 }

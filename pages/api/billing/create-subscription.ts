@@ -18,17 +18,22 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                 price: priceId,
             }],
             payment_behavior: 'default_incomplete',
-            payment_settings: { save_default_payment_method: 'on_subscription' },
+            // payment_settings: { save_default_payment_method: 'on_subscription' },
             expand: ['latest_invoice.payment_intent'],
         });
 
-        let linv: Stripe.Invoice = subscription.latest_invoice as Stripe.Invoice;
-        console.log(linv?.payment_intent);
+        const pInt = await stripe.paymentIntents.create({
+            amount: 100,
+            currency: 'nzd',
+            setup_future_usage: 'off_session',
+            payment_method_types: ['card'],
+            customer: customerId,
+        });
 
-        res.send({
+        res.status(200).send({
             subscriptionId: subscription.id,
             invoiceId: typeof subscription.latest_invoice !== "string" ?  subscription.latest_invoice?.id : "NULL",
-            // clientSecret: (subscription as Stripe.Invoice)
+            clientSecret: pInt.client_secret
         });
     } catch (error) {
         console.log(error);

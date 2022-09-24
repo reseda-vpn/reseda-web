@@ -136,9 +136,18 @@ export default function Home({ ss_session, token, user, eligible }) {
         if(session.status == "authenticated") as();    
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [session]);
-
+    
 	return (
-		<Elements stripe={stripePromise}>
+		<Elements 
+            stripe={stripePromise} 
+            options={{
+                appearance: {
+                    theme: "stripe",
+                    variables: {
+                        fontFamily: "Public Sans"
+                    }
+                }
+            }}>
             <CheckoutForm ss_session={ss_session} user={user} />
         </Elements>
 	)

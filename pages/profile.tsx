@@ -63,7 +63,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 }
 
-export default function Home({ ss_session, token, user, eligible }) {
+export default function Home({ ss_session, user, eligible }) {
     const session = useSession(ss_session);
 	const small = useMediaQuery(640);
 
