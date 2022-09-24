@@ -76,7 +76,7 @@ const BillingInput: React.FC<{ locationCallback }> = ({ locationCallback }) => {
 
                 <div className={`flex flex-row items-center py-0 px-3 h-10 gap-3 ${invalidKeys.includes("cvv") || invalidKeys.includes("card_date") ? "outline-red-400" : ""}`}>
                     <CardExpiryElement
-                        className="w-full"
+                        className="w-full !static"
                         options={CARD_ELEMENT_OPTIONS}
                         onChange={(e) => {
                             setBillingInfoAccurate({
@@ -160,11 +160,11 @@ const BillingInput: React.FC<{ locationCallback }> = ({ locationCallback }) => {
                 <></>
             }
 
-            <Button icon={<></>} className={`w-full ${!stripe || !(billingInfoAccurate.card && billingInfoAccurate.cvv && billingInfoAccurate.expiry) ? "bg-violet-200" : "bg-violet-600"} text-white text-sm font-semibold py-[18px]`} onClick={() => {
+            <Button icon={<></>} className={`!static w-full ${!stripe || !(billingInfoAccurate.card && billingInfoAccurate.cvv && billingInfoAccurate.expiry) ? "bg-violet-200" : "bg-violet-600"} text-white text-sm font-semibold py-[18px]`} onClick={() => {
                 if((billingInfoAccurate.card && billingInfoAccurate.cvv && billingInfoAccurate.expiry)) {
                     locationCallback()
                 }
-            }}>Continue</Button>
+            }}>Subscribe</Button>
         </div>
     )
 }

@@ -554,7 +554,7 @@ export default function Home({ ss_session, user, eligible }) {
                                                             </div>
                                                             
                                                             <p className="px-4 font-semibold">
-                                                                { thisMonthData ? getSize(thisMonthData?.up) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.up, 2) : "..." }
                                                             </p>
                                                             
                                                         </div>
@@ -568,7 +568,7 @@ export default function Home({ ss_session, user, eligible }) {
                                                             </div>
 
                                                             <p className="px-4 font-semibold">
-                                                                { thisMonthData ? getSize(thisMonthData?.down) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.down, 2) : "..." }
                                                             </p>
                                                         </div>
                                                     </div>

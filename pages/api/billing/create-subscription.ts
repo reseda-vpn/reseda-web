@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SEC, {
 // POST /api/user
 // Required fields in body: customerId, priceId
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-    const { customerId, priceId } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
+    const { customerId, priceId, tier, customerEmail } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
 
     try {
         const subscription = await stripe.subscriptions.create({
@@ -20,6 +20,9 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             payment_behavior: 'default_incomplete',
             // payment_settings: { save_default_payment_method: 'on_subscription' },
             expand: ['latest_invoice.payment_intent'],
+            metadata: {
+                tier: tier
+            }
         });
 
         const pInt = await stripe.paymentIntents.create({
@@ -28,12 +31,14 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             setup_future_usage: 'off_session',
             payment_method_types: ['card'],
             customer: customerId,
+            receipt_email: customerEmail,
         });
 
         res.status(200).send({
             subscriptionId: subscription.id,
             invoiceId: typeof subscription.latest_invoice !== "string" ?  subscription.latest_invoice?.id : "NULL",
-            clientSecret: pInt.client_secret
+            clientSecret: pInt.client_secret,
+            invoiceURL: null
         });
     } catch (error) {
         console.log(error);

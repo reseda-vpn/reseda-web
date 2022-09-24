@@ -36,7 +36,7 @@ export const LinearChart = ({ data, month }: { data: Usage[], month: number }) =
 
     return (
         <div className="flex flex-col w-full">
-            <div className="grid grid-cols-4 text-slate-500 px-4 gap-2">
+            <div className="grid grid-cols-4 text-slate-500 gap-2 px-4">
                 {
                     [["Start", "connStart"], ["Duration", "dur"], ["Up", "up"], ["Down", "down"]].map(e => {
                         return (
@@ -67,10 +67,10 @@ export const LinearChart = ({ data, month }: { data: Usage[], month: number }) =
                     return (
                         <div key={e.id} className={`grid grid-cols-4 hover:bg-[#efedeb] ${indx % 2 == 0 ? "bg-[#F8F7F6]" : "bg-white"} py-4 rounded-md px-4`}>
                             {/* <p className="">{e.serverId}</p> */}
-                            <p>{moment(e.connStart).format("MMM Do")}</p>
+                            <p>{moment(e.connStart).format("DD/MM")}</p>
                             <p>{moment.duration(moment(e.connStart).diff(moment(e.connEnd))).humanize()}</p>
-                            <p>{getSize(e.up)}</p>
-                            <p>{getSize(e.down)}</p>
+                            <p className="text-right">{getSize(e.up, 0)}</p>
+                            <p className="text-right">{getSize(e.down, 0)}</p>
                         </div>
                     )
                 })

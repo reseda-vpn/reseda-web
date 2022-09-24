@@ -16,6 +16,7 @@ import {
     useElements,
     CardNumberElement,
   } from '@stripe/react-stripe-js';
+import Loader from './un-ui/loader';
 
 const stripePromise = loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
 
@@ -111,6 +112,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             complete();
             return;
         }
+
+        setProcessing(true)
         
         const price_id = (() => {
             switch(location.plan) {
@@ -128,7 +131,9 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         const subscription: void | { subscriptionId: string, clientSecret: string, invoiceId: string } = await fetch('/api/billing/create-subscription', {
             body: JSON.stringify({ 
                 customerId: userInformation.billing_id,
-                priceId: price_id
+                priceId: price_id,
+                tier: location.plan,
+                customerEmail: session.data.user.email
             }),
             method: 'POST'
         }).then(async e => {
@@ -140,8 +145,6 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             return;
         }
 
-        console.log("Subscription: ", subscription)
-
         console.log(elements)
 
         stripe.confirmCardPayment(subscription.clientSecret, {
@@ -152,7 +155,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                 },
             }
         }).then(async e => {
-            console.log(e);
+            console.log(e.paymentIntent);
 
             const newPlan = await fetch("/api/billing/change-plan", {
                 body: JSON.stringify({ 
@@ -171,14 +174,34 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                 ...location,
                 page: 3,
                 paid: true
-            })
+            });
+
+            setProcessing(false);
         })
     }
 
 	return (
 		<div className="flex-col flex font-sans min-h-screen bg-white" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
+            {
+                processing ? 
+                <div
+                    className="fixed w-screen h-screen flex items-center justify-center bg-gray-600 bg-opacity-25 backdrop-blur-sm flex-col gap-4 z-50"
+                    >
+                    <div className="bg-white rounded-3xl p-7 flex flex-col items-center gap-8">
+                        <Loader color={"#0c0c0c"} height={80}/>
+
+                    </div>
+
+                    <div className="bg-white rounded-lg px-3 py-1">
+                        <p className="font-bold">Processing Payment</p>
+                    </div>
+                </div>
+                :
+                <></>
+            }
+
             <div 
-                className="fixed left-0 top-0 p-4 flex flex-row items-center gap-2 cursor-pointer text-violet-800"
+                className="fixed left-2 p-4 flex flex-row items-center gap-2 cursor-pointer text-violet-800 z-50 bg-white rounded-lg px-4 py-2 top-2"
                 onClick={() => {
                     if(location.page > 0 && location.page <= 3 && !location.paid) {
                         setLocation({ 
@@ -306,7 +329,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                                             {/* Check if it is a free tier and block access to the middle two elements! */}
 
-                                                            <Button icon={<></>} onClick={() => {
+                                                            <Button icon={<></>} onClick={async () => {
                                                                 setLocation({
                                                                     ...location,
                                                                     plan: "FREE",
@@ -315,7 +338,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                                                 setProcessing(true);
                                                                 
-                                                                const newPlan = fetch("/api/billing/change-plan", {
+                                                                const newPlan = await fetch("/api/billing/change-plan", {
                                                                     body: JSON.stringify({ 
                                                                         newPlan: "FREE",
                                                                         userId: userInformation.id,
@@ -327,6 +350,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                                 });
 
                                                                 console.log(newPlan);
+
+                                                                setProcessing(false);
                                                             }} className="bg-violet-100 text-violet-800 text-sm font-semibold py-[18px] hover:bg-violet-200">Go Free</Button>
                                                         </div>
                                                     </div>
@@ -335,8 +360,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 <div className="bg-white rounded-xl border-[1px] border-gray-200 relative" style={{ boxShadow: "rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 1px 1px 0px, rgb(60 66 87 / 0%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 6%) 0px 2px 5px 0px" }}>
                                                     <div className="absolute left-10 -top-4 flex items-center justify-center rounded-full bg-violet-600 px-4 py-[5px] text-sm text-white font-inter font-medium">Most Popular</div>
                                                     <div className="flex-1 h-full min-h-full">
-                                                        
-                                                        <div className="bg-white flex flex-col gap-6 rounded-xl flex-1 h-full min-h-full p-6 pt-8 text-gray-800 sm:w-full min-w-[350px]">
+                                                        <div className="bg-white flex flex-col gap-6 rounded-xl p-6 pt-8 text-gray-800 min-w-[350px]">
                                                             <div className="flex flex-col gap-2">
                                                                 <h2 className="font-medium text-base">Basic</h2>
 
@@ -348,7 +372,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                                     </div>
                                                                 </div>
                                                                 
-                                                                <p className="font-normal text-sm text-gray-800 text-opacity-80">Get the first 5GB free, and enjoy the benefits of a high speed VPN</p>
+                                                                <p className="font-normal text-sm text-gray-800 text-opacity-80">Get the first 5GB free, <br />and enjoy the benefits of a high speed VPN</p>
                                                             </div>
 
                                                             <div className="flex flex-col gap-1 text-gray-800">
@@ -427,7 +451,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                             <br /><br />
 
-                                            <div className="flex flex-col justify-center max-w-xl w-full m-auto gap-0">
+                                            <div className="flex flex-col justify-center max-w-xl w-full m-auto gap-0 px-8">
                                                 <h2 className="flex flex-row flex-1 w-full font-bold text-lg">FAQ</h2>
                                                 <div className="flex flex-col">
                                                     <p>Worried about exceeding your budget?</p>
@@ -534,15 +558,22 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 })
                                             }}>next</p> */}
                                             
-                                            <div className="flex flex-col gap-6">
-                                                <BillingInput locationCallback={updateBilling} />
-                                            </div>
+                                            <div className="flex flex-col items-center w-full gap-4 px-4">
+                                                <div className="flex flex-col gap-6 w-full">
+                                                    <BillingInput locationCallback={updateBilling} />
+                                                </div>
 
-                                            <div className="flex flex-row items-center gap-2 bg-violet-100 rounded-md px-3 py-2">
-                                                {/* <FaCcStripe size={28} className="text-violet-800"></FaCcStripe> */}
-                                                <HiLockClosed color='#5B21B6'></HiLockClosed>
-                                                <p className="text-violet-800">Your information is stored securely with stripe.</p>
+                                                <br />
+
+                                                {/* <p className="text-gray-700">By proceeding, you consent to stripe saving this card.</p> */}
+
+                                                <div className="flex flex-row items-center gap-2 bg-violet-100 rounded-md px-3 py-2">
+                                                    {/* <FaCcStripe size={28} className="text-violet-800"></FaCcStripe> */}
+                                                    <HiLockClosed color='#5B21B6'></HiLockClosed>
+                                                    <p className="text-violet-800">Your information is stored securely with stripe.</p>
+                                                </div>
                                             </div>
+                                            
                                         </>
                                     )
                                 case 3:
@@ -557,18 +588,29 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 }
 
                                                 {
-                                                    small ?
-                                                    <></>
-                                                    :
                                                     <div className="flex flex-row items-center gap-1">
-                                                        <p className="text-gray-800 text-opacity-50">You are subscribed to <strong className="text-orange-600">{location.plan}</strong></p>
+                                                        <p className="text-gray-800 text-opacity-50">You have subscribed to <strong className="text-orange-600">{location.plan}</strong></p>
                                                     </div>
                                                 }
                                             </div>
 
-                                            <div className="flex flex-col items-baseline gap-6 justify-start">
-                                                <h2 className="text-gray-800">You now have access everything the {location.plan} tier offers!</h2>
-                                                <h2 className="text-gray-500">Begin by doing the following</h2>
+                                            <div className="flex flex-row items-center justify-center gap-4 w-full">
+                                                    <Button href="" icon={<ArrowUpRight></ArrowUpRight>} className="bg-violet-700 text-white !static">View my Invoice</Button>
+                                                    <Button href="../profile" className="block !static">Go to profile</Button>
+                                                </div>
+
+                                            <div className="flex flex-col items-baseline gap-6 justify-start px-8 sm:px-0">
+                                                {
+                                                    small ?
+                                                    <>
+                                                        <p className="text-gray-800 self-center font-bold text-lg">What can I do now?</p>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <h2 className="text-gray-800 self-center">You now have access everything the {location.plan} tier offers!</h2>
+                                                        <h2 className="text-gray-500">Begin by doing the following</h2>
+                                                    </>
+                                                }
 
                                                 <div className="flex flex-row items-center gap-6">
                                                     <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
