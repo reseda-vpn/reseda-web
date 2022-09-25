@@ -169,8 +169,24 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         setInvoiceUrl(subscription.invoiceURL);
 
         if(hasExistingPaymentMethod){
-            // ...
-            // Complete?
+            await fetch("/api/billing/change-plan", {
+                body: JSON.stringify({ 
+                    newPlan: location.plan,
+                    userId: userInformation.id,
+                    subscriptionId: subscription.subscriptionId
+                }),
+                method: 'POST'
+            }).then(async e => {
+                return await e.json();
+            });
+            
+            setLocation({
+                ...location,
+                page: 3,
+                paid: true
+            });
+
+            setProcessing(false);
         }else {
             stripe.confirmCardSetup(subscription.clientSecret, {
                 payment_method: {

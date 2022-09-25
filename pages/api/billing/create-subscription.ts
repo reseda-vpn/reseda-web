@@ -13,20 +13,22 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
     try {
         // Check if they have an existing subscription, if so cancel it.
-        const customer: Stripe.Customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
-        console.log(customer.subscriptions);
+        const customer: Stripe.Customer = await stripe.customers.retrieve(customerId, {
+            expand: ['subscriptions']
+        }) as Stripe.Customer;
         
         const existingSubscription = customer.subscriptions.data[0].id;
 
-        stripe.subscriptions.cancel(existingSubscription);
-        
+        const cancelInvoice = await stripe.subscriptions.cancel(existingSubscription, {
+            invoice_now: true,
+        });
+
         const subscription = await stripe.subscriptions.create({
             customer: customerId,
             items: [{
                 price: priceId,
             }],
             payment_behavior: 'allow_incomplete',
-            // payment_settings: { save_default_payment_method: 'on_subscription' },
             expand: ['latest_invoice.payment_intent'],
             metadata: {
                 tier: tier
@@ -37,7 +39,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         });
 
         const invoice: Stripe.Invoice = subscription.latest_invoice as Stripe.Invoice;
-        console.log("Latest Invoice from Subscription: ", invoice.hosted_invoice_url);
         
         const setupIntent = await stripe.setupIntents.create({
             customer: customerId,
