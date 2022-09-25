@@ -17,6 +17,7 @@ import {
     CardNumberElement,
   } from '@stripe/react-stripe-js';
 import Loader from './un-ui/loader';
+import { FaFileInvoice } from 'react-icons/fa';
 
 const stripePromise = loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
 
@@ -57,6 +58,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             zip_code: null
         }
     });
+
+    const [ invoiceUrl, setInvoiceUrl ] = useState(null);
 
 	useEffect(() => {
         localStorage.setItem("reseda.jwt", JSON.stringify(ss_session?.jwt));
@@ -128,7 +131,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
         console.log("Requesting Subscription Object");
 
-        const subscription: void | { subscriptionId: string, clientSecret: string, invoiceId: string } = await fetch('/api/billing/create-subscription', {
+        const subscription: void | { subscriptionId: string, clientSecret: string, invoiceId: string, invoiceURL: string } = await fetch('/api/billing/create-subscription', {
             body: JSON.stringify({ 
                 customerId: userInformation.billing_id,
                 priceId: price_id,
@@ -145,19 +148,18 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             return;
         }
 
-        console.log(elements)
+        console.log("Invoice Paid: ", subscription.invoiceURL);
+        setInvoiceUrl(subscription.invoiceURL);
 
-        stripe.confirmCardPayment(subscription.clientSecret, {
+        stripe.confirmCardSetup(subscription.clientSecret, {
             payment_method: {
                 card: elements.getElement(CardNumberElement),
                 billing_details: {
                     name: session.data.user.name
                 },
-            },
-            receipt_email: session?.data?.user?.email ? session.data.user.email : null,
-            setup_future_usage: 'off_session'
+            }
         }).then(async e => {
-            console.log(e.paymentIntent);
+            console.log(e.setupIntent);
 
             const newPlan = await fetch("/api/billing/change-plan", {
                 body: JSON.stringify({ 
@@ -608,7 +610,9 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                             </div>
 
                                             <div className="flex flex-row items-center justify-center gap-4 w-full">
-                                                    <Button href="" icon={<ArrowUpRight></ArrowUpRight>} className="bg-violet-700 text-white !static">View my Invoice</Button>
+                                                    <Button onClick={() => {
+                                                        window.open(invoiceUrl)
+                                                    }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className="bg-violet-700 text-white !static">View my Invoice</Button>
                                                     <Button href="../profile" className="block !static">Go to profile</Button>
                                                 </div>
 

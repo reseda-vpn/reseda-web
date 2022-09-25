@@ -28,22 +28,19 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             }
         });
 
-        console.log("Latest Invoice from Subscription: ", subscription.latest_invoice);
-
-        const pInt = await stripe.paymentIntents.create({
-            amount: 100,
-            currency: 'nzd',
-            setup_future_usage: 'off_session',
-            payment_method_types: ['card'],
+        const invoice: Stripe.Invoice = subscription.latest_invoice as Stripe.Invoice;
+        console.log("Latest Invoice from Subscription: ", invoice.hosted_invoice_url);
+        
+        const setupIntent = await stripe.setupIntents.create({
             customer: customerId,
-            receipt_email: customerEmail,
+            payment_method_types: ['card']
         });
 
         res.status(200).send({
             subscriptionId: subscription.id,
             invoiceId: typeof subscription.latest_invoice !== "string" ?  subscription.latest_invoice?.id : "NULL",
-            clientSecret: pInt.client_secret,
-            invoiceURL: null
+            clientSecret: setupIntent.client_secret,
+            invoiceURL: invoice.hosted_invoice_url
         });
     } catch (error) {
         console.log(error);
