@@ -12,6 +12,14 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     const { customerId, priceId, tier, customerEmail } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
 
     try {
+        // Check if they have an existing subscription, if so cancel it.
+        const customer: Stripe.Customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
+        console.log(customer.subscriptions);
+        
+        const existingSubscription = customer.subscriptions.data[0].id;
+
+        stripe.subscriptions.cancel(existingSubscription);
+        
         const subscription = await stripe.subscriptions.create({
             customer: customerId,
             items: [{

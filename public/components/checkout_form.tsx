@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Gradient } from '@components/gradient'
 import { useRouter } from 'next/router';
-import { Activity, ArrowDown, ArrowLeft, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, Eye, Info, Lock, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
+import { Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowUp, ArrowUpRight, Check, CreditCard, Delete, Download, Edit, Eye, Info, Lock, LogOut, Settings, Trash, User as UserIcon, X } from 'react-feather';
 
 import { useSession, getSession, signIn, signOut, getCsrfToken } from "next-auth/react"
 import { Account, Usage, User } from '@prisma/client';
@@ -60,6 +60,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
     });
 
     const [ invoiceUrl, setInvoiceUrl ] = useState(null);
+    const [ hasExistingPaymentMethod, setHasExistingPaymentMethod ] = useState(false);
 
 	useEffect(() => {
         localStorage.setItem("reseda.jwt", JSON.stringify(ss_session?.jwt));
@@ -99,6 +100,25 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [session]);
 
+    useEffect(() => {
+        if(!userInformation) return;
+
+        // Check if user has existing payment methods we can bill instead, skipping billing step.
+        const newPlan = fetch("/api/billing/get-payment-methods", {
+            body: JSON.stringify({ 
+                customerId: userInformation.billing_id,
+            }),
+            method: 'POST'
+        }).then(async e => {
+            const json = await e.json();
+
+            if(json.data.length > 0) {
+                setHasExistingPaymentMethod(true)
+            }
+        });
+
+    }, [userInformation])
+
     const updateBilling = () => {
         console.log("Billing Updated, processing payment...")
 
@@ -129,8 +149,6 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             }
         })();
 
-        console.log("Requesting Subscription Object");
-
         const subscription: void | { subscriptionId: string, clientSecret: string, invoiceId: string, invoiceURL: string } = await fetch('/api/billing/create-subscription', {
             body: JSON.stringify({ 
                 customerId: userInformation.billing_id,
@@ -148,40 +166,40 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             return;
         }
 
-        console.log("Invoice Paid: ", subscription.invoiceURL);
         setInvoiceUrl(subscription.invoiceURL);
 
-        stripe.confirmCardSetup(subscription.clientSecret, {
-            payment_method: {
-                card: elements.getElement(CardNumberElement),
-                billing_details: {
-                    name: session.data.user.name
-                },
-            }
-        }).then(async e => {
-            console.log(e.setupIntent);
-
-            const newPlan = await fetch("/api/billing/change-plan", {
-                body: JSON.stringify({ 
-                    newPlan: location.plan,
-                    userId: userInformation.id,
-                    subscriptionId: subscription.subscriptionId
-                }),
-                method: 'POST'
+        if(hasExistingPaymentMethod){
+            // ...
+            // Complete?
+        }else {
+            stripe.confirmCardSetup(subscription.clientSecret, {
+                payment_method: {
+                    card: elements.getElement(CardNumberElement),
+                    billing_details: {
+                        name: session.data.user.name
+                    },
+                }
             }).then(async e => {
-                return await e.json();
-            });
-
-            console.log("Reseda API returned: ", newPlan);
-
-            setLocation({
-                ...location,
-                page: 3,
-                paid: true
-            });
-
-            setProcessing(false);
-        })
+                await fetch("/api/billing/change-plan", {
+                    body: JSON.stringify({ 
+                        newPlan: location.plan,
+                        userId: userInformation.id,
+                        subscriptionId: subscription.subscriptionId
+                    }),
+                    method: 'POST'
+                }).then(async e => {
+                    return await e.json();
+                });
+    
+                setLocation({
+                    ...location,
+                    page: 3,
+                    paid: true
+                });
+    
+                setProcessing(false);
+            })
+        }
     }
 
 	return (
@@ -205,33 +223,32 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             }
 
             <div 
-                className="fixed left-2 p-4 flex flex-row items-center gap-2 cursor-pointer text-violet-800 z-50 bg-white rounded-lg px-4 py-2 top-2"
+                className={`fixed left-2 p-4 flex flex-row items-center gap-2 cursor-pointer text-violet-800 z-50 bg-white rounded-lg px-4 py-2 top-2 ${processing ? "!text-violet-400 hidden" : ""}`}
                 onClick={async () => {
-                    const newPlan = await fetch("/api/billing/get-payment-methods", {
-                        body: JSON.stringify({ 
-                            customerId: userInformation.billing_id,
-                        }),
-                        method: 'POST'
-                    }).then(async e => {
-                        return await e.json();
-                    });
+                    if(processing) return;
 
-                    console.log(newPlan);
-
-                    // if(location.page > 0 && location.page <= 3 && !location.paid) {
-                    //     setLocation({ 
-                    //         ...location,
-                    //         //@ts-ignore
-                    //         page: location.page - 1
-                    //     })
-                    // }else if(!location.paid) {
-                    //     window.history.go(-1);
-                    //     // router.push("/profile")
-                    // }
+                    if(location.page > 0 && location.page <= 3 && !location.paid) {
+                        setLocation({ 
+                            ...location,
+                            //@ts-ignore
+                            page: location.page - 1
+                        })
+                    }else if(!location.paid) {
+                        window.history.go(-1);
+                    }else if(location.paid) {
+                        window.location.href = "../profile"
+                    }
                 }}
             >
                 <ArrowLeft strokeWidth={1}></ArrowLeft>
-                <p>Go Back</p>
+                <p>
+                    {
+                        location.paid ? 
+                        "Profile"
+                        :
+                        "Go Back"
+                    }
+                </p>
             </div>
             <div className="flex flex-col items-center sm:py-28 py-20 sm:gap-24 gap-12 mx-auto w-full max-w-6xl">
                 <div className="flex flex-row items-center sm:gap-12 gap-8">
@@ -307,6 +324,13 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                             </div>
                                             
+                                            <div className="flex items-center justify-center w-full gap-4">
+                                                <div className=" bg-violet-200 flex flex-row items-center gap-4 pl-4 rounded-lg overflow-hidden"> {/* bg-[#d7f7c2] */}
+                                                    <p className=" text-violet-600">Active Plan </p> {/* text-[#006908] */}
+                                                    <p className="px-4 py-2 bg-violet-600 text-white ">{userInformation?.tier?.toLowerCase()?.split("")?.[0]?.toUpperCase() + userInformation?.tier?.substring(1, userInformation?.tier?.length)?.toLowerCase()}</p>
+                                                </div>
+                                            </div>
+                                            
                                             <div className="flex md:flex-row flex-col items-center font-inter gap-8">
                                                 <div className="bg-white rounded-xl border-[1px] border-gray-200" style={{ boxShadow: "rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 1px 1px 0px, rgb(60 66 87 / 0%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 6%) 0px 2px 5px 0px" }}>
                                                     <div className="flex-1 h-full min-h-full">
@@ -345,6 +369,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                             {/* Check if it is a free tier and block access to the middle two elements! */}
 
                                                             <Button icon={<></>} onClick={async () => {
+                                                                if(userInformation.tier == "FREE") return;
+
                                                                 setLocation({
                                                                     ...location,
                                                                     plan: "FREE",
@@ -367,7 +393,24 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                                 console.log(newPlan);
 
                                                                 setProcessing(false);
-                                                            }} className="bg-violet-100 text-violet-800 text-sm font-semibold py-[18px] hover:bg-violet-200">Go Free</Button>
+                                                            }} className={`bg-violet-100 text-violet-800 text-sm font-semibold py-[18px] hover:bg-violet-200 select-none ${userInformation?.tier == "FREE" ? "bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : ""}`}>
+                                                                {
+                                                                    (() => {
+                                                                        switch(userInformation?.tier) {
+                                                                            case "FREE":
+                                                                                return "Already Selected" 
+                                                                            case "BASIC":
+                                                                                return "Go Free" 
+                                                                            case "SUPPORTER":
+                                                                                return "Revert to Free" 
+                                                                            case "PRO":
+                                                                                return "Go Free" 
+                                                                            default:
+                                                                                return "Go Free" 
+                                                                        }
+                                                                    })()
+                                                                }
+                                                            </Button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -407,13 +450,32 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                                 </div>
                                                             </div>
 
-                                                            <Button className="bg-violet-700 text-white text-sm font-semibold py-[18px]" onClick={() => {
+                                                            <Button icon={userInformation?.tier !== "BASIC" ? <ArrowRight size={16} /> : false} className={`bg-violet-700 text-white text-sm font-semibold py-[18px] select-none ${userInformation?.tier == "BASIC" ? "!bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : ""}`} onClick={() => {
+                                                                if(userInformation.tier == "BASIC") return;
+
                                                                 setLocation({
                                                                     ...location,
                                                                     plan: "BASIC",
                                                                     page: 1
                                                                 })
-                                                            }}>Get Started</Button>
+                                                            }}>
+                                                                {
+                                                                    (() => {
+                                                                        switch(userInformation?.tier) {
+                                                                            case "FREE":
+                                                                                return "Get Started" 
+                                                                            case "BASIC":
+                                                                                return "Already Selected" 
+                                                                            case "SUPPORTER":
+                                                                                return "Get Started" 
+                                                                            case "PRO":
+                                                                                return "Switch to Basic" 
+                                                                            default:
+                                                                                return "Get Started" 
+                                                                        }
+                                                                    })()
+                                                                }
+                                                            </Button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -452,13 +514,32 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                                 </div>
                                                             </div>
 
-                                                            <Button icon={<></>} className="bg-violet-100 text-violet-700 text-sm font-semibold py-[18px] hover:bg-violet-200" onClick={() => {
+                                                            <Button icon={<></>} className={`bg-violet-100 text-violet-700 text-sm font-semibold py-[18px] hover:bg-violet-200 select-none ${userInformation?.tier == "PRO" ? "bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : ""}`} onClick={() => {
+                                                                if(userInformation.tier == "PRO") return;
+                                                                
                                                                 setLocation({
                                                                     ...location,
                                                                     plan: "PRO",
                                                                     page: 1
                                                                 })
-                                                            }}>Go Pro</Button>
+                                                            }}>
+                                                                {
+                                                                    (() => {
+                                                                        switch(userInformation?.tier) {
+                                                                            case "FREE":
+                                                                                return "Go Pro" 
+                                                                            case "BASIC":
+                                                                                return "Switch to Pro" 
+                                                                            case "SUPPORTER":
+                                                                                return "Go Pro" 
+                                                                            case "PRO":
+                                                                                return "Already Selected" 
+                                                                            default:
+                                                                                return "Go Pro" 
+                                                                        }
+                                                                    })()
+                                                                }
+                                                            </Button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -531,10 +612,19 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                             <div className="flex flex-col gap-0 items-center justify-center">
                                                 <Button className="text-gray-800 text-opacity-80 leading-3" onClick={() => {
-                                                    setLocation({
-                                                        ...location,
-                                                        page: 2
-                                                    })
+                                                    if(hasExistingPaymentMethod) {
+                                                        setLocation({
+                                                            ...location,
+                                                            page: 3
+                                                        });
+
+                                                        processPayment();
+                                                    }else {
+                                                        setLocation({
+                                                            ...location,
+                                                            page: 2
+                                                        })  
+                                                    }
                                                 }}>
                                                     Skip this step
                                                 </Button>
