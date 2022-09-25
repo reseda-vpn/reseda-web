@@ -17,11 +17,22 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             expand: ['subscriptions']
         }) as Stripe.Customer;
         
-        const existingSubscription = customer.subscriptions.data[0].id;
+        if(customer.subscriptions.data.length > 0) {
+            const existingSubscription = customer.subscriptions.data[0].id;
 
-        const cancelInvoice = await stripe.subscriptions.cancel(existingSubscription, {
-            invoice_now: true,
-        });
+            const cancelInvoice = await stripe.subscriptions.cancel(existingSubscription, {
+                invoice_now: true,
+            });
+        }
+
+        // If subscribing to FREE, we do not need to charge or create a new subscription.
+        if(tier == "FREE") {
+            res.status(200).send({
+                message: "Canceled subscription, subscribed to free"
+            });
+
+            return;
+        }
 
         const subscription = await stripe.subscriptions.create({
             customer: customerId,

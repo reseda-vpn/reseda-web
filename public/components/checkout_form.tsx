@@ -127,17 +127,63 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
     const complete = () => {
         // Set the new role
+        setLocation({
+            ...location,
+            page: 3,
+            paid: true
+        });
+
+        setProcessing(false);
     }
 
-    const processPayment = async () => {
-        if(location.plan == "FREE") {
-            console.error("Function should not have been called, user is attempting to ");
+    const processPayment = async (plan?) => {
+        console.log(`Treating for plan: ${location.plan}`);
+
+        setProcessing(true)
+
+        setLocation({
+            ...location,
+            page: 2
+        });
+
+        if(plan == "FREE") {
+            setLocation({
+                ...location,
+                plan: "FREE"
+            });
+
+            console.log("Loading for FREE Tier");
+
+            const subsc = await fetch('/api/billing/create-subscription', {
+                body: JSON.stringify({ 
+                    customerId: userInformation.billing_id,
+                    customerEmail: session.data.user.email,
+                    tier: "FREE",
+                }),
+                method: 'POST'
+            }).then(async e => {
+                return await e.json();
+            });
+
+            console.log(subsc);
+
+            const change = await fetch("/api/billing/change-plan", {
+                body: JSON.stringify({ 
+                    newPlan: "FREE",
+                    userId: userInformation.id,
+                    subscriptionId: "N/A"
+                }),
+                method: 'POST'
+            }).then(async e => {
+                return await e.json();
+            });
+
+            console.log(change);
+
             complete();
             return;
         }
 
-        setProcessing(true)
-        
         const price_id = (() => {
             switch(location.plan) {
                 case "PRO":     
@@ -179,14 +225,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             }).then(async e => {
                 return await e.json();
             });
-            
-            setLocation({
-                ...location,
-                page: 3,
-                paid: true
-            });
 
-            setProcessing(false);
+            complete();
         }else {
             stripe.confirmCardSetup(subscription.clientSecret, {
                 payment_method: {
@@ -207,13 +247,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                     return await e.json();
                 });
     
-                setLocation({
-                    ...location,
-                    page: 3,
-                    paid: true
-                });
-    
-                setProcessing(false);
+                complete();
             })
         }
     }
@@ -384,31 +418,14 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                                             {/* Check if it is a free tier and block access to the middle two elements! */}
 
-                                                            <Button icon={<></>} onClick={async () => {
+                                                            <Button icon={<></>} onClick={() => {
                                                                 if(userInformation.tier == "FREE") return;
 
                                                                 setLocation({
                                                                     ...location,
                                                                     plan: "FREE",
-                                                                    page: 3
-                                                                });
-
-                                                                setProcessing(true);
-                                                                
-                                                                const newPlan = await fetch("/api/billing/change-plan", {
-                                                                    body: JSON.stringify({ 
-                                                                        newPlan: "FREE",
-                                                                        userId: userInformation.id,
-                                                                        subscriptionId: "N/A"
-                                                                    }),
-                                                                    method: 'POST'
-                                                                }).then(async e => {
-                                                                    return await e.json();
-                                                                });
-
-                                                                console.log(newPlan);
-
-                                                                setProcessing(false);
+                                                                    page: 1
+                                                                })
                                                             }} className={`bg-violet-100 text-violet-800 text-sm font-semibold py-[18px] hover:bg-violet-200 select-none ${userInformation?.tier == "FREE" ? "bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : ""}`}>
                                                                 {
                                                                     (() => {
@@ -716,9 +733,15 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                             </div>
 
                                             <div className="flex flex-row items-center justify-center gap-4 w-full">
-                                                    <Button onClick={() => {
-                                                        window.open(invoiceUrl)
-                                                    }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className="bg-violet-700 text-white !static">View my Invoice</Button>
+                                                    {
+                                                        location.plan !== "FREE" ?   
+                                                        <Button onClick={() => {
+                                                            window.open(invoiceUrl)
+                                                        }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className={`bg-violet-700 text-white !static`}>View my Invoice</Button>
+                                                        :
+                                                        <></>
+                                                    }
+                                                    
                                                     <Button href="../profile" className="block !static">Go to profile</Button>
                                                 </div>
 
