@@ -75,8 +75,6 @@ export default function Home({ releases }) {
             version: null
         }
 
-        console.log(this_release, version);
-
         this_release?.assets?.map((e: { name: string, browser_download_url: string }) => {
             if(e.name.endsWith("_x64_en-US.msi")) {
                 new_releaseFeatures.windows = e?.browser_download_url;

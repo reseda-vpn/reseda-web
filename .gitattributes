@@ -1,2 +1,4 @@
-public/legal.html -linguist-vendored
-styles/** linguist-vendored
+styles/** linguist-generated
+public/legal.html linguist-generated
+legal.html linguist-generated
+*.html linguist-generated

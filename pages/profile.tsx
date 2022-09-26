@@ -10,14 +10,11 @@ import { Account, Usage, User } from '@prisma/client';
 import Button from '@components/un-ui/button';
 import useMediaQuery from '@components/media_query';
 import Loader from '@components/un-ui/loader';
-import Chart from '@components/chart';
 import prisma from "@root/lib/prisma"
 import LinearChart from '@components/linear_chart';
-import Input from '@components/un-ui/input';
 import InputField from '@components/un-ui/input_field';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import Billing, { getSize } from '@components/billing';
-import { isBuffer } from 'util';
 import CurrentPlan from '@components/current_plan';
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -66,7 +63,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
 }
 
-export default function Home({ ss_session, token, user, eligible }) {
+export default function Home({ ss_session, user, eligible }) {
     const session = useSession(ss_session);
 	const small = useMediaQuery(640);
 
@@ -146,8 +143,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                         console.log(e);
                     });
             }
-            // const stripe = await loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
-            // console.log(stripe);
         }
 
         if(session.status == "authenticated") as();    
@@ -322,7 +317,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     })
                                                         .then(async e => {
                                                             if(e.ok) {
-                                                                console.log(e);
                                                                 setLoading(false);
                                                                 setChangingPassword({
                                                                     ...changingPassword,
@@ -376,7 +370,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     })
                                                         .then(async e => {
                                                             if(e.ok) {
-                                                                console.log(e);
                                                                 setLoading(false);
                                                                 setChangingPassword({
                                                                     ...changingPassword,
@@ -424,7 +417,6 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                     })
                                                         .then(async e => {
                                                             if(e.ok) {
-                                                                console.log(e);
                                                                 setLoading(false);
                                                                 setChangingPassword({
                                                                     ...changingPassword,
@@ -562,7 +554,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             </div>
                                                             
                                                             <p className="px-4 font-semibold">
-                                                                { thisMonthData ? getSize(thisMonthData?.up) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.up, 2) : "..." }
                                                             </p>
                                                             
                                                         </div>
@@ -576,7 +568,7 @@ export default function Home({ ss_session, token, user, eligible }) {
                                                             </div>
 
                                                             <p className="px-4 font-semibold">
-                                                                { thisMonthData ? getSize(thisMonthData?.down) : "..." }
+                                                                { thisMonthData ? getSize(thisMonthData?.down, 2) : "..." }
                                                             </p>
                                                         </div>
                                                     </div>

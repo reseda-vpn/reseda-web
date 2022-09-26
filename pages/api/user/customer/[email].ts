@@ -26,7 +26,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     });
 
     const billing_information = await stripe.customers.retrieve(result.accounts[0].billing_id);
-    console.log(billing_information);
     
     res.json({
         ...billing_information

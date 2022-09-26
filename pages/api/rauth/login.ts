@@ -44,20 +44,14 @@ async function handler(req, res) {
     });
 
     if(!existingUser) {
-        console.log(existingUser);
-
         res.status(404).json({
             message: "User does not exist."
         })
         return;
     }
 
-    console.log("Matching", password, existingUser.password);
-
     // Hash password, and do same on signup end for identical comparison.
     const truePass = await verifyPassword(password, existingUser.password);
-
-    console.log(truePass);
 
     if(!truePass) {
         res.status(422).json({

@@ -31,12 +31,12 @@ export const Billing = ({ data, tier, usage, changeView }: { data: {up: number, 
                     {
                         usageMetrics.plan == "SUPPORTER" ?
                             usageMetrics.net_50_usage < 0 ?
-                            <p className="text-gray-500">Used <strong className="text-gray-900">{getSize(data.down)}</strong> of free 50GB ({((data.down / 50000000000) * 100).toFixed(2)}%)</p>
+                            <p className="text-gray-500">Used <strong className="text-gray-900">{getSize(data.down, 2)}</strong> of free 50GB ({((data.down / 50000000000) * 100).toFixed(2)}%)</p>
                             :
                             <p className="text-gray-500">Used all free data allowance, overflowed <strong className="text-gray-900">{getSize(usageMetrics.net_50_usage)}</strong></p>
                         :
                         usageMetrics.net_5_usage < 0 ?
-                            <p className="text-gray-500">Used <strong className="text-gray-900">{getSize(data.down)}</strong> of free 5GB ({((data.down / 5000000000) * 100).toFixed(2)}%)</p>
+                            <p className="text-gray-500">Used <strong className="text-gray-900">{getSize(data.down, 2)}</strong> of free 5GB ({((data.down / 5000000000) * 100).toFixed(2)}%)</p>
                             :
                             usageMetrics.plan == "FREE" ?
                             <p className="text-gray-500">Used all free data allowance, overflowed <strong className="text-gray-900">{getSize(usageMetrics.net_5_usage)}</strong></p>
@@ -108,14 +108,13 @@ function byteToGB(byte) {
     return byte / (1000 * 1000 * 1000)
 }
 
-export function getSize(size) {
+export function getSize(size, dp?) {
     var sizes = [' Bytes', ' KB', ' MB', ' GB', 
                  ' TB', ' PB', ' EB', ' ZB', ' YB'];
     
     for (var i = 1; i < sizes.length; i++) {
         if (size < Math.pow(1000, i)) 
-          return (Math.round((size / Math.pow(
-            1000, i - 1)) * 100) / 100) + sizes[i - 1];
+            return (size / Math.pow(1000, i - 1)).toFixed(dp !== null ? dp : 2) + sizes[i - 1];
     }
     return size;
 }
