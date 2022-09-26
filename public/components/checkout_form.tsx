@@ -734,7 +734,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                             <div className="flex flex-row items-center justify-center gap-4 w-full">
                                                     {
-                                                        location.plan !== "FREE" ?   
+                                                        invoiceUrl !== "FREE" ?   
                                                         <Button onClick={() => {
                                                             window.open(invoiceUrl)
                                                         }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className={`bg-violet-700 text-white !static`}>View my Invoice</Button>
