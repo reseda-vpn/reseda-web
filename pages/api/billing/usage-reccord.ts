@@ -9,11 +9,27 @@ const stripe = new Stripe(process.env.STRIPE_SEC, {
 // POST /api/user
 // Required fields in body: customerId, priceId
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-    const { customerId, usageQuantity } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
+    const { sessionId } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
 
     try {
+        const usageLog = await prisma.usage.findFirst({
+            where: {
+                id: sessionId
+            }
+        });
+
+        if(!usageLog) {
+            return res.status(400).send({ error: { message: "Unable to find usage report." } });
+        }
+
+        const account = await prisma.account.findUnique({
+            where: {
+                id: usageLog.userId
+            }
+        })
+
         // Check if they have an existing subscription, if so cancel it.
-        const customer: Stripe.Customer = await stripe.customers.retrieve(customerId, {
+        const customer: Stripe.Customer = await stripe.customers.retrieve(account.billing_id, {
             expand: ['subscriptions']
         }) as Stripe.Customer;
         
@@ -25,7 +41,9 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                 return res.status(400).send({ error: { message: "No price ID, nor price associated with subscription - see support." } });
             }
 
-            console.log(new Date().getTime())
+            console.log(new Date().getTime());
+
+            const usageQuantity = usageLog.up > usageLog.down ? parseInt(usageLog.up) / 1000000000 : parseInt(usageLog.down) / 1000000000  
 
             const usageRecord = await stripe.subscriptionItems.createUsageRecord(
                 priceId,
