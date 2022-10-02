@@ -19,17 +19,22 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         
         if(customer.subscriptions.data.length > 0) {
             const existingSubscription = customer.subscriptions.data[0];
+            const priceId = existingSubscription.items.data[0].id;
 
-            console.log(existingSubscription.id);
+            if(!priceId) {
+                return res.status(400).send({ error: { message: "No price ID, nor price associated with subscription - see support." } });
+            }
+
+            console.log(new Date().getTime())
 
             const usageRecord = await stripe.subscriptionItems.createUsageRecord(
-                existingSubscription.id,
-                { quantity: usageQuantity, timestamp: new Date().getTime() }
+                priceId,
+                { quantity: usageQuantity, timestamp: "now" }
             );
 
             console.log(usageRecord);
             
-            return res.status(200)
+            return res.status(200).send({ message: `Success, updated record, added ${usageQuantity} items.` });
         }else {
             throw "Unable to retrieve user's subscription"
         }
