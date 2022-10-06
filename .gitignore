@@ -44,3 +44,4 @@ descry.sh
 # certificates
 *.crt
 *.pem
+*.key
