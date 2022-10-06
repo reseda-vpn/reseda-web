@@ -33,10 +33,14 @@ yarn-error.log*
 # vercel
 .vercel
 
-#etc.
+# etc.
 .env.**
 .env
 
-#descry
+# descry
 descry.yml
 descry.sh
+
+# certificates
+*.crt
+*.pem
