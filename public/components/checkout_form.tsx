@@ -190,7 +190,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                     return 'price_1LlJ1MFIoTGPd6E49kkFeEoN' // Test Mode
                     // return 'price_1LU24tFIoTGPd6E4Pnx9I5be' // Live Mode
                 case "BASIC":
-                    return 'price_1KMV6HFIoTGPd6E45NAZsPCy' // Test Mode
+                    return 'price_1LrzQrFIoTGPd6E4DioqkHNd' // Test Mode
                     // return 'price_1LU1noFIoTGPd6E4q7rBXREN' // Live Mode
             }
         })();
