@@ -32,8 +32,8 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
         console.log(account);
 
-        if(account.tier == "BASIC" || account.tier == "SUPPORTER") {
-            return res.status(400).send({ error: { message: "Reported logging was for a BASIC or SUPPORTER account, this does not require an API call as it is not connected to a stripe billing account." } })
+        if(account.tier == "FREE" || account.tier == "SUPPORTER") {
+            return res.status(400).send({ error: { message: "Reported logging was for a FREE or SUPPORTER account, this does not require an API call as it is not connected to a stripe billing account." } })
         }
 
         // Check if they have an existing subscription, if so cancel it.
