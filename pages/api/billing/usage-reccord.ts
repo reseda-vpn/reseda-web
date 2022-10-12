@@ -23,16 +23,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         if(!usageLog) {
             return res.status(400).send({ error: { message: "Unable to find usage report." } });
         }
-
-        const user = await prisma.user.findUnique({
-            where: {
-                id: usageLog.userId
-            }
-        });
-
+        
         const account = await prisma.account.findUnique({
             where: {
-                userId: user.id
+                userId: usageLog.userId
             }
         });
 
