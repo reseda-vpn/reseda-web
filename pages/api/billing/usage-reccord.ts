@@ -51,7 +51,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
             console.log(new Date().getTime());
 
-            const usageQuantity = usageLog.up > usageLog.down ? parseInt(usageLog.up) : parseInt(usageLog.down) / 1000000000  
+            const usageQuantity = usageLog.up > usageLog.down ? parseInt(usageLog.up) : parseInt(usageLog.down)  
 
             const usageRecord = await stripe.subscriptionItems.createUsageRecord(
                 priceId,
