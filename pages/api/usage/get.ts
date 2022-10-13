@@ -28,6 +28,15 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             data: result
         })
     })
+
+    if(result) {
+        result.map(e => {
+            return {
+                ...e,
+                id: null
+            }
+        })
+    }
     
     res.json({
         error: "",
