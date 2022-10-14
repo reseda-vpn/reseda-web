@@ -187,7 +187,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         const price_id = (() => {
             switch(location.plan) {
                 case "PRO":     
-                    return 'price_1LlJ1MFIoTGPd6E49kkFeEoN' // Test Mode
+                    return 'price_1LrzX6FIoTGPd6E4e13K7Ws1' // Test Mode
                     // return 'price_1LU24tFIoTGPd6E4Pnx9I5be' // Live Mode
                 case "BASIC":
                     return 'price_1LrzQrFIoTGPd6E4DioqkHNd' // Test Mode
