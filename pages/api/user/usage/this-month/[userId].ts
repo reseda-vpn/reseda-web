@@ -13,7 +13,23 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                 gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             }
         }
+    }).catch(e => {
+        console.log(e);
+        res.json({
+            error: e,
+            reason: "See Error Object",
+            data: result
+        })
     });
+
+    if(result) {
+        result.map(e => {
+            return {
+                ...e,
+                id: null
+            }
+        })
+    }
 
     res.json(result)
 }
