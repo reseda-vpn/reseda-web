@@ -18,6 +18,9 @@ import {
   } from '@stripe/react-stripe-js';
 import Loader from './un-ui/loader';
 import { FaDotCircle, FaFileInvoice } from 'react-icons/fa';
+import { getUsage } from './billing';
+import { SelectionItem } from './select_item';
+import { SelectionParent } from './selection_parent';
 
 const stripePromise = loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
 
@@ -376,7 +379,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                             
                                             <div className="flex items-center justify-center w-full gap-4" >
                                                 <div className="bg-white-100 flex flex-row items-center rounded-full overflow-hidden"> {/* bg-[#d7f7c2] */}
-                                                    <p className="px-3 py-1 font-semibold bg-purple-100 text-purple-800 text-sm flex flex-row items-center gap-2">
+                                                    <p className="px-3 py-1 font-semibold bg-violet-100 text-violet-800 text-sm flex flex-row items-center gap-2">
                                                         <FaDotCircle></FaDotCircle>
                                                         {userInformation?.tier?.toLowerCase()?.split("")?.[0]?.toUpperCase() + userInformation?.tier?.substring(1, userInformation?.tier?.length)?.toLowerCase()}
                                                     </p>
@@ -607,7 +610,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                     )
                                 case 1:
                                     return (
-                                        <div className="flex flex-col items-center gap-2">
+                                        <div className="flex flex-col items-center gap-2 w-[600px]">
                                             {
                                                 small ? 
                                                 <h1 className="font-bold text-4xl text-gray-800 text-center">Usage Limits</h1>
@@ -628,19 +631,24 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
 
                                             <div className="w-full relative">
-                                                <div className="absolute h-full w-full flex items-center justify-center">
-                                                    <p className="z-50 font-bold text-gray-800">Feature releasing soon</p>
+                                                <SelectionParent plan={location.plan} />
 
-                                                </div>
-
-                                                <div className='w-full min-w-full h-6 '>
-                                                    <div className="w-4 h-6 bg-violet-600 rounded-b-full rounded-t-md"></div>
-                                                </div>
-
-                                                <div className="w-full min-w-full h-8 rounded-lg overflow-hidden flex flex-row items-center">
-                                                    <div className="bg-gray-200 w-full h-full border-1 rounded-lg rounded-r-none border-gray-700"></div>
-                                                    <div className="bg-white w-[1px] h-full rounded-none"></div>
-                                                    <div className="bg-violet-500 w-[50%] h-full border-1 rounded-lg rounded-l-none border-violet-700"></div>
+                                                <br />
+        
+                                                <div className="flex flex-row items-center justify-between border-[1px] border-gray-300 rounded-lg px-4 py-3">
+                                                    <div className="flex flex-row items-start gap-4">
+                                                        <div>
+                                                            <div className="mt-1 h-4 w-4 rounded-full border-[1px] border-gray-300"></div>
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold">Custom</p>
+                                                            <p className="text-gray-600">Choose your own ammount</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col justify-end items-end">
+                                                        <p className="text-gray-600">No more than</p>
+                                                        <p className="font-semibold">${ getUsage({ up: 0, down: 1000000000000}, location.plan).cost.toFixed(2) } /mo</p>
+                                                    </div>
                                                 </div>
                                             </div>
 
