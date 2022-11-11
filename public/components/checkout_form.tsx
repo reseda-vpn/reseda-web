@@ -633,23 +633,6 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                             <div className="w-full relative">
                                                 <SelectionParent plan={location.plan} />
 
-                                                <br />
-        
-                                                <div className="flex flex-row items-center justify-between border-[1px] border-gray-300 rounded-lg px-4 py-3">
-                                                    <div className="flex flex-row items-start gap-4">
-                                                        <div>
-                                                            <div className="mt-1 h-4 w-4 rounded-full border-[1px] border-gray-300"></div>
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-semibold">Custom</p>
-                                                            <p className="text-gray-600">Choose your own ammount</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col justify-end items-end">
-                                                        <p className="text-gray-600">No more than</p>
-                                                        <p className="font-semibold">${ getUsage({ up: 0, down: 1000000000000}, location.plan).cost.toFixed(2) } /mo</p>
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <br />

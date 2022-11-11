@@ -4,6 +4,7 @@ module.exports = {
       "./components/**/*.{js,ts,jsx,tsx}",
       "./public/components/*.{js,ts,jsx,tsx}",
       "./public/components/**/*.{js,ts,jsx,tsx}",
+      ".public/**/*.{js,ts,tsx,jsx}",
       "./public/components/un-ui/*.{js,ts,jsx,tsx}"
     ],
     theme: {
