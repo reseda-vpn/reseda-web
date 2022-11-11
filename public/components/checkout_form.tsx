@@ -40,6 +40,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         page: 0 | 1 | 2 | 3,
         plan: "FREE" | "PRO" | "BASIC",
         paid: boolean,
+        usage_limit: number,
         billing: {
             card_number: string,
             card_date: string,
@@ -52,6 +53,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         page: 0,
         plan: null,
         paid: false,
+        usage_limit: -1,
         billing: {
             card_number: null,
             card_date: null,
@@ -222,7 +224,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                 body: JSON.stringify({ 
                     newPlan: location.plan,
                     userId: userInformation.id,
-                    subscriptionId: subscription.subscriptionId
+                    subscriptionId: subscription.subscriptionId,
+                    limit: location.usage_limit == -1 ? "unlocked" : location.usage_limit
                 }),
                 method: 'POST'
             }).then(async e => {
@@ -631,8 +634,24 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
 
                                             <div className="w-full relative">
-                                                <SelectionParent plan={location.plan} />
-
+                                                <SelectionParent plan={location.plan} callback={
+                                                    (lim: number) => {
+                                                        if(hasExistingPaymentMethod) {
+                                                            setLocation({
+                                                                ...location,
+                                                                page: 3,
+                                                                usage_limit: lim
+                                                            });
+    
+                                                            processPayment();
+                                                        }else {
+                                                            setLocation({
+                                                                ...location,
+                                                                page: 2,
+                                                                usage_limit: lim
+                                                            })  
+                                                        }
+                                                }} />
                                             </div>
 
                                             <br />
@@ -642,14 +661,16 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                     if(hasExistingPaymentMethod) {
                                                         setLocation({
                                                             ...location,
-                                                            page: 3
+                                                            page: 3,
+                                                            usage_limit: -1
                                                         });
 
                                                         processPayment();
                                                     }else {
                                                         setLocation({
                                                             ...location,
-                                                            page: 2
+                                                            page: 2,
+                                                            usage_limit: -1
                                                         })  
                                                     }
                                                 }}>
