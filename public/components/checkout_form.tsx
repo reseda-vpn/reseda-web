@@ -17,7 +17,7 @@ import {
     CardNumberElement,
   } from '@stripe/react-stripe-js';
 import Loader from './un-ui/loader';
-import { FaFileInvoice } from 'react-icons/fa';
+import { FaDotCircle, FaFileInvoice } from 'react-icons/fa';
 
 const stripePromise = loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
 
@@ -374,10 +374,12 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                             </div>
                                             
-                                            <div className="flex items-center justify-center w-full gap-4">
-                                                <div className=" bg-violet-200 flex flex-row items-center gap-4 pl-4 rounded-lg overflow-hidden"> {/* bg-[#d7f7c2] */}
-                                                    <p className=" text-violet-600">Active Plan </p> {/* text-[#006908] */}
-                                                    <p className="px-4 py-2 bg-violet-600 text-white ">{userInformation?.tier?.toLowerCase()?.split("")?.[0]?.toUpperCase() + userInformation?.tier?.substring(1, userInformation?.tier?.length)?.toLowerCase()}</p>
+                                            <div className="flex items-center justify-center w-full gap-4" >
+                                                <div className="bg-white-100 flex flex-row items-center rounded-full overflow-hidden"> {/* bg-[#d7f7c2] */}
+                                                    <p className="px-3 py-1 font-semibold bg-purple-100 text-purple-800 text-sm flex flex-row items-center gap-2">
+                                                        <FaDotCircle></FaDotCircle>
+                                                        {userInformation?.tier?.toLowerCase()?.split("")?.[0]?.toUpperCase() + userInformation?.tier?.substring(1, userInformation?.tier?.length)?.toLowerCase()}
+                                                    </p>
                                                 </div>
                                             </div>
                                             
@@ -631,10 +633,11 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                                 </div>
 
-                                                <div className='blur-md w-full min-w-full h-6 '>
+                                                <div className='w-full min-w-full h-6 '>
                                                     <div className="w-4 h-6 bg-violet-600 rounded-b-full rounded-t-md"></div>
                                                 </div>
-                                                <div className="blur-md w-full min-w-full h-8 rounded-lg overflow-hidden flex flex-row items-center">
+
+                                                <div className="w-full min-w-full h-8 rounded-lg overflow-hidden flex flex-row items-center">
                                                     <div className="bg-gray-200 w-full h-full border-1 rounded-lg rounded-r-none border-gray-700"></div>
                                                     <div className="bg-white w-[1px] h-full rounded-none"></div>
                                                     <div className="bg-violet-500 w-[50%] h-full border-1 rounded-lg rounded-l-none border-violet-700"></div>
