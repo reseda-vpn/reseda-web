@@ -5,7 +5,7 @@ import Button from "./un-ui/button";
 import Input from "./un-ui/input";
 import { useEffect } from "react"
 
-export const SelectionParent = ({ plan, callback }: { plan: string, callback: Function }) => {
+export const SelectionParent = ({ plan, callback, state }: { plan: string, callback: Function, state: [state: any, cb: Function] }) => {
     const [ selectedItem, setSelectedItem ] = useState(0);
     const [ chosenQuantity, setChosenQuantity ] = useState(-1);
     const [ inputQuantity, setInputQuantity ] = useState(0);
@@ -17,7 +17,7 @@ export const SelectionParent = ({ plan, callback }: { plan: string, callback: Fu
 
     return (
         <div className="flex flex-col w-full">
-            <SelectionItem callback={() => { onClick(0); setChosenQuantity(100000000000) }} selected={[selectedItem, 0]} quantity={"100GB"}      numeric_quantity={100000000000}  description={"Great for streaming"}                            plan={plan} position={0} />
+            <SelectionItem callback={() => { onClick(0); setChosenQuantity(100000000000) }} selected={[selectedItem, 0]} quantity={"100GB"}      numeric_quantity={100000000000}  description={"Great for streaming"}                             plan={plan} position={0} />
             <SelectionItem callback={() => { onClick(1); setChosenQuantity(200000000000) }} selected={[selectedItem, 1]} quantity={"200GB"}      numeric_quantity={200000000000}  description={"Excellent for 4K streaming"}                      plan={plan} position={1} />
             <SelectionItem callback={() => { onClick(2); setChosenQuantity(500000000000) }} selected={[selectedItem, 2]} quantity={"500GB"}      numeric_quantity={500000000000}  description={"Best for file transfers or heavy workload users"} plan={plan} position={1} />
             <SelectionItem callback={() => { onClick(3); setChosenQuantity(-1) }}           selected={[selectedItem, 3]} quantity={"Unlocked"}   numeric_quantity={-1}            description={"For the no limits experience"}                    plan={plan} position={2} />
@@ -47,7 +47,8 @@ export const SelectionParent = ({ plan, callback }: { plan: string, callback: Fu
             <br />
 
             <Button icon={<></>} className={`bg-violet-100 self-center w-64 text-sm font-semibold py-[18px] select-none ${chosenQuantity == 0 ? "bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : "bg-violet-800 text-white"}`} onClick={() => {
-                callback(chosenQuantity == -1 ? -1 : chosenQuantity * 1000000000)
+                const q = (chosenQuantity == -1 ? -1 : chosenQuantity * 1000000000);
+                callback(q);
             }}>
                Continue
             </Button>

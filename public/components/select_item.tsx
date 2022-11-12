@@ -27,19 +27,19 @@ export const SelectionItem = ({ callback, quantity, numeric_quantity, descriptio
                     }
                 </div>
                 <div>
-                    <p className={`font-bold ${selected[0] == selected[1] ? "text-violet-700" : ""}`}>{quantity}</p>
-                    <p className={`${selected[0] == selected[1] ? "text-violet-800" : "text-gray-600 "}`}>{description}</p>
+                    <p className={`font-bold select-none  ${selected[0] == selected[1] ? "text-violet-700" : ""}`}>{quantity}</p>
+                    <p className={`select-none ${selected[0] == selected[1] ? "text-violet-800" : "text-gray-600 "}`}>{description}</p>
                 </div>
             </div>
             
             {
                 getUsage({ up: 0, down: numeric_quantity}, plan).cost < 0.01 ?
-                <div className="flex flex-col justify-end items-end">
+                <div className="flex flex-col justify-end items-end select-none">
                     <p className={`${selected[0] == selected[1] ? "text-violet-400" : "text-gray-400"}`}>Up to or more than</p>
                     <p className={`font-semibold ${selected[0] == selected[1] ? "text-violet-800" : "text-gray-800"}`}>${ (getUsage({ up: 0, down: numeric_quantity}, plan).cost).toFixed(2) } /mo</p>
                 </div>
                 :
-                <div className="flex flex-col justify-end items-end">
+                <div className="flex flex-col justify-end items-end select-none">
                     <p className={`${selected[0] == selected[1] ? "text-violet-400" : "text-gray-400"}`}>No more than</p>
                     <p className={`font-semibold ${selected[0] == selected[1] ? "text-violet-800" : "text-gray-800"}`}>${ (getUsage({ up: 0, down: numeric_quantity}, plan).cost).toFixed(2) } /mo</p>
                 </div>

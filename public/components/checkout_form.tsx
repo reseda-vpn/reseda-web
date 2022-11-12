@@ -53,7 +53,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         page: 0,
         plan: null,
         paid: false,
-        usage_limit: -1,
+        usage_limit: null,
         billing: {
             card_number: null,
             card_date: null,
@@ -219,13 +219,15 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
         setInvoiceUrl(subscription.invoiceURL);
 
+        console.log("Propagating with limit of:", location.usage_limit);
+
         if(hasExistingPaymentMethod){
             await fetch("/api/billing/change-plan", {
                 body: JSON.stringify({ 
                     newPlan: location.plan,
                     userId: userInformation.id,
                     subscriptionId: subscription.subscriptionId,
-                    limit: location.usage_limit == -1 ? "unlocked" : location.usage_limit
+                    limit: location.usage_limit == -1 ? "unlocked" : location.usage_limit.toString()
                 }),
                 method: 'POST'
             }).then(async e => {
@@ -246,7 +248,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                     body: JSON.stringify({ 
                         newPlan: location.plan,
                         userId: userInformation.id,
-                        subscriptionId: subscription.subscriptionId
+                        subscriptionId: subscription.subscriptionId,
+                        limit: location.usage_limit == -1 ? "unlocked" : location.usage_limit.toString()
                     }),
                     method: 'POST'
                 }).then(async e => {
@@ -634,23 +637,27 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
 
                                             <div className="w-full relative">
-                                                <SelectionParent plan={location.plan} callback={
-                                                    (lim: number) => {
+                                                <SelectionParent plan={location.plan} state={[location, setLocation]} callback={(lim: number) => {
+                                                    setLocation({
+                                                        ...location,
+                                                        usage_limit: lim,
+                                                    });
+
+                                                    setTimeout(() => {
                                                         if(hasExistingPaymentMethod) {
                                                             setLocation({
                                                                 ...location,
                                                                 page: 3,
-                                                                usage_limit: lim
                                                             });
-    
+
                                                             processPayment();
                                                         }else {
                                                             setLocation({
                                                                 ...location,
                                                                 page: 2,
-                                                                usage_limit: lim
                                                             })  
                                                         }
+                                                    }, 50);
                                                 }} />
                                             </div>
 
@@ -748,17 +755,19 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                             </div>
 
                                             <div className="flex flex-row items-center justify-center gap-4 w-full">
-                                                    {
-                                                        invoiceUrl !== "FREE" ?   
-                                                        <Button onClick={() => {
-                                                            window.open(invoiceUrl)
-                                                        }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className={`bg-violet-700 text-white !static`}>View my Invoice</Button>
-                                                        :
-                                                        <></>
-                                                    }
-                                                    
-                                                    <Button href="../profile" className="block !static">Go to profile</Button>
-                                                </div>
+                                                {
+                                                    invoiceUrl !== "FREE" ?   
+                                                    <Button onClick={() => {
+                                                        window.open(invoiceUrl)
+                                                    }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className={`bg-violet-700 text-white !static`}>View my Invoice</Button>
+                                                    :
+                                                    <></>
+                                                }
+                                                
+                                                <Button href="../profile" className="block !static">Go to profile</Button>
+                                            </div>
+
+
 
                                             <div className="flex flex-col items-baseline gap-6 justify-start px-8 sm:px-0">
                                                 {
@@ -774,7 +783,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 }
 
                                                 <div className="flex flex-row items-center gap-6">
-                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-100 border-violet-300 text-violet-800 h-8 w-8 font-bold text-lg">
                                                         1
                                                     </div>
 
@@ -785,7 +794,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 </div>
 
                                                 <div className="flex flex-row items-center gap-6">
-                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-100 border-violet-300 text-violet-800 h-8 w-8 font-bold text-lg">
                                                         2
                                                     </div>
 
@@ -796,7 +805,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 </div>
 
                                                 <div className="flex flex-row items-center gap-6">
-                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-100 border-violet-300 text-violet-800 h-8 w-8 font-bold text-lg">
                                                         3
                                                     </div>
 
