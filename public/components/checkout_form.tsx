@@ -637,12 +637,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
 
                                             <div className="w-full relative">
-                                                <SelectionParent plan={location.plan} state={[location, setLocation]} callback={(lim: number) => {
-                                                    setLocation({
-                                                        ...location,
-                                                        usage_limit: lim,
-                                                    });
-
+                                                <SelectionParent plan={location.plan} state={[location, setLocation]} callback={() => {
                                                     setTimeout(() => {
                                                         if(hasExistingPaymentMethod) {
                                                             setLocation({

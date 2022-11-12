@@ -13,7 +13,16 @@ export const SelectionParent = ({ plan, callback, state }: { plan: string, callb
 
     useEffect(() => {
         setChosenQuantity(Number.isNaN(inputQuantity) ? 0 : inputQuantity);
-    }, [inputQuantity])
+    }, [inputQuantity]);
+
+    useEffect(() => {
+        const q = selectedItem == 4 ? (chosenQuantity == -1 ? -1 : chosenQuantity * 1000000000) : (chosenQuantity == -1 ? -1 : chosenQuantity);
+
+        state[1]({
+            ...state[0],
+            usage_limit: q
+        })
+    }, [chosenQuantity])
 
     return (
         <div className="flex flex-col w-full">
