@@ -227,7 +227,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                     newPlan: location.plan,
                     userId: userInformation.id,
                     subscriptionId: subscription.subscriptionId,
-                    limit: location.usage_limit == -1 ? "unlocked" : location.usage_limit.toString()
+                    limit: location.usage_limit == -1 ? "-1" : location.usage_limit.toString()
                 }),
                 method: 'POST'
             }).then(async e => {
@@ -249,7 +249,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                         newPlan: location.plan,
                         userId: userInformation.id,
                         subscriptionId: subscription.subscriptionId,
-                        limit: location.usage_limit == -1 ? "unlocked" : location.usage_limit.toString()
+                        limit: location.usage_limit == -1 ? "-1" : location.usage_limit.toString()
                     }),
                     method: 'POST'
                 }).then(async e => {

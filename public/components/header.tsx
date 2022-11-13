@@ -25,6 +25,8 @@ export const Header = () => {
         <div className="flex flex-row z-40 sm:bg-white bg-opacity-80 sm:backdrop-blur-md">
             <div className="flex flex-row py-2 px-4 justify-between max-w-screen-lg w-full my-0 mx-auto z-40">
                 <div className="flex flex-row items-center gap-4">
+                    
+
                     <div className={`font-bold font-altSans text-lg  ${prof || (small && !indx) ? "text-slate-800" : "text-slate-100" } sm:text-slate-800 hover:cursor-pointer`} onClick={() => router.push('../')}>RESEDA</div>   
 
                     <div className="flex flex-row items-center gap-4">
