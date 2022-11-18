@@ -55,7 +55,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                     },
                     data: {
                         tier: newPlan,
-                        limit: limit 
+                        limit: typeof limit == "string" ? limit : "-1"  
                     }
                 });
 
