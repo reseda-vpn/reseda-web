@@ -56,7 +56,7 @@ export const SelectionParent = ({ plan, callback, state }: { plan: string, callb
             <br />
 
             <Button icon={<></>} className={`bg-violet-100 self-center w-64 text-sm font-semibold py-[18px] select-none ${chosenQuantity == 0 ? "bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : "bg-violet-800 text-white"}`} onClick={() => {
-                const q = (chosenQuantity == -1 ? -1 : chosenQuantity * 1000000000);
+                const q = (chosenQuantity == -1 ? -1 : chosenQuantity);
                 callback(q);
             }}>
                Continue
