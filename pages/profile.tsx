@@ -14,8 +14,9 @@ import prisma from "@root/lib/prisma"
 import LinearChart from '@components/linear_chart';
 import InputField from '@components/un-ui/input_field';
 import { FaExclamationTriangle } from 'react-icons/fa';
-import Billing, { getSize } from '@components/billing';
+import Billing, { getSize, getUsage } from '@components/billing';
 import CurrentPlan from '@components/current_plan';
+import { SelectionParent } from '@components/selection_parent';
 
 export const getServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -80,6 +81,7 @@ export default function Home({ ss_session, user, eligible }) {
     }>();
     const [ changingUsername, setChangingUsername ] = useState(false);
     const [ deletingAccount, setDeletingAccount ] = useState(false);
+    
     const [ changingPassword, setChangingPassword ] = useState<{
         state: 0 | 1 | 2 | 3,
         password: string,
@@ -91,6 +93,15 @@ export default function Home({ ss_session, user, eligible }) {
         password: "",
         fetch_message: null
     });
+
+    const [ changingLimit, setChangingLimit ] = useState<{
+        state: boolean,
+        fetch_message: string | null,
+    }>({
+        state: false,
+        fetch_message: null
+    });
+
     const [ loading, setLoading ] = useState(false);
 
     useEffect(() => {
@@ -111,8 +122,8 @@ export default function Home({ ss_session, user, eligible }) {
 
 	useEffect(() => {
         localStorage.setItem("reseda.jwt", JSON.stringify(ss_session?.jwt));
-
-        setUserInformation(user.accounts[0]);
+        
+        if(!userInformation) setUserInformation(user.accounts[0]);
         setEligibleForDownload(eligible.claimable ? 1 : 2);
         // setUsageInformation(usage);
 
@@ -448,7 +459,50 @@ export default function Home({ ss_session, user, eligible }) {
                     </div>
                     :
                     <></>
-                }   
+                }  
+
+                {
+                    changingLimit.state ?
+                    <div 
+                        className="fixed top-0 left-0 flex flex-1 h-screen w-screen z-50 bg-slate-400 bg-opacity-40 items-center content-center justify-center"
+                        onClick={() => { 
+                            setChangingLimit({
+                                ...changingLimit,
+                                state: false
+                            });
+                        }}
+                        >
+                        <div 
+                            className={"p-6 bg-white text-slate-800 border-1 border-slate-400 rounded-lg " + styles.border}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex flex-col justify-between pb-2 gap-y-4">
+                                <div>
+                                    <h2 className="font-bold text-xl">Change Limit</h2>
+                                    <p className="text-sm text-slate-500 not-italic font-light">Current Limit: <strong className="font-bold">{getSize(userInformation?.limit)} (${ (getUsage({ up: 0, down: parseInt(userInformation?.limit)}, userInformation?.tier).cost).toFixed(2) })</strong></p>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <SelectionParent plan={userInformation?.tier} state={["", () => {}]} callback={(quantity) => {
+                                        fetch(`/api/user/limit/${userInformation.userId}/${quantity}`, {
+                                            method: "POST"
+                                        }).then(async e => {
+                                            const k = await e.json();
+                                            setUserInformation(k);
+
+                                            setChangingLimit({
+                                                ...changingLimit,
+                                                state: false
+                                            });
+                                        })
+                                    }} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    <></>
+                } 
 
                 <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-40 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-start justify-between sm:w-32 w-full">
@@ -596,7 +650,17 @@ export default function Home({ ss_session, user, eligible }) {
                                                 <h1 className="font-bold text-xl">Billing</h1>
 
                                                 <Billing data={thisMonthData} tier={userInformation?.tier} changeView={setMenu} usage />
-                                                <CurrentPlan tier={userInformation.tier} />
+                                                {/* <div>
+                                                    <div>
+                                                        {  }
+                                                    </div>
+                                                </div> */}
+                                                <CurrentPlan tier={userInformation?.tier} limit={userInformation?.limit} callback={() => {
+                                                    setChangingLimit({
+                                                        ...changingLimit,
+                                                        state: true
+                                                    });
+                                                }} />
                                             </div>
                                         )
                                     default:

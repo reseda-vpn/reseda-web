@@ -17,7 +17,10 @@ import {
     CardNumberElement,
   } from '@stripe/react-stripe-js';
 import Loader from './un-ui/loader';
-import { FaFileInvoice } from 'react-icons/fa';
+import { FaDotCircle, FaFileInvoice } from 'react-icons/fa';
+import { getUsage } from './billing';
+import { SelectionItem } from './select_item';
+import { SelectionParent } from './selection_parent';
 
 const stripePromise = loadStripe('pk_test_51KHl5DFIoTGPd6E4i9ViGbb5yHANKUPdzKKxAMhzUGuAFpVFpdyvcdhBSJw2zeN0D4hjUvAO1yPpKUUttHOTtgbv00cG1fr4Y5');
 
@@ -37,6 +40,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         page: 0 | 1 | 2 | 3,
         plan: "FREE" | "PRO" | "BASIC",
         paid: boolean,
+        usage_limit: number,
         billing: {
             card_number: string,
             card_date: string,
@@ -49,6 +53,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         page: 0,
         plan: null,
         paid: false,
+        usage_limit: null,
         billing: {
             card_number: null,
             card_date: null,
@@ -214,12 +219,15 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
         setInvoiceUrl(subscription.invoiceURL);
 
+        console.log("Propagating with limit of:", location.usage_limit);
+
         if(hasExistingPaymentMethod){
             await fetch("/api/billing/change-plan", {
                 body: JSON.stringify({ 
                     newPlan: location.plan,
                     userId: userInformation.id,
-                    subscriptionId: subscription.subscriptionId
+                    subscriptionId: subscription.subscriptionId,
+                    limit: location.usage_limit == -1 ? "-1" : location.usage_limit.toString()
                 }),
                 method: 'POST'
             }).then(async e => {
@@ -240,7 +248,8 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                     body: JSON.stringify({ 
                         newPlan: location.plan,
                         userId: userInformation.id,
-                        subscriptionId: subscription.subscriptionId
+                        subscriptionId: subscription.subscriptionId,
+                        limit: location.usage_limit == -1 ? "-1" : location.usage_limit.toString()
                     }),
                     method: 'POST'
                 }).then(async e => {
@@ -374,10 +383,12 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
                                             </div>
                                             
-                                            <div className="flex items-center justify-center w-full gap-4">
-                                                <div className=" bg-violet-200 flex flex-row items-center gap-4 pl-4 rounded-lg overflow-hidden"> {/* bg-[#d7f7c2] */}
-                                                    <p className=" text-violet-600">Active Plan </p> {/* text-[#006908] */}
-                                                    <p className="px-4 py-2 bg-violet-600 text-white ">{userInformation?.tier?.toLowerCase()?.split("")?.[0]?.toUpperCase() + userInformation?.tier?.substring(1, userInformation?.tier?.length)?.toLowerCase()}</p>
+                                            <div className="flex items-center justify-center w-full gap-4" >
+                                                <div className="bg-white-100 flex flex-row items-center rounded-full overflow-hidden"> {/* bg-[#d7f7c2] */}
+                                                    <p className="px-3 py-1 font-semibold bg-violet-100 text-violet-800 text-sm flex flex-row items-center gap-2">
+                                                        <FaDotCircle></FaDotCircle>
+                                                        {userInformation?.tier?.toLowerCase()?.split("")?.[0]?.toUpperCase() + userInformation?.tier?.substring(1, userInformation?.tier?.length)?.toLowerCase()}
+                                                    </p>
                                                 </div>
                                             </div>
                                             
@@ -605,7 +616,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                     )
                                 case 1:
                                     return (
-                                        <div className="flex flex-col items-center gap-2">
+                                        <div className="flex flex-col items-center gap-2 w-[600px]">
                                             {
                                                 small ? 
                                                 <h1 className="font-bold text-4xl text-gray-800 text-center">Usage Limits</h1>
@@ -626,19 +637,23 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
 
                                             <div className="w-full relative">
-                                                <div className="absolute h-full w-full flex items-center justify-center">
-                                                    <p className="z-50 font-bold text-gray-800">Feature releasing soon</p>
+                                                <SelectionParent plan={location.plan} state={[location, setLocation]} callback={() => {
+                                                    setTimeout(() => {
+                                                        if(hasExistingPaymentMethod) {
+                                                            setLocation({
+                                                                ...location,
+                                                                page: 3,
+                                                            });
 
-                                                </div>
-
-                                                <div className='blur-md w-full min-w-full h-6 '>
-                                                    <div className="w-4 h-6 bg-violet-600 rounded-b-full rounded-t-md"></div>
-                                                </div>
-                                                <div className="blur-md w-full min-w-full h-8 rounded-lg overflow-hidden flex flex-row items-center">
-                                                    <div className="bg-gray-200 w-full h-full border-1 rounded-lg rounded-r-none border-gray-700"></div>
-                                                    <div className="bg-white w-[1px] h-full rounded-none"></div>
-                                                    <div className="bg-violet-500 w-[50%] h-full border-1 rounded-lg rounded-l-none border-violet-700"></div>
-                                                </div>
+                                                            processPayment();
+                                                        }else {
+                                                            setLocation({
+                                                                ...location,
+                                                                page: 2,
+                                                            })  
+                                                        }
+                                                    }, 50);
+                                                }} />
                                             </div>
 
                                             <br />
@@ -648,14 +663,16 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                     if(hasExistingPaymentMethod) {
                                                         setLocation({
                                                             ...location,
-                                                            page: 3
+                                                            page: 3,
+                                                            usage_limit: -1
                                                         });
 
                                                         processPayment();
                                                     }else {
                                                         setLocation({
                                                             ...location,
-                                                            page: 2
+                                                            page: 2,
+                                                            usage_limit: -1
                                                         })  
                                                     }
                                                 }}>
@@ -733,17 +750,19 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                             </div>
 
                                             <div className="flex flex-row items-center justify-center gap-4 w-full">
-                                                    {
-                                                        invoiceUrl !== "FREE" ?   
-                                                        <Button onClick={() => {
-                                                            window.open(invoiceUrl)
-                                                        }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className={`bg-violet-700 text-white !static`}>View my Invoice</Button>
-                                                        :
-                                                        <></>
-                                                    }
-                                                    
-                                                    <Button href="../profile" className="block !static">Go to profile</Button>
-                                                </div>
+                                                {
+                                                    invoiceUrl !== "FREE" ?   
+                                                    <Button onClick={() => {
+                                                        window.open(invoiceUrl)
+                                                    }} href={`#${invoiceUrl}`} icon={<FaFileInvoice />} className={`bg-violet-700 text-white !static`}>View my Invoice</Button>
+                                                    :
+                                                    <></>
+                                                }
+                                                
+                                                <Button href="../profile" className="block !static">Go to profile</Button>
+                                            </div>
+
+
 
                                             <div className="flex flex-col items-baseline gap-6 justify-start px-8 sm:px-0">
                                                 {
@@ -759,7 +778,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 }
 
                                                 <div className="flex flex-row items-center gap-6">
-                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-100 border-violet-300 text-violet-800 h-8 w-8 font-bold text-lg">
                                                         1
                                                     </div>
 
@@ -770,7 +789,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 </div>
 
                                                 <div className="flex flex-row items-center gap-6">
-                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-100 border-violet-300 text-violet-800 h-8 w-8 font-bold text-lg">
                                                         2
                                                     </div>
 
@@ -781,7 +800,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                                                 </div>
 
                                                 <div className="flex flex-row items-center gap-6">
-                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-200 border-violet-400 text-violet-800 h-8 w-8 font-bold text-lg">
+                                                    <div className="flex items-center justify-center p-4 rounded-full border-2 bg-violet-100 border-violet-300 text-violet-800 h-8 w-8 font-bold text-lg">
                                                         3
                                                     </div>
 

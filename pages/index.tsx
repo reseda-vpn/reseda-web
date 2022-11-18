@@ -66,6 +66,25 @@ export default function Home() {
 				<div className="flex flex-row items-center h-fill max-w-screen-lg w-full my-0 mx-auto px-4 z-40" style={{ height: small ? '450px' : 'calc(70vh - 48px)' }}>
 					<div className="h-fit flex flex-col gap-16 md:gap-8 items-start">
 						<div className="z-50 relative flex flex-col gap-2">
+							{/* <svg width="50" height="50" viewBox="0 0 138 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M137.413 68.6376C137.413 83.3824 137.413 120.965 137.413 133.28C137.413 135.489 135.648 137.254 133.439 137.254C121.449 137.254 85.4452 137.254 68.7966 137.254C30.9008 137.254 0.180084 106.533 0.180084 68.6376C0.180084 30.7417 30.9008 0.0210571 68.7966 0.0210571C106.692 0.0210571 137.413 30.7417 137.413 68.6376Z" fill="url(#paint0_linear_1_30)"/>
+								<mask id="mask0_1_30" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="0" y="0" width="138" height="138">
+								<path d="M137.413 68.6376C137.413 86.3911 137.413 137.254 137.413 137.254C137.413 137.254 88.9389 137.254 68.7966 137.254C30.9008 137.254 0.180084 106.533 0.180084 68.6376C0.180084 30.7417 30.9008 0.0210571 68.7966 0.0210571C106.692 0.0210571 137.413 30.7417 137.413 68.6376Z" fill="white"/>
+								</mask>
+								<g mask="url(#mask0_1_30)">
+								<path d="M56.4272 89.6151L43.4008 136.826C43.0494 138.099 44.0076 139.358 45.3288 139.358H92.0377C93.3589 139.358 94.3171 138.099 93.9657 136.826L80.9393 89.6152C80.7 88.7479 79.911 88.1471 79.0113 88.1471H72.694L66.18 88.1469L61.4699 88.1469L58.3551 88.1471C57.4554 88.1471 56.6665 88.7478 56.4272 89.6151Z" fill="white" stroke="white" stroke-width="2"/>
+								<circle cx="68.7966" cy="66.5958" r="26.8676" fill="white"/>
+								</g>
+								<defs>
+								<linearGradient id="paint0_linear_1_30" x1="21.5906" y1="26.195" x2="114.37" y2="100.663" gradientUnits="userSpaceOnUse">
+								<stop stop-color="#9E88E4"/>
+								<stop offset="0.291667" stop-color="#EA67B9"/>
+								<stop offset="0.645833" stop-color="#EC3A7B"/>
+								<stop offset="1" stop-color="#FDB561"/>
+								</linearGradient>
+								</defs>
+							</svg> */}
+
 							<motion.div initial="offscreen" whileInView="onscreen" viewport={{ once: true }} variants={titleControl} className="text-4xl md:text-5xl font-extrabold m-0 text-slate-100 text-left z-50 flex flex-row flex-wrap gap-4 gap-y-0">
 								<motion.div variants={titleVariants}>Fast. </motion.div>
 								<motion.div variants={titleVariants}>Affordable. </motion.div>

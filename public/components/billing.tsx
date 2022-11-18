@@ -70,9 +70,9 @@ export const Billing = ({ data, tier, usage, changeView }: { data: {up: number, 
     )
 }
 
-function getUsage(usage: { up: number, down: number }, plan) {
-    const net_5_usage = usage.down - 5000000000;
-    const net_50_usage = usage.down - 50000000000;
+export function getUsage(usage: { up: number, down: number }, plan) {
+    const net_5_usage = (usage.up + usage.down) - 5000000000;
+    const net_50_usage = (usage.up + usage.down) - 50000000000;
 
     const data_rate = (() => {switch(plan) {
         case "FREE":

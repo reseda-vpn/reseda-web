@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SEC, {
 // POST /api/user
 // Required fields in body: customerId, priceId
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
-    const { newPlan, userId, subscriptionId } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
+    const { newPlan, userId, subscriptionId, limit } = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
 
     if(!env.SUPPORTER_TIER && newPlan == "SUPPORTER") {
         res.status(422).send({ message: `The SUPPORTER tier is no longer recognized. Please try using the FREE tier instead.` });
@@ -54,9 +54,11 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
                         id: userId
                     },
                     data: {
-                        tier: newPlan
+                        tier: newPlan,
+                        limit: limit 
                     }
                 });
+
             }else {
                 res.status(422).send({ message: `API was sent to update to the ${newPlan} plan, user is signed up for ${subscription.metadata.tier}` });
                 return;

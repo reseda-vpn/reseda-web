@@ -53,7 +53,7 @@ export const Footer = () => {
                         </div>
                     </div>
 
-                    <p className="text-slate-400 text-xs my-0">Made by <a href="https://ben-white.vercel.app" className="text-slate-200 text-xs my-0">@benji</a></p>
+                    <p className="text-slate-400 text-xs my-0">Made by <a href="https://bennjii.dev" className="text-slate-200 text-xs my-0">@benji</a></p>
                 </div>
             </div>
         </div>

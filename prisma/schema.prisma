@@ -64,6 +64,7 @@ model Account {
   oauth_token              String?
   billing_id               String   @default("")
   lcs                      String?
+  limit                    String?  @default("-1")
   tier                     String   @default("FREE")
   user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 

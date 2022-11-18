@@ -1,52 +1,59 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { ArrowUpRight, Check, ChevronDown, ChevronUp } from "react-feather"
+import { ArrowUpRight, Check, ChevronDown, ChevronUp, Edit2 } from "react-feather"
 import { Account, Usage } from '@prisma/client';
 import Button from './un-ui/button';
 import { useRouter } from 'next/router';
+import { getSize } from './billing';
 
-export const CurrentPlan = ({ tier }: {tier: string }) => {
+export const CurrentPlan = ({ tier, limit, callback }: {tier: string, limit: string, callback: Function }) => {
     const router = useRouter();
 
     return (
         <div className="flex flex-col sm:flex-row w-full rounded-lg overflow-hidden p-5 gap-2 sm:gap-16 bg-white border-1 border-gray-200 min-h-72 justify-between border border-gray-300/60 shadow-lg shadow-transparent hover:shadow-gray-100/80 transition-shadow duration-450 ease-in-out">
             <div className="flex flex-col">
-                <p className="text-gray-500">Current Plan</p>
+                <p className="text-gray-400">Current Plan</p>
 
-                {
-                    (() => {
-                        switch(tier) {
-                            case "FREE":
-                                return (
-                                    <>
-                                        <h2 className="text-lg font-semibold text-orange-300 cursor-pointer">FREE</h2>
-                                    </>
-                                )
-                            case "BASIC":
-                                return (
-                                    <>
-                                        <h2 className="text-lg font-semibold text-orange-400 cursor-pointer">BASIC</h2>
-                                    </>
-                                )
-                            case "PRO":
-                                return (
-                                    <>
-                                        <h2 className="text-lg font-semibold text-orange-500 cursor-pointer">PRO</h2>
-                                    </>
-                                )
-                            case "SUPPORTER":
-                                return (
-                                    <>
-                                        <h2 className="text-lg font-semibold text-orange-300 cursor-pointer bg-gradient-to-tr text-transparent bg-clip-text">SUPPORTER</h2>
-                                    </>
-                                )
-                            default:
-                                return (
-                                    <></>
-                                )
-                        }
-                    })()
-                }
+                <div className="flex flex-row items-center gap-2">
+                    {
+                        (() => {
+                            switch(tier) {
+                                case "FREE":
+                                    return (
+                                        <>
+                                            <h2 className="text-lg font-semibold text-orange-300 cursor-pointer">FREE</h2>
+                                        </>
+                                    )
+                                case "BASIC":
+                                    return (
+                                        <>
+                                            <h2 className="text-lg font-semibold text-orange-400 cursor-pointer">BASIC</h2>
+                                        </>
+                                    )
+                                case "PRO":
+                                    return (
+                                        <>
+                                            <h2 className="text-lg font-semibold text-orange-500 cursor-pointer">PRO</h2>
+                                        </>
+                                    )
+                                case "SUPPORTER":
+                                    return (
+                                        <>
+                                            <h2 className="text-lg font-semibold text-orange-300 cursor-pointer bg-gradient-to-tr text-transparent bg-clip-text">SUPPORTER</h2>
+                                        </>
+                                    )
+                                default:
+                                    return (
+                                        <></>
+                                    )
+                            }
+                        })()
+                    }
+
+                    <Edit2 onClick={() => {
+                        router.push("/billing/plan")
+                    }} size={16} className="text-orange-500 hover:cursor-pointer" fill="#FDBA74"></Edit2>
+                </div>
             </div>
 
             <div className="flex flex-1">
@@ -136,12 +143,20 @@ export const CurrentPlan = ({ tier }: {tier: string }) => {
                         }
                     })()
                 }
+
+                
             </div>
 
-            <div className="flex flex-col gap-2">
-                <Button onClick={() => {
-                    router.push("/billing/plan")
-                }} icon={<></>} className="h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-violet-200/60 text-violet-900 hover:bg-violet-200 hover:text-violet-900">Change Plan</Button>
+            <div>
+                <p className="text-gray-400">Usage Limit</p>
+
+                <div className="flex flex-row items-center gap-2">
+                    <p className="font-bold rounded-full bg-violet-200 text-violet-800 px-3 w-fit">{ limit == "-1" ? "Unlocked" : getSize(limit) }</p>
+
+                    <Edit2 onClick={() => {
+                        callback();
+                    }} size={16} className="text-violet-500 hover:cursor-pointer" fill="#C4B5FD"></Edit2>
+                </div>
             </div>
         </div>
     )
