@@ -2,7 +2,7 @@ import Input from "./un-ui/input";
 
 export const Waitlist = () => {
     return (
-        <div className="flex flex-row align-center justify-center" id="waitlist">
+        <div className="flex flex-row align-center justify-center md:w-[320px] min-w-full w-full flex-1" id="waitlist">
             <Input  
                 id="waitlistInput"
                 placeholder='Email'

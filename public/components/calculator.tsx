@@ -14,17 +14,17 @@ export const BillingCalculator = () => {
 
     return (
         <div className="flex flex-col w-full z-10 bg-white rounded-lg p-6 gap-2 border-2 border-gray-200">
-            <div className="flex flex-row items-center gap-6 justify-between">
-                <div>
+            <div className="flex flex-col md:flex-row md:items-center gap-6 justify-between">
+                <div className='flex flex-col'>
                     <h2 className="font-bold text-xl">Price Calculator</h2>
                     <p className="text-gray-500">Estimate your monthy cost</p>
                 </div>
 
-                <div className="border-2 border-gray-200 rounded-md">
-                    <Input callback={(val) => setData(val * (1000 * 1000 * 1000))}></Input>
+                <div className="border-2 border-gray-200 rounded-md max-w-full">
+                    <Input placeholder='50GB' onChange={(e) => setData(e.currentTarget.value * (1000 * 1000 * 1000))} callback={(val) => {}}></Input>
                 </div>
 
-                <div className="flex flex-row items-center gap-4">
+                <div className="flex flex-row items-center gap-4 flex-wrap">
                     <div onClick={() => setTier("FREE")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "FREE" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"} hover:bg-orange-100 `}>
                         <h2 className="text-sm font-semibold text-orange-300 cursor-pointer" >FREE</h2>
                     </div>

@@ -33,6 +33,12 @@ export const SelectionItem = ({ callback, quantity, numeric_quantity, descriptio
             </div>
             
             {
+                numeric_quantity == -1 ?
+                <div className="flex flex-col justify-end items-end select-none">
+                    <p className={`${selected[0] == selected[1] ? "text-violet-400" : "text-gray-400"}`}>Cost dependent on usage</p>
+                    <p className={`font-semibold ${selected[0] == selected[1] ? "text-violet-800" : "text-gray-800"}`}>$- /mo</p>
+                </div>
+                :
                 getUsage({ up: 0, down: numeric_quantity}, plan).cost < 0.01 ?
                 <div className="flex flex-col justify-end items-end select-none">
                     <p className={`${selected[0] == selected[1] ? "text-violet-400" : "text-gray-400"}`}>Up to or more than</p>

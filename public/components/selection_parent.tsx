@@ -6,7 +6,7 @@ import Input from "./un-ui/input";
 import { useEffect } from "react"
 
 export const SelectionParent = ({ plan, callback, state }: { plan: string, callback: Function, state: [state: any, cb: Function] }) => {
-    const [ selectedItem, setSelectedItem ] = useState(0);
+    const [ selectedItem, setSelectedItem ] = useState(-1);
     const [ chosenQuantity, setChosenQuantity ] = useState(-1);
     const [ inputQuantity, setInputQuantity ] = useState(0);
     const onClick = (indx) => setSelectedItem(indx);
@@ -55,7 +55,7 @@ export const SelectionParent = ({ plan, callback, state }: { plan: string, callb
 
             <br />
 
-            <Button icon={<></>} className={`bg-violet-100 self-center w-64 text-sm font-semibold py-[18px] select-none ${chosenQuantity == 0 ? "bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : "bg-violet-800 text-white"}`} onClick={() => {
+            <Button icon={<></>} className={`self-center w-64 text-sm font-semibold py-[18px] select-none ${chosenQuantity == 0 ? "bg-violet-100 text-violet-300 hover:!bg-violet-100 hover:!cursor-default" : "bg-violet-600 text-white"}`} onClick={() => {
                 const q = (chosenQuantity == -1 ? -1 : chosenQuantity);
                 callback(q);
             }}>

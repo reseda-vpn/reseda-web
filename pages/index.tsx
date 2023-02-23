@@ -95,7 +95,7 @@ export default function Home() {
 						
 						<div className="flex flex-col gap-2">
 							<h2 className="uppercase text-sm text-slate-100 font-semibold">Join the waitlist</h2>
-
+								
 							<Waitlist />
 						</div>
 					</div>
@@ -122,7 +122,7 @@ export default function Home() {
 								</motion.div>
 
 								<motion.div initial="offscreen" whileInView="onscreen" custom={1} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-									<Image src={"/assets/duotone/time_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
+									<Image src={"/assets/duotone/time_purple.svg"} alt={"<2s Connection"} height={30} width={30} className={styles.dtsvg}/>
 									<h1 className="font-bold text-slate-800 sm:text-base text-lg">Incredibly low wait times</h1>
 									<p className="text-sm text-slate-900">Connect to in under <strong className="text-violet-500 rounded-sm py-0 px-1" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
 								</motion.div>
@@ -275,13 +275,13 @@ export default function Home() {
 							</div>
 
 							<div className="flex flex-col flex-1 max-w-xl text-justify gap-4">
-								<p className="text-slate-600">Joining in pre-release gives you access to the reseda <strong className="bg-gradient-to-tr text-transparent bg-clip-text rounded-sm py-0 px-1" >supporter</strong> tier. Whilst in development, as a supporter - you can reap 50GB free data, and an uncapped data transfer rate. Supporting as many devices as you want at the same time. All for the low cost of $0.00. <i className="text-slate-400 not-italic text-sm">*Requires Waitlist Acceptance (Multi-Accounts not permitted)</i></p>
+								<p className="text-slate-600">Joining in pre-release gives you access to the reseda <strong className="bg-gradient-to-tr text-transparent bg-clip-text rounded-sm py-0 px-1" >supporter</strong> tier. Whilst in development, as a supporter - you can reap 50GB free data, and an uncapped data transfer rate. Supporting as many devices as you want at the same time. All for the low cost of $0.00. <br /> <i className="text-slate-400 not-italic text-sm">*Requires Waitlist Acceptance (Multiple account abuse not permitted)</i></p>
 
-								<Button className="h-10 w-fit border-2 border-gray-300 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900" onClick={() => {
+								{/* <Button className="h-10 w-fit border-2 border-gray-300 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900" onClick={() => {
 									document.getElementById("waitlistInput").focus();
 								}}>
 									Get Reseda
-								</Button>
+								</Button> */}
 							</div>
 						</div>
 					</div>

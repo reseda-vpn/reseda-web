@@ -30,9 +30,9 @@ export const Header = () => {
                     <div className={`font-bold font-altSans text-lg  ${prof || (small && !indx) ? "text-slate-800" : "text-slate-100" } sm:text-slate-800 hover:cursor-pointer`} onClick={() => router.push('../')}>RESEDA</div>   
 
                     <div className="flex flex-row items-center gap-4">
-                        <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800" onClick={() => window.location.href = ""} >VPN</Button>
+                        <Button icon={false} href={"./download"} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800" onClick={() => window.location.href = ""} >Download</Button>
                         <Button icon={false} href={"./billing/plan"} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Pricing</Button>
-                        <Button icon={false} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Why Reseda?</Button>
+                        <Button icon={false} href={"./about"} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Why Reseda?</Button>
                     </div> 
                 </div>
 
