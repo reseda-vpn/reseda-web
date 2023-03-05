@@ -51,6 +51,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cronitorio/cronitor-rum-js@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@cronitorio/cronitor-rum-js@npm:0.2.0"
+  checksum: 34f137cb6cb995cf5a39e436fcd6773d73bf0f04c2f30feb2ea6ebb67d19bb31f5db4f5c65119b9671b4904045ab50970d0ac17619208f2460258a7b8643521d
+  languageName: node
+  linkType: hard
+
+"@cronitorio/cronitor-rum-nextjs@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@cronitorio/cronitor-rum-nextjs@npm:0.2.1"
+  dependencies:
+    "@cronitorio/cronitor-rum-js": ^0.2.0
+  peerDependencies:
+    next: ^13
+    react: ^18
+  checksum: 127249f4da1413c0859f51a6715759ea0358b5239c3d4608e60432a7c2b4e684342fd7a6094cca6a653bae4568985f8209d200269cecf0f4b55eee627f550538
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-consumer@npm:0.8.0":
   version: 0.8.0
   resolution: "@cspotcode/source-map-consumer@npm:0.8.0"
@@ -3774,6 +3793,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "reseda-web@workspace:."
   dependencies:
+    "@cronitorio/cronitor-rum-nextjs": ^0.2.1
     "@next-auth/prisma-adapter": ^1.0.1
     "@prisma/client": ^4.4.0
     "@stripe/react-stripe-js": ^1.11.0
