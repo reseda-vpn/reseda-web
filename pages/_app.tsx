@@ -3,7 +3,6 @@ import '../styles/globals.css'
 import '../styles/nprogress.css'
 import '../styles/twemoji.css'
 
-import { useCronitor } from '@cronitorio/cronitor-rum-nextjs';
 import type { AppProps /*, AppContext */ } from 'next/app'
 import Head from 'next/head'
 import { SessionProvider } from "next-auth/react"
@@ -16,10 +15,6 @@ Router.events.on("routeChangeStart", NProgress.start);
 Router.events.on("routeChangeComplete", NProgress.done);
 
 function App({ Component, pageProps: { session, metaTags, ...pageProps } }: AppProps) {
-//    useCronitor("7367fe4142c143387bcad59423dd6e52", {
-//        debug: true
-//    })
-
     return (
         <SessionProvider session={session}>
           <Head>

@@ -11,6 +11,8 @@
 # testing
 /coverage
 
+yarn.lock
+
 # next.js
 /.next/
 /out/
