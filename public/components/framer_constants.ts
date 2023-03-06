@@ -69,7 +69,7 @@ export const cardVariantsRight: Variants = {
         x: -20
     }),
     onscreen: (custom) => ({
-        opacity: 1,
+        opacity: .6,
         transition: { 
             delay: custom * 0.2,
             type: "tween",

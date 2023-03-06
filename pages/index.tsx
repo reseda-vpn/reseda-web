@@ -126,26 +126,26 @@ export default function Home() {
 							<div className="absolute w-full h-full bg-violet-50 z-0 bg-opacity-80 blur-3xl dark:bg-opacity-20 dark:bg-violet-600"></div>
 							
 							<div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 items-center justify-center z-20">
-								<motion.div initial="offscreen" whileInView="onscreen" custom={0} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-									<Image src={"/assets/duotone/rocket_purple.svg"} alt={"1GB/s Speeds"} height={45} width={45} className={styles.dtsvg}/>
+                                <motion.div initial="offscreen" whileInView="onscreen" custom={0} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-[225px] bg-[#ffffff0d] p-5 rounded-lg hover:!opacity-100 ease-in-out duration-500">
+                                    <Image src={"/assets/duotone/speedometer-03.svg"} alt={"1GB/s Speeds"} height={45} width={45} className={styles.dtsvg}/>
 									<h1 className="font-bold text-slate-800 sm:text-base text-lg dark:text-white">Blazing 1GB/s Speeds</h1> {/* before:h-full before:bg-violet-500 before:absolute relative before:-left-2 md:before:bg-white */}
-                                    <p className="text-sm text-slate-700 text-left dark:text-slate-300">With real world speeds up to <strong className="text-violet-500 rounded-sm py-0 px-1" >1GB/s</strong>, Reseda can handle any task from fast-updates to streaming</p>
+                                    <p className="text-sm text-slate-700 text-left dark:text-slate-300">With real world speeds up to <strong className="text-violet-500 rounded-sm py-0 px-0" >1GB/s</strong>, Reseda can handle any task from fast-updates to streaming</p>
 								</motion.div>
 
-								<motion.div initial="offscreen" whileInView="onscreen" custom={1} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-									<Image src={"/assets/duotone/time_purple.svg"} alt={"<2s Connection"} height={30} width={30} className={styles.dtsvg}/>
-                                    <h1 className="font-bold text-slate-800 sm:text-base text-lg dark:text-white">Incredibly low wait times</h1>
-                                    <p className="text-sm text-slate-900 dark:text-slate-300">Connect to in under <strong className="text-violet-500 rounded-sm py-0 px-1" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
+                                <motion.div initial="offscreen" whileInView="onscreen" custom={1} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-[225px] bg-[#ffffff0d] p-5 rounded-lg hover:!opacity-100 ease-in-out duration-500">
+									<Image src={"/assets/duotone/hourglass-03.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
+                                    <h1 className="font-bold text-slate-800 sm:text-base text-lg dark:text-white">Low connection time</h1>
+                                    <p className="text-sm text-slate-900 dark:text-slate-300">Connect to in under <strong className="text-violet-500 rounded-sm py-0 px-0" >2s</strong> thanks to the WireGuard&#8482; protocol.</p>
 								</motion.div>
 								
-								<motion.div initial="offscreen" whileInView="onscreen" custom={2} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-									<Image src={"/assets/duotone/no_location_purple.svg"} alt={"<2s Connection"} quality={100}  height={45} width={45} className={styles.dtsvg}/>
-                                    <h1 className="font-bold text-slate-800 sm:text-base text-lg dark:text-white">Keep your location private</h1>
-                                    <p className="text-sm text-slate-900 text-left dark:text-slate-300">With a strict, no-tracing policy, be comfortable in knowing Reseda is secure, keeping your location <strong className="text-violet-500 rounded-sm py-0 px-1" >hidden</strong>, and traffic <strong className="text-violet-500 rounded-sm py-0 px-1" >private</strong> </p>
+                                <motion.div initial="offscreen" whileInView="onscreen" custom={2} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-[225px] bg-[#ffffff0d] p-5 rounded-lg hover:!opacity-100 ease-in-out duration-500">
+                                    <Image src={"/assets/duotone/navigation-pointer-off-01.svg"} alt={"<2s Connection"} quality={100}  height={45} width={45} className={styles.dtsvg}/>
+                                    <h1 className="font-bold text-slate-800 sm:text-base text-lg dark:text-white">Private location</h1>
+                                    <p className="text-sm text-slate-900 text-left dark:text-slate-300">Be comfortable in knowing Reseda is secure, keeping your location <strong className="text-violet-500 rounded-sm py-0 px-0" >hidden</strong>, and traffic <strong className="text-violet-500 rounded-sm py-0 px-0" >private</strong>.</p>
 								</motion.div>
 
-								<motion.div initial="offscreen" whileInView="onscreen" custom={3} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-40">
-									<Image src={"/assets/duotone/component_purple.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
+                                <motion.div initial="offscreen" whileInView="onscreen" custom={3} viewport={{ once: true }} variants={cardVariantsRight} className="flex flex-col items-start max-w-xs gap-2 md:h-[225px] bg-[#ffffff0d] p-5 rounded-lg hover:!opacity-100 ease-in-out duration-500">
+									<Image src={"/assets/duotone/cube-02.svg"} alt={"<2s Connection"} height={45} width={45} className={styles.dtsvg}/>
                                     <h1 className="font-bold text-slate-800 sm:text-base text-lg dark:text-white">Component-Based Backend</h1>
                                     <p className="text-sm text-slate-900 text-left dark:text-slate-300">Reseda implements safeguards to ensure your connection remains open whilst the server is up.</p>
 								</motion.div>
@@ -164,7 +164,7 @@ export default function Home() {
 						<div className="absolute w-full h-full bg-orange-50 z-0 bg-opacity-80 dark:bg-opacity-20 dark:bg-orange-400 blur-3xl"></div>
 						
 						<div className="flex flex-row flex-wrap z-20 justify-start sm:justify-around gap-8 sm:gap-0">
-							<motion.div initial="offscreen" whileInView="onscreen" custom={0} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
+                            <motion.div initial="offscreen" whileInView="onscreen" custom={0} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg md:h-72 w-64 md:w-72 flex flex-col justify-between gap-6 bg-[#ffffff0d] p-8 rounded-lg hover:!opacity-100 ease-in-out duration-500 hover:shadow-md hover:shadow-orange-900/10 shadow-orange-400/10 shadow-xs">
 								<div>
 									<h2 className="text-xl dark:text-white relative after:content-['FREE'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-300">Reseda</h2>
                                     <h1 className="text-4xl dark:text-white font-semibold">$0.00 <i className="text-base not-italic text-orange-300">/month</i></h1>
@@ -183,12 +183,12 @@ export default function Home() {
 									</div>
 									<div className="flex flex-row gap-2 items-center ">
 										<div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                        <div className="text-base text-slate-700 dark:text-slate-300">1 Device Max <i className="not-italic text-sm text-slate-400">(at the same time)</i> </div>
+                                        <div className="text-base text-slate-700 dark:text-slate-300">1 Device</div>
 									</div>
 								</div>
 							</motion.div>
 
-							<motion.div initial="offscreen" whileInView="onscreen" custom={1} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
+                            <motion.div initial="offscreen" whileInView="onscreen" custom={1} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg md:h-72 w-64 md:w-72 flex flex-col justify-between gap-6 bg-[#ffffff0d] p-8 rounded-lg hover:!opacity-100 ease-in-out duration-500">
 								<div>
                                     <h2 className="text-xl dark:text-white relative after:content-['BASIC'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-400">Reseda</h2>
                                     <h1 className="text-4xl dark:text-white font-semibold relative">$2.00 <i className="text-base not-italic text-orange-400 no-underline">/100GB</i></h1> {/* after:content-['*'] after:opacity-50 */}
@@ -211,12 +211,12 @@ export default function Home() {
 									</div>
 									<div className="flex flex-row gap-2 items-center ">
 										<div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                        <div className="text-base text-slate-700 dark:text-slate-300">5 Device Max <i className="not-italic text-sm text-slate-400">(at the same time)</i> </div>
+                                        <div className="text-base text-slate-700 dark:text-slate-300">5 Devices</div>
 									</div>
 								</div>
 							</motion.div>
 
-							<motion.div initial="offscreen" whileInView="onscreen" custom={2} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg sm:h-64 w-64 flex flex-col justify-between gap-6">
+                            <motion.div initial="offscreen" whileInView="onscreen" custom={2} viewport={{ once: true }} variants={cardVariantsRight} className="rounded-lg sm:h-64 md:h-72 w-64 md:w-72 flex flex-col justify-between gap-6 bg-[#ffffff0d] p-8 rounded-lg hover:!opacity-100 ease-in-out duration-500">
 								<div>
                                     <h2 className="text-xl dark:text-white relative after:content-['PRO'] after:text-sm after:top-0 after:absolute after:font-semibold after:text-orange-500">Reseda</h2>
                                     <h1 className="text-4xl dark:text-white font-semibold relative ">$2.40 <i className="text-base not-italic text-orange-500">/100GB</i></h1> {/* after:content-['*'] after:opacity-50 */}
@@ -239,7 +239,7 @@ export default function Home() {
 									</div>
 									<div className="flex flex-row gap-2 items-center ">
 										<div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                        <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Devices <i className="not-italic text-sm text-slate-400">(concurrent)</i> </div>
+                                        <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Devices</div>
 									</div>
 								</div>
 							</motion.div>				
