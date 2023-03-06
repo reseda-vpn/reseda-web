@@ -23,7 +23,7 @@ export const Header = () => {
     }, []);
 
     return (
-        <div className="flex flex-row z-40 sm:bg-white bg-opacity-80 sm:backdrop-blur-md">
+            <div className="flex flex-row z-40 sm:bg-white bg-opacity-80 sm:backdrop-blur-md dark:!bg-[#05010d]">
             {
                 <>
                     <Script async src="https://rum.cronitor.io/script.js"></Script>
@@ -38,14 +38,12 @@ export const Header = () => {
 
             <div className="flex flex-row py-2 px-4 justify-between max-w-screen-lg w-full my-0 mx-auto z-40">
                 <div className="flex flex-row items-center gap-4">
-                    
-
-                    <div className={`font-bold font-altSans text-lg  ${prof || (small && !indx) ? "text-slate-800" : "text-slate-100" } sm:text-slate-800 hover:cursor-pointer`} onClick={() => router.push('../')}>RESEDA</div>   
+                    <div className={`dark:!text-white font-bold font-altSans text-lg  ${prof || (small && !indx) ? "text-slate-800" : "text-slate-100" } sm:text-slate-800 hover:cursor-pointer`} onClick={() => router.push('../')}>RESEDA</div>
 
                     <div className="flex flex-row items-center gap-4">
-                        <Button icon={false} href={"./download"} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800" onClick={() => window.location.href = ""} >Download</Button>
-                        <Button icon={false} href={"./billing/plan"} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Pricing</Button>
-                        <Button icon={false} href={"./about"} className="hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Why Reseda?</Button>
+                        <Button icon={false} href={"./download"} className="dark:text-slate-100 dark:opacity-60 hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800 dark:hover:opacity-100 dark:hover:text-white" onClick={() => window.location.href = ""} >Download</Button>
+                        <Button icon={false} href={"./billing/plan"} className="dark:text-slate-100 dark:opacity-60 hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800 dark:hover:opacity-100 dark:hover:text-white">Pricing</Button>
+                        <Button icon={false} href={"./about"} className="dark:text-slate-100 dark:opacity-60 hidden font-normal text-sm text-slate-600 sm:flex hover:text-slate-800 dark:hover:opacity-100 dark:hover:text-white">Why Reseda?</Button>
                     </div> 
                 </div>
 
@@ -59,7 +57,7 @@ export const Header = () => {
                             {
                                 session.status !== "authenticated" ? 
                                 <>
-                                    <Button icon={false} onClick={() => router.push('../../login')} className="text-slate-100 sm:text-slate-600 text-sm">Login</Button>
+                                <Button icon={false} onClick={() => router.push('../../login')} className="text-slate-100 sm:text-slate-600 text-sm dark:!text-slate-100 dark:opacity-80">Login</Button>
                                     <Button icon={false} onClick={() => document.getElementById("waitlistInput").focus()} className="bg-violet-600 text-slate-50 w-fit font-semibold text-sm" >Get Reseda</Button>
                                 </>
                                 :
