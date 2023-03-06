@@ -21,7 +21,7 @@ const Banner: React.FC<{ title: string, text: string, url: string }> = ({ title,
     }, [visible]);
 
     return visible ? (
-        <div className="w-full bg-black text-white flex flex-row items-center justify-between py-4 px-4 z-50 relative t">
+        <div className="w-full bg-black dark:bg-white dark:text-black text-white flex flex-row items-center justify-between py-4 px-4 z-50 relative t">
             <div className="flex flex-row items-center justify-center z-50 flex-1">
                 <h4 className="text-sm hidden sm:flex">{title}</h4>
                 <p className="text-sm my-0 opacity-80 hidden sm:flex">—</p>
