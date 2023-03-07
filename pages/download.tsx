@@ -148,7 +148,7 @@ export default function Home({ releases }) {
                     <></>
             }
 
-			<div className="flex-col flex font-sans min-h-screen w-screen relative">
+            <div className="flex-col flex font-sans min-h-screen w-screen relative dark:bg-[#05010d]">
 				<Header />
 
 				<div className="pt-8 pb-16"></div>
@@ -198,21 +198,21 @@ export default function Home({ releases }) {
                     </div>
                     :
                     <div className="flex flex-col gap-2 md:max-w-screen-lg w-full my-0 mx-auto py-2 px-4 max-w-sm relative h-full flex-1" id="vpn">
-                        <h1 className="flex text-[2.5rem] font-bold text-slate-800 mb-0 pb-0 font-altSans">Download Reseda 
+                        <h1 className="flex text-[2.5rem] font-bold text-slate-800 mb-0 pb-0 font-altSans dark:text-white">Download Reseda
                             {
                                 releasesCache?.[0]?.tag_name == version ? 
-                                    <p className="text-base justify-end items-end self-end font-normal bg-slate-200 rounded-md px-2 cursor-pointer" onClick={() => setChangeVersion(true) }>
+                                    <p className="text-base justify-end items-end self-end font-normal bg-slate-200 rounded-md px-2 cursor-pointer dark:text-black" onClick={() => setChangeVersion(true) }>
                                         { releaseFeatures?.version?.split("app-")?.[1] }
                                     </p>
                                     : 
-                                    <p className="text-base flex flex-row items-center justify-end gap-1 self-end font-normal bg-orange-200 rounded-md px-2 cursor-pointer" onClick={() => setChangeVersion(true) }>
+                                    <p className="text-base flex flex-row items-center justify-end gap-1 self-end font-normal bg-orange-100 text-orange-800 rounded-md px-2 cursor-pointer" onClick={() => setChangeVersion(true) }>
                                         { releaseFeatures?.version?.split("app-")?.[1] }
                                         <b>!</b>
                                     </p>
                             }
                         </h1>
 
-                        <div className="flex flex-row items-center gap-2 font-altSans">
+                        <div className="flex flex-row items-center gap-2 font-altSans dark:text-white">
                             Compatible with 
                             {
                                 releaseFeatures.windows ? <div className="flex flex-row items-center gap-2 bg-blue-100 rounded-md px-2 py-1 text-blue-800 font-semibold">
@@ -240,53 +240,53 @@ export default function Home({ releases }) {
                             }
                         </div>
 
-                        <div>
+                        <div className="dark:!text-gray-300">
                             <div className="flex flex-row items-center gap-2">
                                 <div className="h-4 w-4 rounded-full bg-purple-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                <p><strong className="text-violet-500 rounded-sm py-0 px-1" >1GB/s</strong> Speeds to keep up with whatever you do.</p>
+                                <p><strong className="text-violet-500 rounded-sm py-0 px-0" >1GB/s</strong> Speeds to keep up with whatever you do.</p>
                             </div>
 
                             <div className="flex flex-row items-center gap-2">
                                 <div className="h-4 w-4 rounded-full bg-purple-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                <p>Connect in <strong className="text-violet-500 rounded-sm py-0 px-1" >under 2s</strong> with reseda-server technology</p>
+                                <p>Connect in <strong className="text-violet-500 rounded-sm py-0 px-0" >under 2s</strong> with reseda-server technology</p>
                             </div>
 
                             <div className="flex flex-row items-center gap-2">
                                 <div className="h-4 w-4 rounded-full bg-purple-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                <p>Your traffic is <strong className="text-violet-500 rounded-sm py-0 px-1" >encrypted</strong> end-to-end</p>
+                                <p>Your traffic is <strong className="text-violet-500 rounded-sm py-0 px-0" >encrypted</strong> end-to-end</p>
                             </div>
 
                             <div className="flex flex-row items-center gap-2">
                                 <div className="h-4 w-4 rounded-full bg-purple-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                <p>Keep your location <strong className="text-violet-500 rounded-sm py-0 px-1" >private</strong>, with no DNS leaks.</p>
+                                <p>Keep your location <strong className="text-violet-500 rounded-sm py-0 px-0" >private</strong>, with no DNS leaks.</p>
                             </div>
 
                             <div className="flex flex-row items-center gap-2">
                                 <div className="h-4 w-4 rounded-full bg-purple-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                <p>Stable, Component Based Backend Architecture to keep your connections <strong className="text-violet-500 rounded-sm py-0 px-1" >stable</strong></p>
+                                <p>Stable, Component Based Backend Architecture to keep your connections <strong className="text-violet-500 rounded-sm py-0 px-0" >stable</strong></p>
                             </div>
                         </div>
 
                         <div className="pt-6 pb-6"></div>
                         
-                        <p>Choose Version</p>
-                        <div className="flex flex-row items-center gap-2 font-altSans">
+                        <p className="dark:text-gray-400">Choose Version</p>
+                        <div className="flex flex-row items-center gap-2 font-altSans dark:text-white">
                             {
-                                releaseFeatures.windows ? <div onClick={() => setType("windows")} className={`cursor-pointer select-none flex flex-row items-center gap-2 rounded-md px-2 py-1 font-semibold ${type == "windows" ? "border-2 border-purple-500 bg-purple-50" : "border-2 border-transparent"}`}>
+                                releaseFeatures.windows ? <div onClick={() => setType("windows")} className={`cursor-pointer select-none flex flex-row items-center gap-2 rounded-md px-2 py-1 font-semibold ${type == "windows" ? "border-2 border-purple-500 bg-purple-50 text-black" : "border-2 border-transparent"}`}>
                                     <FaWindows />
                                     <p>Windows</p>
                                 </div> : <></>
                             }
 
                             {
-                                releaseFeatures.linux ? <div onClick={() => setType("linux")} className={`cursor-pointer select-none flex flex-row items-center gap-2 rounded-md px-2 py-1 font-semibold ${type == "linux" ? "border-2 border-purple-500 bg-purple-50" : "border-2 border-transparent"}`}>
+                                releaseFeatures.linux ? <div onClick={() => setType("linux")} className={`cursor-pointer select-none flex flex-row items-center gap-2 rounded-md px-2 py-1 font-semibold ${type == "linux" ? "border-2 border-purple-500 bg-purple-50 text-black" : "border-2 border-transparent"}`}>
                                     <FaLinux />
                                     <p>Linux</p>
                                 </div> : <></>
                             }
 
                             {
-                                releaseFeatures.mac_os ? <div onClick={() => setType("mac_os")} className={`cursor-pointer select-none flex flex-row items-center gap-2 rounded-md px-2 py-1 font-semibold ${type == "mac_os" ? "border-2 border-purple-500 bg-purple-50" : "border-2 border-transparent"}`}>
+                                releaseFeatures.mac_os ? <div onClick={() => setType("mac_os")} className={`cursor-pointer select-none flex flex-row items-center gap-2 rounded-md px-2 py-1 font-semibold ${type == "mac_os" ? "border-2 border-purple-500 bg-purple-50 text-black" : "border-2 border-transparent"}`}>
                                     <FaApple />
                                     <p>MacOS</p>
                                 </div> : <></>
@@ -304,10 +304,10 @@ export default function Home({ releases }) {
                                 <></> 
                             : 
                                 <div className="text-sm font-altSans flex flex-row items-center gap-2 bg-orange-100 w-fit px-2 rounded-md pl-0">
-                                    <p className="flex flex-row items-center gap-1 bg-orange-200 rounded-md px-2 w-fit cursor-pointer" onClick={() => setChangeVersion(true) }>
+                                    <p className="flex flex-row items-center gap-1 py-1 px-2 bg-orange-200 text-orange-800 rounded-md px-2 w-fit cursor-pointer" onClick={() => setChangeVersion(true) }>
                                         <b>!</b>
                                     </p>
-                                    <p>This is not the current version</p>
+                                    <p className="text-orange-800">This is not the current version</p>
                                 </div>
                         }
                         
@@ -328,7 +328,7 @@ export default function Home({ releases }) {
                                 }
                             </div>
                             
-                            <p className="text-black flex flex-row items-center text-sm">Don{'\''}t have Reseda? <Button icon={false} href="/signup" className="text-blue-500 text-sm pl-1" >Get Access</Button></p>
+                            <p className="text-black dark:text-white flex flex-row items-center text-sm">Don{'\''}t have Reseda? <Button icon={false} href="/signup" className="text-blue-500 text-sm pl-1" >Get Access</Button></p>
                         </div>
                     </div>
                 }

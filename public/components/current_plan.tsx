@@ -10,9 +10,9 @@ export const CurrentPlan = ({ tier, limit, callback }: {tier: string, limit: str
     const router = useRouter();
 
     return (
-        <div className="flex flex-col sm:flex-row w-full rounded-lg overflow-hidden p-5 gap-2 sm:gap-16 bg-white border-1 border-gray-200 min-h-72 justify-between border border-gray-300/60 shadow-lg shadow-transparent hover:shadow-gray-100/80 transition-shadow duration-450 ease-in-out">
+            <div className="flex flex-col sm:flex-row w-full rounded-lg overflow-hidden p-5 gap-2 sm:gap-16 bg-white dark:bg-[#ffffff0d] border-1 border-gray-200 dark:border-transparent min-h-72 justify-between border border-gray-300/60 shadow-lg shadow-transparent hover:shadow-gray-100/80 transition-shadow duration-450 ease-in-out">
             <div className="flex flex-col">
-                <p className="text-gray-400">Current Plan</p>
+                <p className="text-gray-400 dark:text-gray-200">Current Plan</p>
 
                 <div className="flex flex-row items-center gap-2">
                     {
@@ -66,15 +66,15 @@ export const CurrentPlan = ({ tier, limit, callback }: {tier: string, limit: str
                                         <div className="flex flex-col flex-1 justify-around">	
                                             <div className="flex flex-row gap-2 items-center">
                                                 <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">5GB/mo Free</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">5GB/mo Free</div>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700"><strong className="text-orange-300 rounded-sm py-0 px-1" >50MB/s</strong> Transfer</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300"><strong className="text-orange-300 rounded-sm py-0 px-1" >50MB/s</strong> Transfer</div>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-orange-300 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">1 Device</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">1 Device</div>
                                             </div>
                                         </div>
                                     </>
@@ -85,15 +85,15 @@ export const CurrentPlan = ({ tier, limit, callback }: {tier: string, limit: str
                                         <div className="flex flex-col flex-1 justify-around">
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700"><strong className="text-orange-400 rounded-sm py-0 px-1" >500MB/s</strong> Max Transfer</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300"><strong className="text-orange-400 rounded-sm py-0 px-0" >500MB/s</strong> Max Transfer</div>
                                             </div>	
-                                            <div className="flex flex-row gap-2 items-center ">
+                                            <div className="flex flex-row gap-2 items-center">
                                                 <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">Unlimited Data Cap</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Data Cap</div>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-orange-400 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">5 Device Max</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">5 Device Max</div>
                                             </div>
                                         </div>
                                     </>
@@ -104,15 +104,15 @@ export const CurrentPlan = ({ tier, limit, callback }: {tier: string, limit: str
                                         <div className="flex flex-col flex-1 justify-around">	
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">Unlimited Data Rate</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Data Rate</div>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">Unlimited Data Cap</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Data Cap</div>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-orange-500 flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">Unlimited Devices</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Devices</div>
                                             </div>
                                         </div>
                                     </>
@@ -123,15 +123,15 @@ export const CurrentPlan = ({ tier, limit, callback }: {tier: string, limit: str
                                         <div className="flex flex-col flex-1 justify-around">	
                                             <div className="flex flex-row gap-2 items-center">
                                                 <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">50GB Free</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">50GB Free</div>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">Unlimited Data Rate</div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Data Rate</div>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center ">
                                                 <div className="h-4 w-4 rounded-full bg-gradient-to-tr flex items-center justify-center"><Check size={12} color={"#fff"} /></div>
-                                                <div className="text-base text-slate-700">Unlimited Devices </div>
+                                                <div className="text-base text-slate-700 dark:text-slate-300">Unlimited Devices </div>
                                             </div>
                                         </div>
                                     </>
@@ -147,8 +147,8 @@ export const CurrentPlan = ({ tier, limit, callback }: {tier: string, limit: str
                 
             </div>
 
-            <div>
-                <p className="text-gray-400">Usage Limit</p>
+            <div className="flex flex-col gap-2">
+                <p className="text-gray-400 dark:text-gray-300">Usage Limit</p>
 
                 <div className="flex flex-row items-center gap-2">
                     <p className="font-bold rounded-full bg-violet-200 text-violet-800 px-3 w-fit">{ limit == "-1" ? "Unlocked" : getSize(limit) }</p>

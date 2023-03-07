@@ -36,11 +36,11 @@ export const LinearChart = ({ data, month }: { data: Usage[], month: number }) =
 
     return (
         <div className="flex flex-col w-full">
-            <div className="grid grid-cols-4 text-slate-500 gap-2 px-4">
+            <div className="grid grid-cols-4 text-slate-500 dark:text-[#ffffff50] gap-2 px-4">
                 {
                     [["Start", "connStart"], ["Duration", "dur"], ["Up", "up"], ["Down", "down"]].map(e => {
                         return (
-                            <p key={e[0]} className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 rounded-sm px-1 py-1 select-none" onClick={() => {
+                            <p key={e[0]} className="flex flex-row justify-between items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-[#ffffff0f] rounded-sm px-1 py-1 select-none" onClick={() => {
                                 if(sortBy !== e[1]) {
                                     setSortBy(e[1])
                                 }else {

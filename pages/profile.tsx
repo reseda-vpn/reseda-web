@@ -162,7 +162,7 @@ export default function Home({ ss_session, user, eligible }) {
 
 
 	return (
-		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
+        <div className="flex-col flex font-sans min-h-screen dark:bg-[#05010d]" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<div className="flex-col flex font-sans min-h-screen w-screen relative overflow-hidden">
                 <Header />
                 <canvas id="gradient-canvas" className={`top-0 sm:h-64 h-12 ${small ? "opacity-0" : ""}`} data-transition-in></canvas> {/*  style={{ height: small ? '50px !important' : '250px !important' }} */}
@@ -504,13 +504,13 @@ export default function Home({ ss_session, user, eligible }) {
                     <></>
                 } 
 
-                <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-40 h-full flex-1 gap-8 py-4 sm:mt-64" > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
+                <div className="flex flex-col sm:flex-row px-4 max-w-screen-lg w-full my-0 mx-auto z-40 h-full flex-1 gap-8 py-4 sm:mt-64 " > {/* style={{ marginTop: '250px', marginBottom: '50px' }} */}
                     <div className="flex flex-row sm:flex-col items-center sm:items-start justify-between sm:w-32 w-full">
                         <div className="flex flex-row justify-between gap-5 sm:justify-start sm:flex-col sm:gap-2 w-full">
                             {/* <p className="font-normal text-sm text-slate-600 sm:flex hover:text-slate-800">Account</p> */}
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "account" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("account")} >{ <UserIcon size={16}/>  } Account</p>
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "usage" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("usage")}>{ <Activity size={16}/>  } Usage</p>
-                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 ${menu == "billing" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 dark:text-white ${menu == "account" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("account")} >{ <UserIcon size={16}/>  } Account</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 dark:text-white ${menu == "usage" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("usage")}>{ <Activity size={16}/>  } Usage</p>
+                            <p className={`hover:cursor-pointer flex flex-row items-center gap-2 px-2 py-1 dark:text-white ${menu == "billing" ? "bg-violet-500 text-white rounded-md" : "bg-transparent"}`} onClick={() => setMenu("billing")}>{ <CreditCard size={16}/>  } Billing</p>
                         </div>
 
                         {/* <div className="flex flex-col gap-2 w-full">
@@ -527,8 +527,8 @@ export default function Home({ ss_session, user, eligible }) {
                                             <div className="flex flex-col items-start w-full gap-8">
                                                 <div className="w-full sm:w-fit flex flex-col flex-1 gap-2">
                                                     <div>
-                                                        <h1 className="font-bold text-xl ">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
-                                                        <p className="text-slate-700">{ session?.data?.user?.email }</p>
+                                                        <h1 className="font-bold text-xl dark:text-white">{ user?.name }</h1> {/*  <i className="text-sm text-slate-500 not-italic font-light">({ user?.name })</i> */}
+                                                        <p className="text-slate-700 dark:text-slate-300">{ session?.data?.user?.email }</p>
                                                     </div>
 
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full flex-1 sm:flex-grow-0">
@@ -539,32 +539,32 @@ export default function Home({ ss_session, user, eligible }) {
                                                                     ...changingPassword,
                                                                     state: 1,
                                                                 })
-                                                            }} icon={<></>} className="h-8 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Change Password</Button>
+                                                            }} icon={<></>} className="h-8 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900 dark:bg-white dark:opacity-60 dark:hover:opacity-100">Change Password</Button>
                                                             :
                                                             <></>
                                                         }
 
                                                         <Button onClick={() => {
                                                             setChangingUsername(true)
-                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Change Username</Button>
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900 dark:bg-white dark:opacity-60 dark:hover:opacity-100">Change Username</Button>
                                                         
                                                         <Button onClick={async () => {
                                                             const data = await signOut({ redirect: false, callbackUrl: window.location.origin });
-                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900">Log Out</Button>
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-gray-200/60 text-gray-900 hover:bg-gray-200 hover:text-gray-900 dark:bg-white dark:opacity-60 dark:hover:opacity-100">Log Out</Button>
                                                         
                                                         <Button onClick={async () => {
                                                             setDeletingAccount(true)
-                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-red-200/60 text-red-900 hover:bg-red-200 hover:text-red-900">Delete Account</Button>
+                                                        }} icon={<></>} className="h-10 text-base px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer bg-red-200/60 text-red-900 hover:bg-red-200 hover:text-red-900 ">Delete Account</Button>
                                                     </div>
                                                 </div>
                                                 
                                                 {
                                                     eligibleForDownload == 1 ? 
-                                                    <div className="flex flex-row gap-4 px-2 pl-3 py-2 bg-violet-200 w-full rounded-xl items-center">
+                                                    <div className="flex flex-row gap-4 px-2 pl-3 py-2 bg-violet-200 dark:bg-violet-800 dark:bg-opacity-40 w-full rounded-xl items-center">
                                                         <div className="flex items-center justify-center h-6 w-6 rounded-full bg-violet-500"><Check size={20} color="#fff" /></div>
 
                                                         <div className="flex flex-col flex-1">
-                                                            <h1 className="font-semibold text-violet-900">You are eligible for Reseda { small ? "" : "Pre-Release" }</h1>
+                                                            <h1 className="font-semibold text-violet-900 dark:text-violet-200">You are eligible for Reseda { small ? "" : "Pre-Release" }</h1>
                                                             {/* <p className="text-violet-700">You have been selected to join us in pre-release.</p>  */}
                                                         </div>
                                                         
@@ -594,34 +594,34 @@ export default function Home({ ss_session, user, eligible }) {
                                             <div className="flex flex-col items-start h-full flex-1">
                                                 <div className="flex sm:flex-row flex-col sm:items-center justify-between w-full">
                                                     <div className="flex sm:flex-col flex-row items-center justify-between sm:py-0 py-5">
-                                                        <h1 className="font-bold text-xl ">{ new Date().toLocaleString("en-nz", { month: "long" }) } <i className="text-sm text-slate-500 not-italic font-light">(This Billing Period)</i></h1>
+                                                        <h1 className="font-bold text-xl dark:text-white">{ new Date().toLocaleString("en-nz", { month: "long" }) } <i className="text-sm text-slate-500 dark:text-slate-300 not-italic font-light">(This Billing Period)</i></h1>
                                                         {/* <p className="text-slate-700"></p> */}
                                                     </div>
 
                                                     <div className="flex flex-row items-center gap-6">
-                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] rounded-md">
-                                                            <div className="bg-[#efedeb] px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
+                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] dark:bg-[#ffffff3c] rounded-md">
+                                                            <div className="bg-[#efedeb] dark:bg-white px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
                                                                 {
                                                                     small ? <div style={{ height: "24px", width: "0px" }}></div> : "Up"
                                                                 }
                                                                 <ArrowUp size={16} color={"#000"}/>
                                                             </div>
                                                             
-                                                            <p className="px-4 font-semibold">
+                                                            <p className="px-4 font-semibold  dark:text-white">
                                                                 { thisMonthData ? getSize(thisMonthData?.up, 2) : "..." }
                                                             </p>
                                                             
                                                         </div>
 
-                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] rounded-md">
-                                                            <div className="bg-[#efedeb] px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
+                                                        <div className="flex flex-row sm:flex-none flex-1 gap-2 items-center bg-[#F8F7F6] dark:bg-[#ffffff3c] rounded-md">
+                                                            <div className="bg-[#efedeb] dark:bg-white px-2 py-1 rounded-md flex flex-row items-center sm:gap-4">
                                                                 {
                                                                     small ? <div style={{ height: "24px", width: "0px" }}></div> : "Down"
                                                                 }
                                                                 <ArrowDown size={16} color={"#000"}/>
                                                             </div>
 
-                                                            <p className="px-4 font-semibold">
+                                                            <p className="px-4 font-semibold dark:text-white">
                                                                 { thisMonthData ? getSize(thisMonthData?.down, 2) : "..." }
                                                             </p>
                                                         </div>
@@ -647,7 +647,7 @@ export default function Home({ ss_session, user, eligible }) {
                                     case "billing":
                                         return (
                                             <div className="flex flex-col items-start gap-2">
-                                                <h1 className="font-bold text-xl">Billing</h1>
+                                                <h1 className="font-bold text-xl dark:text-white">Billing</h1>
 
                                                 <Billing data={thisMonthData} tier={userInformation?.tier} changeView={setMenu} usage />
                                                 {/* <div>
