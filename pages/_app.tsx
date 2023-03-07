@@ -16,7 +16,7 @@ Router.events.on("routeChangeComplete", NProgress.done);
 
 function App({ Component, pageProps: { session, metaTags, ...pageProps } }: AppProps) {
     return (
-        <SessionProvider session={session}>
+        <SessionProvider session={session} basePath="/next-api/auth">
           <Head>
             {metaTags &&
               Object.entries(metaTags).map((entry) => {
