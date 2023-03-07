@@ -74,7 +74,7 @@ export default function Home({ providers }) {
 	return (
 		<div className="flex-col flex font-sans min-h-screen" > {/* style={{ background: 'linear-gradient(-45deg, rgba(99,85,164,0.2) 0%, rgba(232,154,62,.2) 100%)' }} */}
 			<div className="flex-col flex font-sans min-h-screen w-screen relative overflow-hidden">
-				<canvas id="gradient-canvas" className="md:top-0 w-full z-10 absolute h-screen" style={{ width: '200%', height: '200%' }} data-transition-in></canvas>
+				<canvas id="gradient-canvas" className="md:top-0 w-full z-10 absolute h-screen" style={{ width: '200%', height: '200%', zIndex: 0 }} data-transition-in></canvas>
 
                 <div className="flex-row flex-1 w-screen h-full grid sm:grid-cols-3">
                     <div className="w-full bg-white z-20 flex justify-center items-center flex-col sm:px-72 max-h-screen">
