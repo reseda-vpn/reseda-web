@@ -122,12 +122,12 @@ export default function Home({ ss_session, token, user, eligible }) {
 
         const as = async () => {
             if(!usageInformation || usageInformation.length !== 0) {
-                fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
+                fetch(`/next-api/user/usage/${user.accounts[0].userId}`).then(async e => {
                     const data = await e.json();
                     setUsageInformation(data);
                 });
         
-                fetch(`/api/user/customer/${user.email}`).then(async e => {
+                fetch(`/next-api/user/customer/${user.email}`).then(async e => {
                     console.log(e);
                 });
             }

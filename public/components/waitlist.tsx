@@ -15,7 +15,7 @@ export const Waitlist = () => {
 
                     const body = { email };
                     console.log(JSON.stringify(body), `${process.env.NEXT_PUBLIC_URL}/api/lead/create`);
-                    fetch(`http://localhost:3000/api/lead/create`, {
+                    fetch(`http://reseda.app/next-api/lead/create`, {
                         body: JSON.stringify(body),
                         method: 'POST',
                         headers: {  'Content-Type': 'application/json' }

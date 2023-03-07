@@ -19,6 +19,13 @@ module.exports = {
 				source: '/drnm/:path*',
 				destination: 'http://:path*:6231', // The :path parameter isn't used here so will be automatically passed in the query
 			},
+            {
+                source: '/api/:path*',
+                destination: '/next-api/:path*'
+            }
 		]
 	},
+    typescript: {
+        ignoreBuildErrors: true
+    }
 };

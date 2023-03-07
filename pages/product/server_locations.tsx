@@ -38,7 +38,7 @@ export default function Home() {
     const [ reqServer, setReqServer ] = useState(null);
 
 	useEffect(() => {
-        fetch('https://reseda.app/api/server/list', {
+        fetch('https://reseda.app/next-api/server/list', {
             method: "GET",
             redirect: 'follow'
         })
@@ -54,7 +54,7 @@ export default function Home() {
 
     useEffect(() => {
         if(reqServer?.hostname)
-            fetch(`../../api/server/ping`, {
+            fetch(`../../next-api/server/ping`, {
                 method: "POST",
                 body: JSON.stringify({
                     location: reqServer.hostname

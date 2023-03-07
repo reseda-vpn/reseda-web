@@ -13,14 +13,14 @@ export const BillingCalculator = () => {
     const [ data, setData ] = useState(15000000);
 
     return (
-        <div className="flex flex-col w-full z-10 bg-white rounded-lg p-6 gap-2 border-2 border-gray-200">
+            <div className="flex flex-col w-full z-10 bg-white rounded-lg p-6 gap-2 border-2 border-gray-200 dark:bg-[#ffffff0d] dark:border-white dark:border-opacity-10">
             <div className="flex flex-col md:flex-row md:items-center gap-6 justify-between">
                 <div className='flex flex-col'>
-                    <h2 className="font-bold text-xl">Price Calculator</h2>
-                    <p className="text-gray-500">Estimate your monthy cost</p>
+                    <h2 className="font-bold text-xl dark:text-white">Price Calculator</h2>
+                    <p className="text-gray-500 dark:text-gray-300">Estimate your monthy cost</p>
                 </div>
 
-                <div className="border-2 border-gray-200 rounded-md max-w-full">
+                <div className="border-2 border-gray-200 dark:border-white dark:border-opacity-10 rounded-md max-w-full">
                     <Input placeholder='50GB' onChange={(e) => setData(e.currentTarget.value * (1000 * 1000 * 1000))} callback={(val) => {}}></Input>
                 </div>
 

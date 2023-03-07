@@ -56,8 +56,10 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
         ) 
         :
         (
-            <div className={styles.input}>
-                <input 
+            <div
+                className={`${styles.input} dark:!bg-[#ffffff0d] dark:text-white !rounded-[3.7px] overflow-hidden`}>
+                <input
+                    className="dark:!bg-[#ffffff00]"
                     onChange={() => {
                         if(input_ref?.current.value.trim().match(mail_format)) setIsValidEmail(true)
                         else setIsValidEmail(false);
@@ -73,7 +75,8 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
                     {
                         children ?? children
                     }
-                </input>
+                </input
+>
 
                 {
                     // isValidEmail ? 
@@ -83,7 +86,8 @@ const Input: React.FC<Props & NativeAttrs> = ({ children, callback, ...args }) =
                         sendAway();
                     }}/>
                 }
-            </div>
+            </div
+>
         )  
 }
 

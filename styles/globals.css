@@ -51,16 +51,16 @@ body {
   --gradient-color-3: #EAE2FF;  
   --gradient-color-4: #FDD5AF; */
 
-/*  --gradient-color-1: #907ceb;*/
-/*  --gradient-color-2: #cfa370;*/
-/*  --gradient-color-3: #bba7f0;*/
-/*  --gradient-color-4: #ebbc90;*/
+  --gradient-color-1: #907ceb;
+  --gradient-color-2: #cfa370;
+  --gradient-color-3: #bba7f0;
+  --gradient-color-4: #ebbc90;
 
 
-  --gradient-color-1: #000; /* 2d1c7c */
-  --gradient-color-2: #000;
-  --gradient-color-3: #000;
-  --gradient-color-4: #000;
+/*  --gradient-color-1: #000; !* 2d1c7c *!*/
+/*  --gradient-color-2: #000;*/
+/*  --gradient-color-3: #000;*/
+/*  --gradient-color-4: #000;*/
 }
 
 @import url(../public/fonts/walsh/stylesheet.css);

@@ -145,12 +145,12 @@ export default function Home({ ss_session, user, eligible }) {
 
         const as = async () => {
             if(!usageInformation || usageInformation.length !== 0) {
-                fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
+                fetch(`/next-api/user/usage/${user.accounts[0].userId}`).then(async e => {
                     const data = await e.json();
                     setUsageInformation(data);
                 });
         
-                fetch(`/api/user/customer/${user.email}`).then(async e => {
+                fetch(`/next-api/user/customer/${user.email}`).then(async e => {
                         console.log(e);
                     });
             }
@@ -190,7 +190,7 @@ export default function Home({ ss_session, user, eligible }) {
                                     <InputField 
                                         noArrow={false}
                                         enterCallback={(username) => {
-                                        fetch('/api/user/username', {
+                                        fetch('/next-api/user/username', {
                                             body: JSON.stringify({ 
                                                 username: username,
                                                 userId: userInformation.userId
@@ -244,7 +244,7 @@ export default function Home({ ss_session, user, eligible }) {
                                         noArrow={loading}
                                         enterCallback={(psw) => {
                                             setLoading(true);
-                                            fetch('/api/auth/delete', {
+                                            fetch('/next-api/auth/delete', {
                                                 body: JSON.stringify({ 
                                                     email: session.data.user.email,
                                                     password: psw
@@ -318,7 +318,7 @@ export default function Home({ ss_session, user, eligible }) {
                                                 noArrow={loading}
                                                 enterCallback={(psw) => {
                                                     setLoading(true);
-                                                    fetch('/api/auth/change_pass', {
+                                                    fetch('/next-api/auth/change_pass', {
                                                         body: JSON.stringify({ 
                                                             email: session.data.user.email,
                                                             new_password: psw,
@@ -372,7 +372,7 @@ export default function Home({ ss_session, user, eligible }) {
                                                 noArrow={true}
                                                 enterCallback={(psw) => {
                                                     setLoading(true);
-                                                    fetch('/api/rauth/login', {
+                                                    fetch('/next-api/rauth/login', {
                                                         body: JSON.stringify({ 
                                                             email: session.data.user.email,
                                                             password: psw
@@ -419,7 +419,7 @@ export default function Home({ ss_session, user, eligible }) {
                                                 noArrow={loading}
                                                 enterCallback={(psw) => {
                                                     setLoading(true);
-                                                    fetch('/api/rauth/login', {
+                                                    fetch('/next-api/rauth/login', {
                                                         body: JSON.stringify({ 
                                                             email: session.data.user.email,
                                                             password: psw
@@ -484,7 +484,7 @@ export default function Home({ ss_session, user, eligible }) {
 
                                 <div className="flex flex-col gap-2">
                                     <SelectionParent plan={userInformation?.tier} state={["", () => {}]} callback={(quantity) => {
-                                        fetch(`/api/user/limit/${userInformation.userId}/${quantity}`, {
+                                        fetch(`/next-api/user/limit/${userInformation.userId}/${quantity}`, {
                                             method: "POST"
                                         }).then(async e => {
                                             const k = await e.json();
