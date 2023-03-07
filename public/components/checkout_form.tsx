@@ -90,12 +90,12 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
         const as = async () => {
             if(!usageInformation || usageInformation.length !== 0) {
-                fetch(`/next-api/user/usage/${user.accounts[0].userId}`).then(async e => {
+                fetch(`/api/user/usage/${user.accounts[0].userId}`).then(async e => {
                     const data = await e.json();
                     setUsageInformation(data);
                 });
         
-                fetch(`/next-api/user/customer/${user.email}`).then(async e => {
+                fetch(`/api/user/customer/${user.email}`).then(async e => {
                     console.log(e);
                 });
             }
@@ -109,7 +109,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         if(!userInformation) return;
 
         // Check if user has existing payment methods we can bill instead, skipping billing step.
-        const newPlan = fetch("/next-api/billing/get-payment-methods", {
+        const newPlan = fetch("/api/billing/get-payment-methods", {
             body: JSON.stringify({ 
                 customerId: userInformation.billing_id,
             }),
@@ -159,7 +159,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
             console.log("Loading for FREE Tier");
 
-            const subsc = await fetch('/next-api/billing/create-subscription', {
+            const subsc = await fetch('/api/billing/create-subscription', {
                 body: JSON.stringify({ 
                     customerId: userInformation.billing_id,
                     customerEmail: session.data.user.email,
@@ -172,7 +172,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
 
             console.log(subsc);
 
-            const change = await fetch("/next-api/billing/change-plan", {
+            const change = await fetch("/api/billing/change-plan", {
                 body: JSON.stringify({ 
                     newPlan: "FREE",
                     userId: userInformation.id,
@@ -200,7 +200,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
             }
         })();
 
-        const subscription: void | { subscriptionId: string, clientSecret: string, invoiceId: string, invoiceURL: string } = await fetch('/next-api/billing/create-subscription', {
+        const subscription: void | { subscriptionId: string, clientSecret: string, invoiceId: string, invoiceURL: string } = await fetch('/api/billing/create-subscription', {
             body: JSON.stringify({ 
                 customerId: userInformation.billing_id,
                 priceId: price_id,
@@ -222,7 +222,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
         console.log("Propagating with limit of:", location.usage_limit);
 
         if(hasExistingPaymentMethod){
-            await fetch("/next-api/billing/change-plan", {
+            await fetch("/api/billing/change-plan", {
                 body: JSON.stringify({ 
                     newPlan: location.plan,
                     userId: userInformation.id,
@@ -244,7 +244,7 @@ const CheckoutForm: React.FC<{ ss_session, user, }> = ({ ss_session, user, }) =>
                     },
                 }
             }).then(async e => {
-                await fetch("/next-api/billing/change-plan", {
+                await fetch("/api/billing/change-plan", {
                     body: JSON.stringify({ 
                         newPlan: location.plan,
                         userId: userInformation.id,

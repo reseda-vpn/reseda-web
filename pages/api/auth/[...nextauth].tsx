@@ -62,8 +62,10 @@ export default NextAuth({
 			return token;
 		},
 		session: ({ session, token }) => {
-			if(token) { 
+			if(token) {
+                //@ts-ignore
 				session.id = token.id;
+                //@ts-ignore
 				session.jwt = token;
 			}
 			

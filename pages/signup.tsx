@@ -43,7 +43,7 @@ export default function Home({ providers }) {
             signInAuth(provider).then(e => {
             });
         else {
-            const response = await fetch('/next-api/auth/signup', {
+            const response = await fetch('/api/auth/signup', {
                 method: 'POST',
                 body: JSON.stringify({ ...authInformation }),
                 headers: {
