@@ -20,22 +20,28 @@ export const BillingCalculator = () => {
                     <p className="text-gray-500 dark:text-gray-300">Estimate your monthy cost</p>
                 </div>
 
-                <div className="border-2 border-gray-200 dark:border-white dark:border-opacity-10 rounded-md max-w-full">
-                    <Input placeholder='50GB' onChange={(e) => setData(e.currentTarget.value * (1000 * 1000 * 1000))} callback={(val) => {}}></Input>
+                <div className="flex flex-col">
+                    <p className="text-white text-sm font-inter font-bold">USAGE</p>
+
+                    <div className="border-2 border-gray-200 dark:border-white dark:border-opacity-10 rounded-md max-w-full">
+                        <Input placeholder='50GB' onChange={(e) => setData(e.currentTarget.value * (1000 * 1000 * 1000))} callback={(val) => {}}></Input>
+                    </div>
                 </div>
 
                 <div className="flex flex-row items-center gap-4 flex-wrap">
-                    <div onClick={() => setTier("FREE")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "FREE" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"} hover:bg-orange-100 `}>
-                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer" >FREE</h2>
+                    <div onClick={() => setTier("FREE")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "FREE" ? "bg-orange-100 border-2 border-orange-200 dark:bg-gray-900 dark:border-gray-800" : "bg-orange-50/60 dark:bg-gray-200 dark:bg-opacity-10"} hover:bg-orange-100 dark:hover:bg-gray-700`}>
+                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer dark:text-white" >FREE</h2>
                     </div>
-                    <div onClick={() => setTier("SUPPORTER")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "SUPPORTER" ? "bg-violet-100 border-2 border-violet-200" : "bg-violet-100/60"} hover:bg-violet-100`}>
-                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer bg-gradient-to-tr text-transparent bg-clip-text" >SUPPORTER</h2>
+                    { /*
+                    <div onClick={() => setTier("SUPPORTER")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "SUPPORTER" ? "bg-violet-100 border-2 border-violet-200 dark:bg-gray-900 dark:border-gray-800" : "bg-violet-100/60 dark:bg-gray-200 dark:bg-opacity-10"} hover:bg-violet-100 dark:hover:bg-gray-700`}>
+                        <h2 className="text-sm font-semibold text-orange-300 cursor-pointer bg-gradient-to-tr text-transparent bg-clip-text dark:text-white" >SUPP</h2>
                     </div>
-                    <div onClick={() => setTier("BASIC")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "BASIC" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"}  hover:bg-orange-100`}>
-                        <h2 className="text-sm font-semibold text-orange-400 cursor-pointer" >BASIC</h2>
+                    */}
+                    <div onClick={() => setTier("BASIC")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "BASIC" ? "bg-orange-100 border-2 border-orange-200 dark:bg-gray-900 dark:border-gray-800" : "bg-orange-50/60 dark:bg-gray-200 dark:bg-opacity-10"}  hover:bg-orange-100 dark:hover:bg-gray-700`}>
+                        <h2 className="text-sm font-semibold text-orange-400 cursor-pointer dark:text-white" >BASIC</h2>
                     </div>
-                    <div onClick={() => setTier("PRO")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "PRO" ? "bg-orange-100 border-2 border-orange-200" : "bg-orange-50/60"}  hover:bg-orange-100`}>
-                        <h2 className="text-sm font-semibold text-orange-500 cursor-pointer" >PRO</h2>
+                    <div onClick={() => setTier("PRO")} className={`border-1 h-8 px-3.5 rounded-md inline-flex flex-shrink-0 whitespace-nowrap items-center gap-2 transition-colors duration-150 ease-in-out leading-none cursor-pointer border-2 border-transparent ${tier == "PRO" ? "bg-orange-100 border-2 border-orange-200 dark:bg-gray-900 dark:border-gray-800" : "bg-orange-50/60 dark:bg-gray-200 dark:bg-opacity-10"}  hover:bg-orange-100 dark:hover:bg-gray-700`}>
+                        <h2 className="text-sm font-semibold text-orange-500 cursor-pointer dark:text-white" >PRO</h2>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 
   max-width: 100vw;
+  overflow-y: visible;
   overflow-x: hidden;
   background-color: white;
   scroll-behavior: smooth;
@@ -13,8 +14,21 @@ body {
 
 html {
   background-color: white;
+  overflow: visible;
 
   --tw-gradient-stops: rgb(156, 138, 236) 0%, rgb(250, 193, 128) 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        background-color: #05010d;
+
+        --tw-gradient-stops: rgb(156, 138, 236) 0%, rgb(250, 193, 128) 100%;
+    }
+}
+
+*:not(html) {
+    -webkit-transform: translate3d(0, 0, 0);
 }
 
 body {

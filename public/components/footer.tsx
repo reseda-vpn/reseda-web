@@ -21,9 +21,9 @@ export const Footer = () => {
 
                             <div className="flex flex-col">
                                 <p className="font-base text-sm text-slate-100">Pre-Release</p>
-                                <a className="font-light text-slate-50 text-sm text-opacity-60" href="../#prerelease">Supporter Tier</a>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Security Testing</p>
-                                <p className="font-light text-slate-50 text-sm text-opacity-60">Speed Analysis</p>
+                                <Link className="font-light text-slate-50 text-sm text-opacity-60" href="../#prerelease">Supporter Tier</Link>
+                                <Link className="font-light text-slate-50 text-sm text-opacity-60" href="https://github.com/reseda-vpn/">Security Testing</Link>
+                                <Link className="font-light text-slate-50 text-sm text-opacity-60" href="https://www.speedtest.net/">Speed Analysis</Link>
                             </div>
 
                             <div className="flex flex-col">
